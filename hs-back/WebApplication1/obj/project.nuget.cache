@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "qITwYhlotVQ=",
+  "success": true,
+  "projectFilePath": "E:\\Documentos\\Proyectos C Sharp\\Health Schedule\\hs-back\\WebApplication1\\WebApplication1.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\claud\\.nuget\\packages\\microsoft.dotnet.ilcompiler\\8.0.25\\microsoft.dotnet.ilcompiler.8.0.25.nupkg.sha512",
+    "C:\\Users\\claud\\.nuget\\packages\\microsoft.net.illink.tasks\\8.0.25\\microsoft.net.illink.tasks.8.0.25.nupkg.sha512",
+    "C:\\Users\\claud\\.nuget\\packages\\runtime.win-x64.microsoft.dotnet.ilcompiler\\8.0.25\\runtime.win-x64.microsoft.dotnet.ilcompiler.8.0.25.nupkg.sha512"
+  ],
+  "logs": []
+}
