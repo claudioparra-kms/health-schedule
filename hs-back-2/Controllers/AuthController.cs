@@ -87,5 +87,35 @@ namespace proyecto_ids_api.Controllers
             return StatusCode(500, new { mensaje = "Error interno del servidor" });
             }
         }
+        [HttpPost("Registro")]
+        public IActionResult Registro([FromBody] RegistroModel model)
+        {
+            try
+            {
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
+
+                string sql = @"
+                    INSERT INTO usuarios (rut, nombre, correo, telefono, password, rol_id)
+                    VALUES (@rut, @nombre, @correo, @telefono, @password,
+                        (SELECT id FROM roles WHERE nombre = 'paciente'))
+                ";
+
+                using var cmd = new NpgsqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@rut", model.Rut);
+                cmd.Parameters.AddWithValue("@nombre", model.Nombre);
+                cmd.Parameters.AddWithValue("@correo", model.Correo);
+                cmd.Parameters.AddWithValue("@telefono", model.Telefono);
+                cmd.Parameters.AddWithValue("@password", model.Password);
+                cmd.ExecuteNonQuery();
+
+                return Ok(new { mensaje = "Usuario registrado correctamente" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en Registro: {ex.Message}");
+                return StatusCode(500, new { mensaje = "Error al registrar usuario" });
+            }
+        }
     }
 }
