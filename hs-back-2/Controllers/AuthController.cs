@@ -59,5 +59,33 @@ namespace proyecto_ids_api.Controllers
                 return StatusCode(500, new { mensaje = "Error interno del servidor" });
             }
         }
+        
+        [HttpPost("Invitado")]
+        public IActionResult Invitado([FromBody] InvitadoModel model)
+        {
+        try
+        {
+            using var conn = new NpgsqlConnection(_connectionString);
+            conn.Open();
+
+        
+            string sql = @"
+                INSERT INTO usuarios (rut, nombre, rol_id)
+                VALUES (@rut, 'Invitado', (SELECT id FROM roles WHERE nombre = 'invitado'))
+                ON CONFLICT (rut) DO NOTHING
+                ";
+
+        using var cmd = new NpgsqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@rut", model.Rut);
+        cmd.ExecuteNonQuery();
+
+        return Ok(new { mensaje = "Ingreso como invitado registrado" });
+        }
+        catch (Exception ex)
+            {
+            Console.WriteLine($"Error en Invitado: {ex.Message}");
+            return StatusCode(500, new { mensaje = "Error interno del servidor" });
+            }
+        }
     }
 }

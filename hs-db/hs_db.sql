@@ -4,7 +4,7 @@ CREATE TABLE roles (
 );
 
 INSERT INTO roles (nombre) VALUES ('paciente'), ('doctor'), ('admin'), ('invitado');
-
+--                                1              2           3          4
 
 CREATE TABLE usuarios (
     id SERIAL PRIMARY KEY,
