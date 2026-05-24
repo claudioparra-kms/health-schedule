@@ -32,3 +32,38 @@ C:\users\guta\music\proyecto\pryecto-ids\proyecto-ids-api\obj\Debug\net10.0\proy
 C:\users\guta\music\proyecto\pryecto-ids\proyecto-ids-api\obj\Debug\net10.0\proyecto-ids-api.genruntimeconfig.cache
 C:\users\guta\music\proyecto\pryecto-ids\proyecto-ids-api\obj\Debug\net10.0\ref\proyecto-ids-api.dll
 C:\users\guta\music\proyecto\pryecto-ids\proyecto-ids-api\bin\Debug\net10.0\Npgsql.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\appsettings.Development.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\appsettings.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.staticwebassets.endpoints.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.exe
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.deps.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.runtimeconfig.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.pdb
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\Microsoft.OpenApi.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\Npgsql.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.AssemblyReference.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rpswa.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.GeneratedMSBuildEditorConfig.editorconfig
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfoInputs.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfo.cs
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.CoreCompileInputs.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cs
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.sourcelink.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rjimswa.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\scopedcss\bundle\proyecto-ids-api.styles.css
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.development.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\swae.build.ex.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto.C70D7CF4.Up2Date
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\refint\proyecto-ids-api.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.pdb
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.genruntimeconfig.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\ref\proyecto-ids-api.dll
