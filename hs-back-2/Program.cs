@@ -5,10 +5,10 @@ using Microsoft.Extensions.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// 🔥 Controllers
+// Controllers
 builder.Services.AddControllers();
 
-// 🔥 CORS para Angular
+// CORS para Angular
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAngular",
@@ -19,20 +19,26 @@ builder.Services.AddCors(options =>
 
 var app = builder.Build();
 
-// 🔥 Conexión PostgreSQL (opcional, solo prueba)
-var connString = "Host=localhost;Port=5432;Database=ihhh;Username=postgres;Password=hola100";
+// Prueba de conexión PostgreSQL (no bloquea el arranque si falla)
+var connString = builder.Configuration.GetConnectionString("DefaultConnection");
 
-using (var conn = new NpgsqlConnection(connString))
+try
 {
+    using var conn = new NpgsqlConnection(connString);
     conn.Open();
     Console.WriteLine("✅ Conectado a PostgreSQL");
 }
+catch (Exception ex)
+{
+    Console.WriteLine($"⚠️  Sin conexión a PostgreSQL: {ex.Message}");
+    Console.WriteLine("   Verifica que PostgreSQL esté corriendo y que la BD 'ihhh' exista.");
+}
 
-// 🔥 Activar CORS
+// Activar CORS
 app.UseCors("AllowAngular");
 
-// 🔥 Controllers
+// Controllers
 app.MapControllers();
 
-// 🔥 Ejecutar app
+// Ejecutar app
 app.Run();

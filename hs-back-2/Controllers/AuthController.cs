@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Npgsql;
 using proyecto_ids_api.Models;
 
@@ -8,45 +9,55 @@ namespace proyecto_ids_api.Controllers
     [Route("[controller]")]
     public class AuthController : ControllerBase
     {
-        private readonly string connectionString =
-            "Host=localhost;Port=5432;Database=ihhh;Username=postgres;Password=hola100";
+        private readonly string _connectionString;
+
+        public AuthController(IConfiguration configuration)
+        {
+            _connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' no encontrada.");
+        }
 
         [HttpPost("Login")]
         public IActionResult Login([FromBody] LoginModel model)
         {
-            using var conn = new NpgsqlConnection(connectionString);
-            conn.Open();
-
-            string sql = @"
-                SELECT u.id, u.nombre, u.rut, u.rol_id, r.nombre AS rol
-                FROM usuarios u
-                INNER JOIN roles r ON u.rol_id = r.id
-                WHERE u.rut = @rut AND u.password = @password
-            ";
-
-            using var cmd = new NpgsqlCommand(sql, conn);
-            cmd.Parameters.AddWithValue("@rut", model.Rut);
-            cmd.Parameters.AddWithValue("@password", model.Password);
-
-            using var reader = cmd.ExecuteReader();
-
-            if (!reader.Read())
+            try
             {
-                return Unauthorized(new
+                using var conn = new NpgsqlConnection(_connectionString);
+                conn.Open();
+
+                string sql = @"
+                    SELECT u.id, u.nombre, u.rut, u.rol_id, r.nombre AS rol
+                    FROM usuarios u
+                    INNER JOIN roles r ON u.rol_id = r.id
+                    WHERE u.rut = @rut AND u.password = @password
+                ";
+
+                using var cmd = new NpgsqlCommand(sql, conn);
+                cmd.Parameters.AddWithValue("@rut", model.Rut);
+                cmd.Parameters.AddWithValue("@password", model.Password);
+
+                using var reader = cmd.ExecuteReader();
+
+                if (!reader.Read())
                 {
-                    mensaje = "Rut o contraseña incorrectos"
+                    return Unauthorized(new { mensaje = "Rut o contraseña incorrectos" });
+                }
+
+                return Ok(new
+                {
+                    mensaje = "Login correcto",
+                    id = reader["id"],
+                    nombre = reader["nombre"],
+                    rut = reader["rut"],
+                    rol_id = reader["rol_id"],
+                    rol = reader["rol"]
                 });
             }
-
-            return Ok(new
+            catch (Exception ex)
             {
-                mensaje = "Login correcto",
-                id = reader["id"],
-                nombre = reader["nombre"],
-                rut = reader["rut"],
-                rol_id = reader["rol_id"],
-                rol = reader["rol"]
-            });
+                Console.WriteLine($"Error en Login: {ex.Message}");
+                return StatusCode(500, new { mensaje = "Error interno del servidor" });
+            }
         }
     }
 }

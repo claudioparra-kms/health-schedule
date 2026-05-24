@@ -1,10 +1,10 @@
 <div class="v29_3">
 
-  <span class="v7_3">H&S</span>
+  <span class="v7_3">H&amp;S</span>
 
   <div class="v7_4"></div>
 
-  <!-- LOGIN NORMAL DEL WIREFRAME -->
+  <!-- LOGIN NORMAL -->
   <form (ngSubmit)="login()">
 
     <span class="v7_58">RUT</span>
@@ -33,24 +33,24 @@
 
   <span class="v7_64">¿Olvidaste tu contraseña?</span>
 
-  <!-- INVITADO -->
-  <span class="v7_guest_text">Entrar como invitado</span>
+  <!-- INVITADO — form propio para que ngModel funcione correctamente -->
+  <form (ngSubmit)="guestLogin()">
 
-  <input
-    type="text"
-    [(ngModel)]="rutInvitado"
-    name="rutInvitado"
-    placeholder="Ingresa tu RUT"
-    class="v7_guest_input"
-  >
+    <span class="v7_guest_text">Entrar como invitado</span>
 
-  <button
-    type="button"
-    class="v7_guest_button"
-    (click)="guestLogin()"
-  >
-    Entrar
-  </button>
+    <input
+      type="text"
+      [(ngModel)]="rutInvitado"
+      name="rutInvitado"
+      placeholder="Ingresa tu RUT"
+      class="v7_guest_input"
+    >
+
+    <button type="submit" class="v7_guest_button">
+      Entrar
+    </button>
+
+  </form>
 
   <span class="v7_65">
     ¿No tienes una cuenta?<br>

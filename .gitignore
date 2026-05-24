@@ -1,3 +1,2 @@
-.vscode/
-node_modules/
-hs-front-2/node_modules
+*.vscode/
+*hs-front-2/node_modules
