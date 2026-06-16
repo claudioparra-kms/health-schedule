@@ -1,0 +1,103 @@
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\appsettings.Development.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\appsettings.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.staticwebassets.endpoints.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.exe
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.deps.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.runtimeconfig.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.dll
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.pdb
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\Microsoft.OpenApi.dll
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\bin\Debug\net10.0\Npgsql.dll
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.AssemblyReference.cache
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfoInputs.cache
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfo.cs
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.CoreCompileInputs.cache
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\rjimswa.dswa.cache.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\scopedcss\bundle\proyecto-ids-api.styles.css
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json.cache
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\staticwebassets.development.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\swae.build.ex.cache
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto.C70D7CF4.Up2Date
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.dll
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\refint\proyecto-ids-api.dll
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.pdb
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.genruntimeconfig.cache
+C:\Users\claud\Desktop\hs-fixed\hs-back-2\obj\Debug\net10.0\ref\proyecto-ids-api.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\appsettings.Development.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\appsettings.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.staticwebassets.endpoints.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.exe
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.deps.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.runtimeconfig.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.pdb
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\Microsoft.OpenApi.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\bin\Debug\net10.0\Npgsql.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.AssemblyReference.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rpswa.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.GeneratedMSBuildEditorConfig.editorconfig
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfoInputs.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfo.cs
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.CoreCompileInputs.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cs
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.sourcelink.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rjimswa.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\scopedcss\bundle\proyecto-ids-api.styles.css
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.development.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\swae.build.ex.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto.C70D7CF4.Up2Date
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\refint\proyecto-ids-api.dll
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.pdb
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.genruntimeconfig.cache
+E:\Documentos\Proyectos C Sharp\health-schedule\hs-back-2\obj\Debug\net10.0\ref\proyecto-ids-api.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\appsettings.Development.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\appsettings.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.staticwebassets.endpoints.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.exe
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.deps.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.runtimeconfig.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.pdb
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\Microsoft.OpenApi.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\Npgsql.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.AssemblyReference.cache
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\rpswa.dswa.cache.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfoInputs.cache
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfo.cs
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.CoreCompileInputs.cache
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cs
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\rjimswa.dswa.cache.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\rjsmrazor.dswa.cache.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\rjsmcshtml.dswa.cache.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\scopedcss\bundle\proyecto-ids-api.styles.css
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\staticwebassets.build.json.cache
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\staticwebassets.development.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\staticwebassets.build.endpoints.json
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\swae.build.ex.cache
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto.C70D7CF4.Up2Date
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\refint\proyecto-ids-api.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.pdb
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.genruntimeconfig.cache
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\ref\proyecto-ids-api.dll

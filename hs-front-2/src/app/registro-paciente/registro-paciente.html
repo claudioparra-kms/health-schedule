@@ -1,0 +1,44 @@
+<div class="v40_15">
+  <span class="v40_16">H&S</span>
+  <div class="v40_17"></div>
+
+  <form (ngSubmit)="registrar()">
+
+    <span class="v40_18">Rut</span>
+    <div class="v40_22">
+      <input type="text" [(ngModel)]="rut" name="rut" required>
+    </div>
+
+    <span class="v40_19">Correo</span>
+    <div class="v40_23">
+      <input type="email" [(ngModel)]="correo" name="correo" required>
+    </div>
+
+    <span class="v40_27">Nombre</span>
+    <div class="v40_28">
+      <input type="text" [(ngModel)]="nombre" name="nombre" required>
+    </div>
+
+    <span class="v40_33">Telefono</span>
+    <div class="v40_34">
+      <input type="text" [(ngModel)]="telefono" name="telefono">
+    </div>
+
+    <span class="v40_36">Contraseña</span>
+    <div class="v40_37">
+      <input type="password" [(ngModel)]="password" name="password" required>
+    </div>
+
+    <div class="v40_24">
+        <button type="submit", style="
+            width:100%; height:100%; background:transparent;
+            border:none; cursor:pointer; color:white;
+            font-family:'Gowun Dodum'; font-size:32px;">
+            Crear cuenta
+        </button>
+    </div>
+
+    <span class="volver" routerLink="/" style="cursor:pointer">← Volver</span>
+
+  </form>
+</div>
