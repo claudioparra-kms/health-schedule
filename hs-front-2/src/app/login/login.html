@@ -14,6 +14,7 @@
       name="rut"
       class="v7_59"
       required
+      (blur)="formatearRut()"
     >
 
     <span class="v7_60">Contraseña</span>
@@ -23,7 +24,12 @@
       name="password"
       class="v7_62"
       required
+      minlength="8"
     >
+
+    <p class="error-login" *ngIf="mensajeError">
+      {{ mensajeError }}
+    </p>
 
     <button type="submit" class="v7_68 v7_66">
       Iniciar sesión
@@ -33,7 +39,7 @@
 
   <span class="v7_64">¿Olvidaste tu contraseña?</span>
 
-  <!-- INVITADO — form propio para que ngModel funcione correctamente -->
+  <!-- INVITADO -->
   <form (ngSubmit)="guestLogin()">
 
     <span class="v7_guest_text">Entrar como invitado</span>
@@ -44,7 +50,12 @@
       name="rutInvitado"
       placeholder="Ingresa tu RUT"
       class="v7_guest_input"
+      (blur)="formatearRutInvitado()"
     >
+
+    <p class="error-invitado" *ngIf="mensajeErrorInvitado">
+      {{ mensajeErrorInvitado }}
+    </p>
 
     <button type="submit" class="v7_guest_button">
       Entrar
@@ -53,11 +64,11 @@
   </form>
 
   <span class="v7_65" routerLink="/registro-paciente" style="cursor:pointer">
-  ¿No tienes una cuenta?<br>Crea una
+    ¿No tienes una cuenta?<br>Crea una
   </span>
 
-  <span class="v7_66">Cantidad de usuarios registrados
-    
+  <span class="v7_66">
+    Cantidad de usuarios registrados
   </span>
 
 </div>

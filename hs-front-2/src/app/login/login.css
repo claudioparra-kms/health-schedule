@@ -124,3 +124,19 @@ body {
   border: none;
   cursor: pointer;
 }
+
+.error-login {
+  position: absolute;
+  left: 533px;
+  top: 548px;
+  color: red;
+  font-size: 14px;
+}
+
+.error-invitado {
+  position: absolute;
+  left: 570px;
+  top: 748px;
+  color: red;
+  font-size: 14px;
+}
