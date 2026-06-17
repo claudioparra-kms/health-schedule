@@ -60,7 +60,7 @@ CREATE TABLE usuarios (
 
 -- ============================================================
 -- 3) PACIENTES
--- Datos específicos de pacientes.
+-- Datos de pacientes.
 -- ============================================================
 
 CREATE TABLE pacientes (
@@ -79,7 +79,7 @@ CREATE TABLE pacientes (
 
 -- ============================================================
 -- 4) DOCTORES
--- Datos específicos de doctores.
+-- Datos de doctores.
 -- ============================================================
 
 CREATE TABLE doctores (
