@@ -25,9 +25,12 @@ namespace proyecto_ids_api.Controllers
                 conn.Open();
 
                 string sql = @"
-                    SELECT u.id, u.nombre, u.rut, u.rol_id, r.nombre AS rol
+                    SELECT u.id, u.nombre, u.rut, u.rol_id, r.nombre AS rol,
+                    p.id AS paciente_id, d.id AS doctor_id
                     FROM usuarios u
                     INNER JOIN roles r ON u.rol_id = r.id
+                    LEFT JOIN pacientes p ON p.usuario_id = u.id
+                    LEFT JOIN doctores d ON d.usuario_id = u.id
                     WHERE u.rut = @rut AND u.password_hash = @password;
                 ";
 
@@ -49,7 +52,9 @@ namespace proyecto_ids_api.Controllers
                     nombre = reader["nombre"],
                     rut = reader["rut"],
                     rol_id = reader["rol_id"],
-                    rol = reader["rol"]
+                    rol = reader["rol"],
+                    paciente_id = reader["paciente_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["paciente_id"]),
+                    doctor_id = reader["doctor_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["dcotor_id"])
                 });
             }
             catch (Exception ex)

@@ -11,11 +11,11 @@ export class Agenda {
     hora='';
     motivo='';
     mensajeError='';
-    pacienteId=1;
+    pacienteId=0;
     horarios=['10:00','13:00','16:00','17:00'];
     constructor(private http:HttpClient)
-        {const u=JSON.parse(localStorage.getItem('usuario')||'{}');
-            if(u.pacienteId) this.pacienteId=u.pacienteId;}
+        {const pacienteId=localStorage.getItem("paciente_id");
+        if(pacienteId) this.pacienteId=Number(pacienteId);}
             agendar(){this.mensajeError='';
                 if(!this.especialidad || !this.doctorId || !this.fecha || !this.hora)
                     {this.mensajeError='Debe completar especialidad, profesional, fecha y horario.'; return;}
@@ -24,8 +24,9 @@ export class Agenda {
                 fin.setMinutes(fin.getMinutes()+30);
                 const fechaFin=fin.toISOString().slice(0,19);
                 this.http.post<any>('http://localhost:5220/Citas/Crear',
-                    {pacienteId:this.pacienteId,doctorId:Number(this.doctorId),
-                        fechaInicio,
-                        fechaFin,
-                        motivo:this.motivo || this.especialidad}).subscribe({next:(res)=>alert(res.mensaje || 'Hora agendada correctamente'),
+                    {pacienteId:this.pacienteId,
+                    doctorId:Number(this.doctorId),
+                    fechaInicio,
+                    fechaFin,
+                    motivo:this.motivo || this.especialidad}).subscribe({next:(res)=>alert(res.mensaje || 'Hora agendada correctamente'),
                     error:(err)=>this.mensajeError=err.error?.mensaje || 'Error al agendar hora'});}}
