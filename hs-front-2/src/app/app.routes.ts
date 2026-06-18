@@ -1,16 +1,29 @@
 import { Routes } from '@angular/router';
+import { Landing } from './landing/landing';
 import { Login } from './login/login';
-import { DashboardAdmin } from './dashboard-admin/dashboard-admin';
-import { DashboardDoctor } from './dashboard-doctor/dashboard-doctor';
-import { DashboardPaciente } from './dashboard-paciente/dashboard-paciente';
-import { DashboardInvitado } from './dashboard-invitado/dashboard-invitado';
 import { RegistroPaciente } from './registro-paciente/registro-paciente';
+import { RecuperarPassword } from './recuperar-password/recuperar-password';
+import { DashboardPaciente } from './dashboard-paciente/dashboard-paciente';
+import { DashboardDoctor } from './dashboard-doctor/dashboard-doctor';
+import { DashboardAdmin } from './dashboard-admin/dashboard-admin';
+import { DashboardInvitado } from './dashboard-invitado/dashboard-invitado';
+import { Agenda } from './agenda/agenda';
+import { MisCitas } from './mis-citas/mis-citas';
+import { FichaClinica } from './ficha-clinica/ficha-clinica';
+import { ModificarPerfil } from './modificar-perfil/modificar-perfil';
 
 export const routes: Routes = [
-  { path: '', component: Login },
-  { path: 'dashboard-admin', component: DashboardAdmin },
-  { path: 'dashboard-doctor', component: DashboardDoctor },
+  { path: '', component: Landing },
+  { path: 'login', component: Login },
+  { path: 'registro-paciente', component: RegistroPaciente },
+  { path: 'recuperar-password', component: RecuperarPassword },
   { path: 'dashboard-paciente', component: DashboardPaciente },
+  { path: 'dashboard-doctor', component: DashboardDoctor },
+  { path: 'dashboard-admin', component: DashboardAdmin },
   { path: 'dashboard-invitado', component: DashboardInvitado },
-  { path: 'registro-paciente', component: RegistroPaciente }
+  { path: 'agenda', component: Agenda },
+  { path: 'mis-citas', component: MisCitas },
+  { path: 'ficha-clinica', component: FichaClinica },
+  { path: 'modificar-perfil', component: ModificarPerfil },
+  { path: '**', redirectTo: '' }
 ];

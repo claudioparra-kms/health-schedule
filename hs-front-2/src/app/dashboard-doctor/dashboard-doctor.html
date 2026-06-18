@@ -1,1 +1,83 @@
-<p>dashboard-doctor works!</p>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/">
+      <span class="hs-logo-mark">H&S</span>
+      <span class="hs-logo-text"><strong>Doctor</strong><span>Panel clínico</span></span>
+    </a>
+
+    <nav class="side-nav">
+      <a class="side-link active" routerLink="/dashboard-doctor">🏠 Inicio</a>
+      <a class="side-link" routerLink="/mis-citas">📅 Agenda del día</a>
+      <a class="side-link" routerLink="/ficha-clinica">📋 Fichas clínicas</a>
+      <a class="side-link" routerLink="/ficha-clinica">👥 Pacientes</a>
+      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div>
+        <h1>Panel Doctor</h1>
+        <p>Revisa tu agenda, controla pacientes y registra evolución clínica.</p>
+      </div>
+      <a class="hs-btn" routerLink="/mis-citas">Ver agenda</a>
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat-card"><span>Citas hoy</span><strong>6</strong></div>
+      <div class="stat-card"><span>Pendientes</span><strong>3</strong></div>
+      <div class="stat-card"><span>Pacientes activos</span><strong>24</strong></div>
+      <div class="stat-card"><span>Fichas actualizadas</span><strong>18</strong></div>
+    </section>
+
+    <section class="panel-grid">
+      <div class="panel">
+        <h2>Acciones rápidas</h2>
+        <div class="quick-actions">
+          <a class="action-card" routerLink="/mis-citas">
+            <b>Agenda del día</b>
+            <p>Consulta tus próximas atenciones y horarios ocupados.</p>
+          </a>
+          <a class="action-card" routerLink="/ficha-clinica">
+            <b>Buscar ficha clínica</b>
+            <p>Revisa antecedentes, evolución y atenciones del paciente.</p>
+          </a>
+          <a class="action-card" routerLink="/ficha-clinica">
+            <b>Registrar atención</b>
+            <p>Agrega diagnóstico, tratamiento y observaciones clínicas.</p>
+          </a>
+          <a class="action-card" routerLink="/mis-citas">
+            <b>Gestionar citas</b>
+            <p>Confirma, realiza o cancela atenciones programadas.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Próxima atención</h2>
+        <div class="appointment">
+          <span class="badge">Confirmada</span>
+          <strong>10:00 · Juan Pérez</strong>
+          <span>Especialidad: Nutrición</span>
+          <span>Motivo: Control alimentario</span>
+        </div>
+        <div class="appointment">
+          <span class="badge">Pendiente</span>
+          <strong>13:00 · María Soto</strong>
+          <span>Especialidad: Salud mental</span>
+          <span>Motivo: Seguimiento psicológico</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-card doctor-section">
+      <h2>Resumen clínico del día</h2>
+      <table class="table">
+        <tr><th>Hora</th><th>Paciente</th><th>Área</th><th>Estado</th><th>Acción sugerida</th></tr>
+        <tr><td>10:00</td><td>Juan Pérez</td><td>Nutrición</td><td><span class="badge">Confirmada</span></td><td>Preparar ficha clínica</td></tr>
+        <tr><td>13:00</td><td>María Soto</td><td>Salud mental</td><td><span class="badge">Pendiente</span></td><td>Confirmar asistencia</td></tr>
+        <tr><td>16:00</td><td>Camila Rojas</td><td>Nutrición</td><td><span class="badge">Confirmada</span></td><td>Registrar evolución</td></tr>
+      </table>
+    </section>
+  </main>
+</div>

@@ -101,3 +101,5 @@ C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\refint\proyec
 C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.pdb
 C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.genruntimeconfig.cache
 C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\ref\proyecto-ids-api.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\bin\Debug\net10.0\MySqlConnector.dll
+C:\Users\Usuario\documents\proyectoids\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.sourcelink.json

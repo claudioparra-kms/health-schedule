@@ -1,9 +1,4 @@
-import { Component } from "@angular/core";
-
-@Component({
-  selector: "app-dashboard-invitado",
-  imports: [],
-  templateUrl: "./dashboard-invitado.html",
-  styleUrl: "./dashboard-invitado.css",
-})
+import { Component } from '@angular/core';
+import { RouterLink } from '@angular/router';
+@Component({selector:'app-dashboard-invitado', standalone:true, imports:[RouterLink], templateUrl:'./dashboard-invitado.html', styleUrls:['./dashboard-invitado.css']})
 export class DashboardInvitado {}

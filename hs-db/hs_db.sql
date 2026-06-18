@@ -1,8 +1,7 @@
 -- ============================================================
 -- Health and Schedule (H&S)
--- Base de datos MySQL 8.0
--- Tema: Ficha clínica y agenda
--- Sprint: Bases del sistema de login + agenda
+-- Base de datos MySQL 8.0 corregida
+-- Incluye datos de prueba válidos para login por rol
 -- ============================================================
 
 DROP DATABASE IF EXISTS hs_db;
@@ -29,8 +28,6 @@ INSERT INTO roles (nombre) VALUES
 
 -- ============================================================
 -- 2) USUARIOS
--- Guarda datos generales de login.
--- El rol define si es paciente, doctor, admin o invitado.
 -- ============================================================
 
 CREATE TABLE usuarios (
@@ -38,7 +35,7 @@ CREATE TABLE usuarios (
     rut VARCHAR(12) UNIQUE,
     nombre VARCHAR(100) NOT NULL,
     correo VARCHAR(100) UNIQUE,
-    password_hash TEXT,
+    password_hash VARCHAR(255) NOT NULL,
     telefono VARCHAR(20),
     rol_id INT NOT NULL,
     activo BOOLEAN NOT NULL DEFAULT TRUE,
@@ -55,12 +52,14 @@ CREATE TABLE usuarios (
         CHECK (correo IS NULL OR correo REGEXP '^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$'),
 
     CONSTRAINT chk_usuarios_telefono
-        CHECK (telefono IS NULL OR telefono REGEXP '^[0-9+ -]{8,20}$')
+        CHECK (telefono IS NULL OR telefono REGEXP '^[0-9+ -]{8,20}$'),
+
+    CONSTRAINT chk_usuarios_password
+        CHECK (CHAR_LENGTH(password_hash) >= 8)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
 -- 3) PACIENTES
--- Datos de pacientes.
 -- ============================================================
 
 CREATE TABLE pacientes (
@@ -79,7 +78,6 @@ CREATE TABLE pacientes (
 
 -- ============================================================
 -- 4) DOCTORES
--- Datos de doctores.
 -- ============================================================
 
 CREATE TABLE doctores (
@@ -95,7 +93,6 @@ CREATE TABLE doctores (
 
 -- ============================================================
 -- 5) FICHAS CLÍNICAS
--- Una ficha por paciente.
 -- ============================================================
 
 CREATE TABLE fichas_clinicas (
@@ -112,7 +109,6 @@ CREATE TABLE fichas_clinicas (
 
 -- ============================================================
 -- 6) ATENCIONES MÉDICAS
--- Registros dentro de la ficha clínica.
 -- ============================================================
 
 CREATE TABLE atenciones (
@@ -134,9 +130,7 @@ CREATE TABLE atenciones (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
--- 7) DISPONIBILIDAD / AGENDA DEL DOCTOR
--- Define bloques disponibles de un doctor.
--- Esto permite tener agenda real, no solo citas creadas.
+-- 7) DISPONIBILIDAD DEL DOCTOR
 -- ============================================================
 
 CREATE TABLE disponibilidad_doctor (
@@ -164,7 +158,6 @@ CREATE TABLE disponibilidad_doctor (
 
 -- ============================================================
 -- 8) BLOQUEOS DE AGENDA
--- Vacaciones, feriados, permisos o días sin atención.
 -- ============================================================
 
 CREATE TABLE bloqueos_agenda (
@@ -184,8 +177,6 @@ CREATE TABLE bloqueos_agenda (
 
 -- ============================================================
 -- 9) CITAS
--- Reserva concreta entre paciente y doctor.
--- La agenda se puede consultar desde esta tabla.
 -- ============================================================
 
 CREATE TABLE citas (
@@ -208,11 +199,9 @@ CREATE TABLE citas (
     CONSTRAINT chk_citas_fechas
         CHECK (fecha_inicio < fecha_fin),
 
-    -- Evita que un doctor tenga dos citas exactamente en el mismo horario de inicio.
     CONSTRAINT uq_cita_doctor_inicio
         UNIQUE (doctor_id, fecha_inicio),
 
-    -- Evita duplicar la misma cita del paciente en el mismo horario.
     CONSTRAINT uq_cita_paciente_inicio
         UNIQUE (paciente_id, fecha_inicio)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
@@ -223,7 +212,6 @@ CREATE INDEX idx_citas_estado ON citas (estado);
 
 -- ============================================================
 -- 10) INVITADOS
--- Guarda ingresos como invitado sin crear cuenta completa.
 -- ============================================================
 
 CREATE TABLE ingresos_invitados (
@@ -236,32 +224,40 @@ CREATE TABLE ingresos_invitados (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- ============================================================
--- 11) DATOS DE PRUEBA
--- IMPORTANTE: password_hash está en texto solo para pruebas académicas.
--- En producción se debe guardar hash con BCrypt.
+-- 11) DATOS DE PRUEBA VÁLIDOS
+-- Contraseñas mín. 8 caracteres para pasar restricciones del frontend.
+-- En producción deben guardarse con BCrypt.
 -- ============================================================
+
+-- Usuarios para probar login:
+-- Paciente: 21667001-6 / test1234
+-- Doctor:   15565678-9 / doctor123
+-- Admin:    11111111-1 / admin1234
+-- Invitado: 22222222-2 / invitado123
 
 INSERT INTO usuarios (rut, nombre, correo, password_hash, telefono, rol_id)
 VALUES
-('12345678-9', 'Juan Pérez', 'juan@mail.com', '1234', '987271476',
+('21667001-6', 'Paciente Prueba H&S', 'paciente@test.cl', 'test1234', '987271476',
     (SELECT id FROM roles WHERE nombre = 'paciente')),
-('15565678-9', 'Marcelo Fuentes', 'marcelo@mail.com', '4321', '987654321',
+('15565678-9', 'Doctor Nutrición H&S', 'doctor@test.cl', 'doctor123', '987654321',
     (SELECT id FROM roles WHERE nombre = 'doctor')),
-('11111111-1', 'Administrador H&S', 'admin@hs.cl', 'admin123', '912345678',
-    (SELECT id FROM roles WHERE nombre = 'admin'));
+('11111111-1', 'Administrador H&S', 'admin@test.cl', 'admin1234', '912345678',
+    (SELECT id FROM roles WHERE nombre = 'admin')),
+('22222222-2', 'Invitado H&S', 'invitado@test.cl', 'invitado123', '923456789',
+    (SELECT id FROM roles WHERE nombre = 'invitado'));
 
 INSERT INTO pacientes (usuario_id, fecha_nacimiento, direccion, prevision, alergias, antecedentes)
 VALUES
-((SELECT id FROM usuarios WHERE rut = '12345678-9'), '2000-01-01', 'Rancagua', 'Fonasa', 'Sin alergias declaradas', 'Sin antecedentes');
+((SELECT id FROM usuarios WHERE rut = '21667001-6'), '2000-01-01', 'Rancagua', 'Fonasa', 'Sin alergias declaradas', 'Sin antecedentes relevantes');
 
 INSERT INTO doctores (usuario_id, especialidad, numero_registro)
 VALUES
-((SELECT id FROM usuarios WHERE rut = '15565678-9'), 'Medicina General', 'MED-001');
+((SELECT id FROM usuarios WHERE rut = '15565678-9'), 'Nutrición', 'NUT-001');
 
 INSERT INTO fichas_clinicas (paciente_id, observaciones_generales)
 VALUES
-((SELECT id FROM pacientes WHERE usuario_id = (SELECT id FROM usuarios WHERE rut = '12345678-9')),
- 'Ficha clínica inicial del paciente.');
+((SELECT id FROM pacientes WHERE usuario_id = (SELECT id FROM usuarios WHERE rut = '21667001-6')),
+ 'Ficha clínica inicial creada para pruebas del sistema H&S.');
 
 INSERT INTO disponibilidad_doctor (doctor_id, dia_semana, hora_inicio, hora_fin, duracion_bloque_min)
 VALUES
@@ -272,11 +268,11 @@ VALUES
 INSERT INTO citas (paciente_id, doctor_id, fecha_inicio, fecha_fin, motivo, estado)
 VALUES
 (
-    (SELECT id FROM pacientes WHERE usuario_id = (SELECT id FROM usuarios WHERE rut = '12345678-9')),
+    (SELECT id FROM pacientes WHERE usuario_id = (SELECT id FROM usuarios WHERE rut = '21667001-6')),
     (SELECT id FROM doctores WHERE usuario_id = (SELECT id FROM usuarios WHERE rut = '15565678-9')),
     '2026-05-04 09:00:00',
     '2026-05-04 09:30:00',
-    'Chequeo general',
+    'Chequeo nutricional inicial',
     'confirmada'
 );
 
@@ -287,13 +283,16 @@ VALUES
      FROM fichas_clinicas fc
      JOIN pacientes p ON fc.paciente_id = p.id
      JOIN usuarios u ON p.usuario_id = u.id
-     WHERE u.rut = '12345678-9'),
+     WHERE u.rut = '21667001-6'),
     (SELECT id FROM doctores WHERE usuario_id = (SELECT id FROM usuarios WHERE rut = '15565678-9')),
     'Chequeo preventivo',
     'Paciente estable',
-    'Control anual',
+    'Control nutricional mensual',
     'Sin receta'
 );
+
+INSERT INTO ingresos_invitados (rut)
+VALUES ('33333333-3');
 
 -- ============================================================
 -- 12) VISTAS ÚTILES
@@ -334,5 +333,7 @@ JOIN usuarios up ON p.usuario_id = up.id;
 -- ============================================================
 
 SELECT * FROM vista_usuarios_roles;
+SELECT * FROM pacientes;
+SELECT * FROM doctores;
 SELECT * FROM vista_agenda_doctor;
-SELECT * FROM usuarios;
+SELECT * FROM ingresos_invitados;

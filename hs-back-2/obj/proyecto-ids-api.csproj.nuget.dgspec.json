@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Usuario\\Documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj": {}
+    "C:\\Users\\Usuario\\documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Usuario\\Documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj": {
+    "C:\\Users\\Usuario\\documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Usuario\\Documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj",
+        "projectUniqueName": "C:\\Users\\Usuario\\documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj",
         "projectName": "proyecto-ids-api",
-        "projectPath": "C:\\Users\\Usuario\\Documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj",
+        "projectPath": "C:\\Users\\Usuario\\documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj",
         "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Usuario\\Documents\\proyectoids\\hs-back-2\\obj\\",
+        "outputPath": "C:\\Users\\Usuario\\documents\\proyectoids\\hs-back-2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config"

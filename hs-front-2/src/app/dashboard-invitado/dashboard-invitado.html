@@ -1,6 +1,57 @@
-<!DOCTYPE html><html><head><link href="https://fonts.googleapis.com/css?family=Gowun+Dodum&display=swap" rel="stylesheet" /><link href="dashboard-invitado.css" rel="stylesheet" /><title>Document</title></head><body><div class="v52_159"><span class="v52_160">H&S</span><span class="v52_161">Agendar hora</span><div class="v52_162"></div><span class="v52_163">Especialidad</span><span class="v52_164">Seleccione especialidad</span><div class="name"></div><div class="v52_166"></div><div class="v52_167"></div><span class="v52_168">Psicologia</span><span class="v52_169">Nutrición
-</span><div class="v52_170"></div><span class="v52_171">Especialidad</span><span class="v52_172">Seleccione especialidad</span><div class="name"></div><div class="v52_174"></div><div class="v52_175"></div><span class="v52_176">Psicologia</span><span class="v52_177">Nutrición
-</span><div class="v52_178"></div><span class="v52_179">Especialidad</span><span class="v52_180">Seleccione especialidad</span><div class="name"></div><div class="v52_182"></div><div class="v52_183"></div><span class="v52_184">Psicologia</span><span class="v52_185">Nutrición
-</span><div class="v52_186"></div><span class="v52_187">Especialidad</span><span class="v52_188">Seleccione especialidad</span><div class="name"></div><div class="v52_190"></div><div class="v52_191"></div><span class="v52_192">Psicologia</span><span class="v52_193">Nutrición
-</span><div class="v52_194"></div><span class="v52_195">Seleccione especialidad</span><div class="name"></div><div class="v52_197"></div><div class="v52_198"></div><span class="v52_199">Profesional 2</span><div class="v52_200"></div><span class="v52_201">Profesional</span><span class="v52_202">Seleccione especialidad</span><div class="name"></div><div class="v52_204"></div><span class="v52_205">Seleccione especialidad</span><div class="name"></div><div class="v52_207"></div><span class="v52_208">Seleccione profesional</span><div class="name"></div><span class="v52_210">Profesional 1
-</span><div class="name"></div></div></body></html>
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/">
+      <span class="hs-logo-mark">H&S</span>
+      <span class="hs-logo-text"><strong>Invitado</strong><span>Agenda rápida</span></span>
+    </a>
+
+    <nav class="side-nav">
+      <a class="side-link active" routerLink="/dashboard-invitado">🏠 Inicio</a>
+      <a class="side-link" routerLink="/agenda">📅 Agendar hora</a>
+      <a class="side-link" routerLink="/registro-paciente">📝 Crear cuenta</a>
+      <a class="side-link" routerLink="/login">🚪 Salir</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div>
+        <h1>Ingreso como invitado</h1>
+        <p>Puedes agendar una atención. Para ver ficha clínica, historial o modificar datos debes crear una cuenta.</p>
+      </div>
+      <a class="hs-btn" routerLink="/agenda">Agendar hora</a>
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat-card"><span>Acceso</span><strong>Invitado</strong></div>
+      <div class="stat-card"><span>Disponible</span><strong>Agenda</strong></div>
+      <div class="stat-card"><span>Ficha clínica</span><strong>No</strong></div>
+      <div class="stat-card"><span>Cuenta</span><strong>Opcional</strong></div>
+    </section>
+
+    <section class="panel-grid">
+      <div class="panel">
+        <h2>¿Qué puedes hacer?</h2>
+        <div class="quick-actions">
+          <a class="action-card" routerLink="/agenda">
+            <b>Agendar atención</b>
+            <p>Selecciona nutrición o salud mental, profesional, fecha y horario.</p>
+          </a>
+          <a class="action-card" routerLink="/registro-paciente">
+            <b>Crear cuenta</b>
+            <p>Regístrate para acceder a ficha clínica, mis citas y modificar datos.</p>
+          </a>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Limitaciones de invitado</h2>
+        <div class="appointment-list">
+          <div class="appointment"><span class="badge">Permitido</span><strong>Agendar hora</strong><span>Reserva una atención básica.</span></div>
+          <div class="appointment"><span class="badge muted">Restringido</span><strong>Ficha clínica</strong><span>Disponible solo para usuarios registrados.</span></div>
+          <div class="appointment"><span class="badge muted">Restringido</span><strong>Modificar datos</strong><span>Debes crear una cuenta para administrar tu perfil.</span></div>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
