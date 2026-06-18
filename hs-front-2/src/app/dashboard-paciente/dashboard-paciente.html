@@ -1,1 +1,43 @@
-<div class="app-shell"><aside class="sidebar"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span class="hs-logo-text"><strong>Paciente</strong><span>Mi salud</span></span></a><nav class="side-nav"><a class="side-link active" routerLink="/dashboard-paciente">🏠 Inicio</a><a class="side-link" routerLink="/agenda">📅 Agendar hora</a><a class="side-link" routerLink="/mis-citas">🕘 Mis citas</a><a class="side-link" routerLink="/ficha-clinica">📋 Ficha clínica</a><a class="side-link" routerLink="/modificar-perfil">⚙️ Modificar datos</a><a class="side-link" routerLink="/login">🚪 Cerrar sesión</a></nav></aside><main class="main-content"><div class="page-head"><div><h1>Hola, {{usuario.nombre || 'Paciente'}}</h1><p>Agenda tus atenciones y revisa tu información clínica.</p></div><a class="hs-btn" routerLink="/agenda">Agendar hora</a></div><section class="stats-grid"><div class="stat-card"><span>Próxima cita</span><strong>1</strong></div><div class="stat-card"><span>Atenciones</span><strong>4</strong></div><div class="stat-card"><span>Especialidades</span><strong>2</strong></div><div class="stat-card"><span>Ficha</span><strong>OK</strong></div></section><section class="panel-grid"><div class="panel"><h2>Acciones rápidas</h2><div class="quick-actions"><a class="action-card" routerLink="/agenda"><b>Agendar atención</b><p>Reserva hora en nutrición o salud mental.</p></a><a class="action-card" routerLink="/mis-citas"><b>Ver mis citas</b><p>Consulta tus próximas atenciones.</p></a><a class="action-card" routerLink="/ficha-clinica"><b>Mi ficha clínica</b><p>Revisa antecedentes y evolución.</p></a><a class="action-card" routerLink="/modificar-perfil"><b>Modificar datos</b><p>Actualiza correo, teléfono y dirección.</p></a></div></div><div class="panel"><h2>Próxima atención</h2><div class="appointment"><span class="badge">Confirmada</span><strong>Nutrición · Profesional 1</strong><span>26 de mayo · 10:00 hrs</span><span>Motivo: Control alimentario</span></div></div></section></main></div>
+<div class="app-shell">
+    <aside class="sidebar"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span
+                class="hs-logo-text"><strong>Paciente</strong><span>Mi salud</span></span></a>
+        <nav class="side-nav"><a class="side-link active" routerLink="/dashboard-paciente">🏠 Inicio</a><a
+                class="side-link" routerLink="/agenda">📅 Agendar hora</a><a class="side-link"
+                routerLink="/mis-citas">🕘 Mis citas</a><a class="side-link" routerLink="/ficha-clinica">📋 Ficha
+                clínica</a><a class="side-link" routerLink="/modificar-perfil">⚙️ Modificar datos</a><a
+                class="side-link" routerLink="/login">🚪 Cerrar sesión</a></nav>
+    </aside>
+    <main class="main-content">
+        <div class="page-head">
+            <div>
+                <h1>Hola, {{usuario.nombre || 'Paciente'}}</h1>
+                <p>Agenda tus atenciones y revisa tu información clínica.</p>
+            </div><a class="hs-btn" routerLink="/agenda">Agendar hora</a>
+        </div>
+        <section class="stats-grid">
+            <div class="stat-card"><span>Próxima cita</span><strong>1</strong></div>
+            <div class="stat-card"><span>Atenciones</span><strong>4</strong></div>
+            <div class="stat-card"><span>Especialidades</span><strong>2</strong></div>
+            <div class="stat-card"><span>Ficha</span><strong>OK</strong></div>
+        </section>
+        <section class="panel-grid">
+            <div class="panel">
+                <h2>Acciones rápidas</h2>
+                <div class="quick-actions"><a class="action-card" routerLink="/agenda"><b>Agendar atención</b>
+                        <p>Reserva hora en nutrición o salud mental.</p>
+                    </a><a class="action-card" routerLink="/mis-citas"><b>Ver mis citas</b>
+                        <p>Consulta tus próximas atenciones.</p>
+                    </a><a class="action-card" routerLink="/ficha-clinica"><b>Mi ficha clínica</b>
+                        <p>Revisa antecedentes y evolución.</p>
+                    </a><a class="action-card" routerLink="/modificar-perfil"><b>Modificar datos</b>
+                        <p>Actualiza correo, teléfono y dirección.</p>
+                    </a></div>
+            </div>
+            <div class="panel">
+                <h2>Próxima atención</h2>
+                <div class="appointment"><span class="badge">Confirmada</span><strong>Nutrición · Profesional
+                        1</strong><span>26 de mayo · 10:00 hrs</span><span>Motivo: Control alimentario</span></div>
+            </div>
+        </section>
+    </main>
+</div>

@@ -1,13 +1,13 @@
 {
   "version": 2,
-  "dgSpecHash": "xnnmin0xkrc=",
+  "dgSpecHash": "jcjDlPdCbHw=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Usuario\\documents\\proyectoids\\hs-back-2\\proyecto-ids-api.csproj",
+  "projectFilePath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Usuario\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.7\\microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
-    "C:\\Users\\Usuario\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
-    "C:\\Users\\Usuario\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512",
-    "C:\\Users\\Usuario\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512"
+    "C:\\Users\\claud\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.7\\microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
+    "C:\\Users\\claud\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
+    "C:\\Users\\claud\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512",
+    "C:\\Users\\claud\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512"
   ],
   "logs": []
 }

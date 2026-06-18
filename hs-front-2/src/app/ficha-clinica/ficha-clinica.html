@@ -1,1 +1,48 @@
-<div class="app-shell"><aside class="sidebar"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span class="hs-logo-text"><strong>Ficha</strong><span>Clínica</span></span></a><nav class="side-nav"><a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a><a class="side-link" routerLink="/agenda">📅 Agendar</a><a class="side-link active" routerLink="/ficha-clinica">📋 Ficha clínica</a></nav></aside><main class="main-content"><div class="page-head"><div><h1>Ficha clínica</h1><p>Información clínica resumida del paciente.</p></div></div><section class="panel-grid"><div class="content-card"><h2>Datos personales</h2><table class="table"><tr><th>Nombre</th><td>{{usuario.nombre || 'Paciente'}}</td></tr><tr><th>RUT</th><td>{{usuario.rut || 'No registrado'}}</td></tr><tr><th>Correo</th><td>{{usuario.correo || 'No registrado'}}</td></tr><tr><th>Teléfono</th><td>No registrado</td></tr></table></div><div class="content-card"><h2>Antecedentes</h2><div class="appointment-list"><div class="appointment"><strong>Alergias</strong><span>Sin alergias declaradas</span></div><div class="appointment"><strong>Enfermedades crónicas</strong><span>Sin antecedentes registrados</span></div><div class="appointment"><strong>Última atención</strong><span>Control preventivo</span></div></div></div></section></main></div>
+<div class="app-shell">
+    <aside class="sidebar"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span
+                class="hs-logo-text"><strong>Ficha</strong><span>Clínica</span></span></a>
+        <nav class="side-nav"><a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a><a class="side-link"
+                routerLink="/agenda">📅 Agendar</a><a class="side-link active" routerLink="/ficha-clinica">📋 Ficha
+                clínica</a></nav>
+    </aside>
+    <main class="main-content">
+        <div class="page-head">
+            <div>
+                <h1>Ficha clínica</h1>
+                <p>Información clínica resumida del paciente.</p>
+            </div>
+        </div>
+        <section class="panel-grid">
+            <div class="content-card">
+                <h2>Datos personales</h2>
+                <table class="table">
+                    <tr>
+                        <th>Nombre</th>
+                        <td>{{usuario.nombre || 'Paciente'}}</td>
+                    </tr>
+                    <tr>
+                        <th>RUT</th>
+                        <td>{{usuario.rut || 'No registrado'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Correo</th>
+                        <td>{{usuario.correo || 'No registrado'}}</td>
+                    </tr>
+                    <tr>
+                        <th>Teléfono</th>
+                        <td>No registrado</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="content-card">
+                <h2>Antecedentes</h2>
+                <div class="appointment-list">
+                    <div class="appointment"><strong>Alergias</strong><span>Sin alergias declaradas</span></div>
+                    <div class="appointment"><strong>Enfermedades crónicas</strong><span>Sin antecedentes
+                            registrados</span></div>
+                    <div class="appointment"><strong>Última atención</strong><span>Control preventivo</span></div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>

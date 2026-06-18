@@ -1,1 +1,30 @@
-<div class="auth-page"><section class="auth-brand"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span class="hs-logo-text"><strong>Health & Schedule</strong><span>Registro de paciente</span></span></a><div><h2>Crea tu cuenta y agenda tus atenciones.</h2><p>Regístrate como paciente para acceder a citas, historial y ficha clínica.</p></div></section><section class="auth-panel"><div class="auth-card"><h2>Crear cuenta</h2><p>Completa tus datos principales.</p><form (ngSubmit)="registrar()"><div class="form-group"><label>RUT</label><input class="form-control" [(ngModel)]="rut" name="rut" required></div><div class="form-group"><label>Correo</label><input class="form-control" type="email" [(ngModel)]="correo" name="correo" required></div><div class="form-group"><label>Nombre completo</label><input class="form-control" [(ngModel)]="nombre" name="nombre" required></div><div class="form-group"><label>Teléfono</label><input class="form-control" [(ngModel)]="telefono" name="telefono"></div><div class="form-group"><label>Contraseña</label><input class="form-control" type="password" [(ngModel)]="password" name="password" required></div><p class="form-error" *ngIf="mensajeError">{{mensajeError}}</p><button class="hs-btn" type="submit">Crear cuenta</button></form><p class="auth-link"><a routerLink="/login">Volver al login</a></p></div></section></div>
+<div class="auth-page">
+    <section class="auth-brand"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span
+                class="hs-logo-text"><strong>Health & Schedule</strong><span>Registro de paciente</span></span></a>
+        <div>
+            <h2>Crea tu cuenta y agenda tus atenciones.</h2>
+            <p>Regístrate como paciente para acceder a citas, historial y ficha clínica.</p>
+        </div>
+    </section>
+    <section class="auth-panel">
+        <div class="auth-card">
+            <h2>Crear cuenta</h2>
+            <p>Completa tus datos principales.</p>
+            <form (ngSubmit)="registrar()">
+                <div class="form-group"><label>RUT</label><input class="form-control" [(ngModel)]="rut" name="rut"
+                        required></div>
+                <div class="form-group"><label>Correo</label><input class="form-control" type="email"
+                        [(ngModel)]="correo" name="correo" required></div>
+                <div class="form-group"><label>Nombre completo</label><input class="form-control" [(ngModel)]="nombre"
+                        name="nombre" required></div>
+                <div class="form-group"><label>Teléfono</label><input class="form-control" [(ngModel)]="telefono"
+                        name="telefono"></div>
+                <div class="form-group"><label>Contraseña</label><input class="form-control" type="password"
+                        [(ngModel)]="password" name="password" required></div>
+                <p class="form-error" *ngIf="mensajeError">{{mensajeError}}</p><button class="hs-btn"
+                    type="submit">Crear cuenta</button>
+            </form>
+            <p class="auth-link"><a routerLink="/login">Volver al login</a></p>
+        </div>
+    </section>
+</div>
