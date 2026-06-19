@@ -18,15 +18,15 @@
   <main class="main-content" id="doctor-inicio">
     <div class="page-head">
       <div>
-        <h1>Panel Doctor</h1>
-        <p>Gestiona tu agenda, revisa pacientes y registra la evolución clínica sin salir del panel de doctor.</p>
+        <h1>Hola, {{ nombre }}</h1>
+        <p>Gestiona tu agenda, revisa pacientes y registra la evolución clínica desde tu panel.</p>
       </div>
       <a class="hs-btn" routerLink="/dashboard-doctor/agenda">Ver agenda del día</a>
     </div>
 
     <section class="stats-grid">
-      <div class="stat-card"><span>Citas hoy</span><strong>6</strong></div>
-      <div class="stat-card"><span>Por confirmar</span><strong>3</strong></div>
+      <div class="stat-card"><span>Citas hoy</span><strong>{{ citasHoyCount }}</strong></div>
+      <div class="stat-card"><span>Por confirmar</span><strong>{{ porConfirmarCount }}</strong></div>
     </section>
 
     <section class="panel-grid">
@@ -53,24 +53,35 @@
       </div>
 
       <div class="panel">
-        <h2>Próximas atenciones</h2>
-        <div class="appointment-list">
-          <div class="appointment">
-            <span class="badge">Confirmada</span>
-            <strong>10:00 · Juan Pérez</strong>
-            <span>Nutrición · Control alimentario</span>
+        <h2>Citas hoy</h2>
+        <ng-container *ngIf="citasHoy.length; else noHoy">
+          <div class="appointment-list">
+            <div class="appointment" *ngFor="let c of citasHoy">
+              <span class="badge">{{ c.estado | titlecase }}</span>
+              <strong>{{ c._fecha | date:'HH:mm' }} · {{ c.paciente }}</strong>
+              <span>{{ c.motivo || 'Sin motivo' }}</span>
+            </div>
           </div>
-          <div class="appointment">
-            <span class="badge">Pendiente</span>
-            <strong>13:00 · María Soto</strong>
-            <span>Salud mental · Seguimiento psicológico</span>
+        </ng-container>
+        <ng-template #noHoy>
+          <div class="appointment empty">No hay citas hoy</div>
+        </ng-template>
+      </div>
+
+      <div class="panel">
+        <h2>Por confirmar</h2>
+        <ng-container *ngIf="porConfirmar.length; else noPor">
+          <div class="appointment-list">
+            <div class="appointment" *ngFor="let c of porConfirmar">
+              <span class="badge">{{ c.estado | titlecase }}</span>
+              <strong>{{ c._fecha | date:'d MMM · HH:mm' }} · {{ c.paciente }}</strong>
+              <span>{{ c.motivo || 'Sin motivo' }}</span>
+            </div>
           </div>
-          <div class="appointment">
-            <span class="badge">Confirmada</span>
-            <strong>16:00 · Camila Rojas</strong>
-            <span>Nutrición · Evaluación de progreso</span>
-          </div>
-        </div>
+        </ng-container>
+        <ng-template #noPor>
+          <div class="appointment empty">No hay citas por confirmar</div>
+        </ng-template>
       </div>
     </section>
 

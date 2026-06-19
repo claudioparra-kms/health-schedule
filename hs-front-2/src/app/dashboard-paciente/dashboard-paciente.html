@@ -33,8 +33,17 @@
             </div>
             <div class="panel">
                 <h2>Próxima atención</h2>
-                <div class="appointment"><span class="badge">Confirmada</span><strong>Nutrición · Profesional
-                        1</strong><span>26 de mayo · 10:00 hrs</span><span>Motivo: Control alimentario</span></div>
+                <ng-container *ngIf="nextAppointment as appt; else noNext">
+                    <div class="appointment">
+                        <span class="badge">{{ appt.estado | titlecase }}</span>
+                        <strong>Consulta · {{ appt.doctor }}</strong>
+                        <span>{{ appt.fechaInicio | date:'d \'de\' MMMM · HH:mm' }}</span>
+                        <span>Motivo: {{ appt.motivo || 'Sin motivo' }}</span>
+                    </div>
+                </ng-container>
+                <ng-template #noNext>
+                    <div class="appointment empty">No hay próximas atenciones</div>
+                </ng-template>
             </div>
         </section>
     </main>

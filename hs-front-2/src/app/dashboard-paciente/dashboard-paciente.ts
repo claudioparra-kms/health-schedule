@@ -35,4 +35,14 @@ export class DashboardPaciente implements OnInit {
       c.estado !== 'no_asiste'
     ).length;
   }
+
+  get nextAppointment(): any | null {
+    const ahora = new Date();
+    const proximas = this.citas
+      .map(c => ({ ...c, _fecha: new Date(c.fechaInicio) }))
+      .filter(c => c._fecha >= ahora && c.estado !== 'cancelada' && c.estado !== 'no_asiste')
+      .sort((a, b) => a._fecha.getTime() - b._fecha.getTime());
+
+    return proximas.length ? proximas[0] : null;
+  }
 }
