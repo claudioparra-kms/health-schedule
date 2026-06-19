@@ -2,14 +2,14 @@ Para los profesionales y administrativos de las áreas de nutrición y salud men
 
 REQUISITOS
 - .NET 10
-- PostgreSQL
+- MySQL
 - Node.js
-- Angular CLL21
+- Angular CLI21
 
 INSTRUCCIONES
 1) Clonar repositorio
 2) Abrir carpeta "hs-back-2"
-3) Modificar archivo appsettings.json dependiendo del usuario y contraseña Postgres
-4) Crear base de datos con los comandos "psql -U postgres -c "CREATE DATABASE hs_db;" y "psql -U postgres -d hs_db -f "C:\health-schedule\hs-db\hs_db.sql" (la ruta hacia el archivo sql dependerá de donde se clone el repositorio)
+3) Modificar archivo appsettings.json dependiendo del usuario y contraseña MySQL
+4) Crear base de datos al abrir y ejecutar el script "hs_db"
 5) Ejecutar los comandos "cd hs-back-2" y "dotnet run"
 6) Ejecutar los comandos "cd hs-front-2", "npm install" y "ng serve"
