@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\users\\guta\\music\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj": {}
+    "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj": {}
   },
   "projects": {
-    "C:\\users\\guta\\music\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj": {
+    "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\users\\guta\\music\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+        "projectUniqueName": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
         "projectName": "proyecto-ids-api",
-        "projectPath": "C:\\users\\guta\\music\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
-        "packagesPath": "C:\\Users\\Guta\\.nuget\\packages\\",
-        "outputPath": "C:\\users\\guta\\music\\health-schedule\\hs-back-2\\obj\\",
+        "projectPath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+        "packagesPath": "C:\\Users\\claud\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Guta\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\claud\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net10.0"
@@ -24,6 +24,7 @@
         },
         "frameworks": {
           "net10.0": {
+            "framework": "net10.0",
             "targetAlias": "net10.0",
             "projectReferences": {}
           }
@@ -38,10 +39,11 @@
           "auditLevel": "low",
           "auditMode": "all"
         },
-        "SdkAnalysisLevel": "10.0.200"
+        "SdkAnalysisLevel": "10.0.300"
       },
       "frameworks": {
         "net10.0": {
+          "framework": "net10.0",
           "targetAlias": "net10.0",
           "dependencies": {
             "Microsoft.AspNetCore.OpenApi": {
@@ -76,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.203/PortableRuntimeIdentifierGraph.json",
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.300/PortableRuntimeIdentifierGraph.json",
           "packagesToPrune": {
             "Microsoft.AspNetCore": "(,10.0.32767]",
             "Microsoft.AspNetCore.Antiforgery": "(,10.0.32767]",
