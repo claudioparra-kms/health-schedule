@@ -25,21 +25,40 @@
     </div>
 
     <section class="stats-grid">
-      <div class="stat-card"><span>Citas hoy</span><strong>6</strong></div>
-      <div class="stat-card"><span>Confirmadas</span><strong>4</strong></div>
-      <div class="stat-card"><span>Pendientes</span><strong>2</strong></div>
+      <div class="stat-card"><span>Citas hoy</span><strong>{{ citasHoy }}</strong></div>
+      <div class="stat-card"><span>Confirmadas</span><strong>{{ confirmadas }}</strong></div>
+      <div class="stat-card"><span>Pendientes</span><strong>{{ pendientes }}</strong></div>
       <div class="stat-card"><span>Bloques libres</span><strong>3</strong></div>
     </section>
 
     <section class="table-panel">
       <h2>Atenciones programadas</h2>
-      <table class="table">
-        <tr><th>Hora</th><th>Paciente</th><th>Área</th><th>Motivo</th><th>Estado</th><th>Acción sugerida</th></tr>
-        <tr><td>10:00</td><td>Juan Pérez</td><td>Nutrición</td><td>Control alimentario</td><td><span class="badge">Confirmada</span></td><td>Preparar ficha</td></tr>
-        <tr><td>11:30</td><td>Diego Morales</td><td>Salud mental</td><td>Primera evaluación</td><td><span class="badge">Pendiente</span></td><td>Confirmar asistencia</td></tr>
-        <tr><td>13:00</td><td>María Soto</td><td>Salud mental</td><td>Seguimiento psicológico</td><td><span class="badge">Pendiente</span></td><td>Revisar evolución previa</td></tr>
-        <tr><td>16:00</td><td>Camila Rojas</td><td>Nutrición</td><td>Evaluación de progreso</td><td><span class="badge">Confirmada</span></td><td>Registrar evolución</td></tr>
-      </table>
+
+      @if (cargando) {
+        <p>Cargando agenda...</p>
+      }
+
+      @if (mensajeError) {
+        <p class="error">{{ mensajeError }}</p>
+      }
+
+      @if (!cargando && !mensajeError && citas.length === 0) {
+        <p>No tienes citas programadas.</p>
+      }
+
+      @if (!cargando && citas.length > 0) {
+        <table class="table">
+          <tr><th>Hora</th><th>Paciente</th><th>Motivo</th><th>Estado</th></tr>
+          @for (cita of citas; track cita.id) {
+            <tr>
+              <td>{{ formatearHora(cita.fechaInicio) }}</td>
+              <td>{{ cita.paciente }}</td>
+              <td>{{ cita.motivo }}</td>
+              <td><span [class]="badgeClase(cita.estado)">{{ cita.estado }}</span></td>
+            </tr>
+          }
+        </table>
+      }
     </section>
 
     <section class="panel-grid">
