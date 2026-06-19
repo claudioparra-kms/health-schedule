@@ -25,5 +25,25 @@ export class Login {
       else if (data.rol === 'paciente') this.router.navigate(['/dashboard-paciente']); },
       error: () => this.mensajeError = 'RUT o contraseña incorrectos' });
   }
-  guestLogin() { this.mensajeErrorInvitado = ''; if (!this.rutInvitado.trim()) { this.mensajeErrorInvitado = 'Ingresa tu RUT para continuar como invitado'; return; } this.formatearRutInvitado(); if (!this.validarRut(this.rutInvitado)) { this.mensajeErrorInvitado = 'El RUT ingresado no es válido. Ejemplo: 21667001-6'; return; } this.http.post<any>('http://localhost:5220/Auth/Invitado', { rut: this.rutInvitado }).subscribe({ next: () => this.router.navigate(['/dashboard-invitado']), error: () => this.mensajeErrorInvitado = 'Error al registrar ingreso como invitado' }); }
-}
+  guestLogin() { this.mensajeErrorInvitado = '';
+  if (!this.rutInvitado.trim())
+    { this.mensajeErrorInvitado = 'Ingresa tu RUT para continuar como invitado';
+    return; } this.formatearRutInvitado();
+  if (!this.validarRut(this.rutInvitado))
+    { this.mensajeErrorInvitado = 'El RUT ingresado no es válido. Ejemplo: 21667001-6';
+    return; } this.http.post<any>
+    
+  ('http://localhost:5220/Auth/Invitado',
+    
+  
+  { rut: this.rutInvitado }).subscribe({
+  next: (data) => {
+    localStorage.setItem('rol', 'invitado');
+    localStorage.setItem('rut_invitado', this.rutInvitado);
+    localStorage.setItem('paciente_id', data.paciente_id.toString());
+    this.router.navigate(['/dashboard-invitado']);
+    },
+  error: (err) => {
+    alert(err.error?.mensaje || 'Error al ingresar como invitado');   
+  }
+  })}}

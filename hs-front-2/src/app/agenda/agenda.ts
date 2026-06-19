@@ -16,17 +16,32 @@ export class Agenda {
     constructor(private http:HttpClient)
         {const pacienteId=localStorage.getItem("paciente_id");
         if(pacienteId) this.pacienteId=Number(pacienteId);}
-            agendar(){this.mensajeError='';
-                if(!this.especialidad || !this.doctorId || !this.fecha || !this.hora)
-                    {this.mensajeError='Debe completar especialidad, profesional, fecha y horario.'; return;}
-                const fechaInicio=`${this.fecha}T${this.hora}:00`;
-                const fin=new Date(fechaInicio);
-                fin.setMinutes(fin.getMinutes()+30);
-                const fechaFin=fin.toISOString().slice(0,19);
-                this.http.post<any>('http://localhost:5220/Citas/Crear',
-                    {pacienteId:this.pacienteId,
-                    doctorId:Number(this.doctorId),
-                    fechaInicio,
-                    fechaFin,
-                    motivo:this.motivo || this.especialidad}).subscribe({next:(res)=>alert(res.mensaje || 'Hora agendada correctamente'),
-                    error:(err)=>this.mensajeError=err.error?.mensaje || 'Error al agendar hora'});}}
+            agendar() {
+  this.mensajeError = '';
+
+  if (!this.especialidad || !this.doctorId || !this.fecha || !this.hora) {
+    this.mensajeError = 'Debe completar especialidad, profesional, fecha y horario.';
+    return;
+  }
+
+  if (!this.pacienteId) {
+    this.mensajeError = 'No se pudo identificar al paciente. Ingresa nuevamente.';
+    return;
+  }
+
+  const fechaInicio = `${this.fecha}T${this.hora}:00`;
+  const fin = new Date(fechaInicio);
+  fin.setMinutes(fin.getMinutes() + 30);
+  const fechaFin = fin.toISOString().slice(0, 19);
+
+  this.http.post<any>('http://localhost:5220/Citas/Crear', {
+    pacienteId: this.pacienteId,
+    doctorId: Number(this.doctorId),
+    fechaInicio,
+    fechaFin,
+    motivo: this.motivo || this.especialidad
+  }).subscribe({
+    next: (res) => alert(res.mensaje || 'Hora agendada correctamente'),
+    error: (err) => this.mensajeError = err.error?.mensaje || 'Error al agendar hora'
+  });
+}}

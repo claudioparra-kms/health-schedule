@@ -223,6 +223,11 @@ CREATE TABLE ingresos_invitados (
         CHECK (rut REGEXP '^[0-9]{7,8}-[0-9Kk]$')
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+ALTER TABLE ingresos_invitados
+ADD COLUMN paciente_id INT NULL,
+ADD CONSTRAINT fk_invitados_pacientes
+    FOREIGN KEY (paciente_id) REFERENCES pacientes(id);
+
 -- ============================================================
 -- 11) DATOS DE PRUEBA VÁLIDOS
 -- Contraseñas mín. 8 caracteres para pasar restricciones del frontend.
