@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "je+7Hu6mKWY=",
+  "dgSpecHash": "/74gMTtl1JU=",
   "success": true,
-  "projectFilePath": "C:\\users\\guta\\music\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+  "projectFilePath": "C:\\Users\\Guta\\Music\\health-schedule\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Guta\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.7\\microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
     "C:\\Users\\Guta\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",

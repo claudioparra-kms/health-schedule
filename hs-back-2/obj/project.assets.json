@@ -166,11 +166,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Guta\\Music\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+      "projectUniqueName": "C:\\Users\\Guta\\Music\\health-schedule\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
       "projectName": "proyecto-ids-api",
-      "projectPath": "C:\\Users\\Guta\\Music\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+      "projectPath": "C:\\Users\\Guta\\Music\\health-schedule\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
       "packagesPath": "C:\\Users\\Guta\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Guta\\Music\\health-schedule\\hs-back-2\\obj\\",
+      "outputPath": "C:\\Users\\Guta\\Music\\health-schedule\\health-schedule\\hs-back-2\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Guta\\AppData\\Roaming\\NuGet\\NuGet.Config"
