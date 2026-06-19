@@ -50,10 +50,9 @@ export class Login {
       password: this.password
     }).subscribe({
       next: (data) => {
-        // Limpiar sesión anterior
+  
         localStorage.clear();
 
-        // Guardar datos individuales
         localStorage.setItem('id',          data.id?.toString() ?? '');
         localStorage.setItem('rol',        data.rol);
         localStorage.setItem('nombre',     data.nombre);
@@ -81,10 +80,10 @@ export class Login {
       rut: this.rutInvitado
     }).subscribe({
       next: (data) => {
-        // Limpiar sesión anterior
+
         localStorage.clear();
 
-        // Guardar datos del invitado
+
         localStorage.setItem('rol',         'invitado');
         localStorage.setItem('nombre',      'Invitado');
         localStorage.setItem('rut',         this.rutInvitado);

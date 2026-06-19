@@ -25,7 +25,8 @@ export class Agenda {
   esInvitado = false;
 
   constructor(private http:HttpClient, private router:Router){
-    this.usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    const pacienteId = localStorage.getItem('paciente_id');
+    if (pacienteId) this.pacienteId = Number(pacienteId);
     this.esInvitado = this.usuario?.rol === 'invitado';
 
     if(this.usuario?.pacienteId){
