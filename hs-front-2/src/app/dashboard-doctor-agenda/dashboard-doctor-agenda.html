@@ -1,0 +1,60 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-doctor">
+      <span class="hs-logo-mark">H&amp;S</span>
+      <span class="hs-logo-text"><strong>Doctor</strong><span>Panel clínico</span></span>
+    </a>
+
+    <nav class="side-nav">
+      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
+      <a class="side-link active" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
+      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
+      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
+      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
+      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div>
+        <h1>Agenda del día</h1>
+        <p>Revisa las atenciones programadas y prioriza las citas pendientes de confirmación.</p>
+      </div>
+      <a class="hs-btn" routerLink="/dashboard-doctor/atencion">Registrar atención</a>
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat-card"><span>Citas hoy</span><strong>6</strong></div>
+      <div class="stat-card"><span>Confirmadas</span><strong>4</strong></div>
+      <div class="stat-card"><span>Pendientes</span><strong>2</strong></div>
+      <div class="stat-card"><span>Bloques libres</span><strong>3</strong></div>
+    </section>
+
+    <section class="table-panel">
+      <h2>Atenciones programadas</h2>
+      <table class="table">
+        <tr><th>Hora</th><th>Paciente</th><th>Área</th><th>Motivo</th><th>Estado</th><th>Acción sugerida</th></tr>
+        <tr><td>10:00</td><td>Juan Pérez</td><td>Nutrición</td><td>Control alimentario</td><td><span class="badge">Confirmada</span></td><td>Preparar ficha</td></tr>
+        <tr><td>11:30</td><td>Diego Morales</td><td>Salud mental</td><td>Primera evaluación</td><td><span class="badge">Pendiente</span></td><td>Confirmar asistencia</td></tr>
+        <tr><td>13:00</td><td>María Soto</td><td>Salud mental</td><td>Seguimiento psicológico</td><td><span class="badge">Pendiente</span></td><td>Revisar evolución previa</td></tr>
+        <tr><td>16:00</td><td>Camila Rojas</td><td>Nutrición</td><td>Evaluación de progreso</td><td><span class="badge">Confirmada</span></td><td>Registrar evolución</td></tr>
+      </table>
+    </section>
+
+    <section class="panel-grid">
+      <div class="content-card">
+        <h2>Bloques disponibles</h2>
+        <div class="time-grid">
+          <button class="time-btn" type="button">09:00</button>
+          <button class="time-btn" type="button">14:30</button>
+          <button class="time-btn" type="button">17:30</button>
+        </div>
+      </div>
+      <div class="content-card">
+        <h2>Recordatorio clínico</h2>
+        <p class="doctor-note">Antes de cada atención, revisa antecedentes, alergias, última evolución y motivo de consulta. H&S centraliza esta información para nutrición y salud mental.</p>
+      </div>
+    </section>
+  </main>
+</div>

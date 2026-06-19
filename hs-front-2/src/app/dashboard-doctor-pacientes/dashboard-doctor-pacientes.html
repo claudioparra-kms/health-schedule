@@ -1,0 +1,53 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-doctor">
+      <span class="hs-logo-mark">H&amp;S</span>
+      <span class="hs-logo-text"><strong>Doctor</strong><span>Pacientes</span></span>
+    </a>
+
+    <nav class="side-nav">
+      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
+      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
+      <a class="side-link active" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
+      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
+      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
+      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div>
+        <h1>Pacientes asignados</h1>
+        <p>Consulta pacientes activos, controles pendientes y el avance de cada tratamiento.</p>
+      </div>
+      <a class="hs-btn" routerLink="/dashboard-doctor/fichas">Ver fichas clínicas</a>
+    </div>
+
+    <section class="stats-grid">
+      <div class="stat-card"><span>Pacientes activos</span><strong>24</strong></div>
+      <div class="stat-card"><span>Nutrición</span><strong>14</strong></div>
+      <div class="stat-card"><span>Salud mental</span><strong>10</strong></div>
+      <div class="stat-card"><span>Controles pendientes</span><strong>5</strong></div>
+    </section>
+
+    <section class="table-panel">
+      <h2>Listado de seguimiento</h2>
+      <table class="table">
+        <tr><th>Paciente</th><th>RUT</th><th>Área</th><th>Teléfono</th><th>Última atención</th><th>Próximo control</th></tr>
+        <tr><td>Juan Pérez</td><td>21667001-6</td><td>Nutrición</td><td>+56 9 8727 1476</td><td>Control alimentario</td><td>26/05 · 10:00</td></tr>
+        <tr><td>María Soto</td><td>19876543-2</td><td>Salud mental</td><td>+56 9 4455 2211</td><td>Seguimiento psicológico</td><td>26/05 · 13:00</td></tr>
+        <tr><td>Camila Rojas</td><td>18765432-1</td><td>Nutrición</td><td>+56 9 9988 7766</td><td>Evaluación nutricional</td><td>26/05 · 16:00</td></tr>
+        <tr><td>Diego Morales</td><td>17654321-0</td><td>Salud mental</td><td>+56 9 3344 7788</td><td>Primera evaluación</td><td>Pendiente</td></tr>
+      </table>
+    </section>
+
+    <section class="content-card">
+      <h2>Gestión del paciente</h2>
+      <div class="quick-actions">
+        <a class="action-card" routerLink="/dashboard-doctor/fichas"><b>Revisar antecedentes</b><p>Consulta alergias, antecedentes y observaciones registradas.</p></a>
+        <a class="action-card" routerLink="/dashboard-doctor/atencion"><b>Registrar evolución</b><p>Agrega diagnóstico, tratamiento e indicaciones posteriores a la cita.</p></a>
+      </div>
+    </section>
+  </main>
+</div>

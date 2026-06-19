@@ -1,83 +1,151 @@
 <div class="app-shell">
   <aside class="sidebar">
-    <a class="hs-logo" routerLink="/">
+    <a class="hs-logo" routerLink="/dashboard-doctor">
       <span class="hs-logo-mark">H&S</span>
       <span class="hs-logo-text"><strong>Doctor</strong><span>Panel clínico</span></span>
     </a>
 
     <nav class="side-nav">
-      <a class="side-link active" routerLink="/dashboard-doctor">🏠 Inicio</a>
-      <a class="side-link" routerLink="/mis-citas">📅 Agenda del día</a>
-      <a class="side-link" routerLink="/ficha-clinica">📋 Fichas clínicas</a>
-      <a class="side-link" routerLink="/ficha-clinica">👥 Pacientes</a>
+      <a class="side-link active" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
+      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
+      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
+      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
+      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
       <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
     </nav>
   </aside>
 
-  <main class="main-content">
+  <main class="main-content" id="doctor-inicio">
     <div class="page-head">
       <div>
         <h1>Panel Doctor</h1>
-        <p>Revisa tu agenda, controla pacientes y registra evolución clínica.</p>
+        <p>Gestiona tu agenda, revisa pacientes y registra la evolución clínica sin salir del panel de doctor.</p>
       </div>
-      <a class="hs-btn" routerLink="/mis-citas">Ver agenda</a>
+      <a class="hs-btn" routerLink="/dashboard-doctor/agenda">Ver agenda del día</a>
     </div>
 
     <section class="stats-grid">
       <div class="stat-card"><span>Citas hoy</span><strong>6</strong></div>
-      <div class="stat-card"><span>Pendientes</span><strong>3</strong></div>
+      <div class="stat-card"><span>Por confirmar</span><strong>3</strong></div>
       <div class="stat-card"><span>Pacientes activos</span><strong>24</strong></div>
       <div class="stat-card"><span>Fichas actualizadas</span><strong>18</strong></div>
     </section>
 
     <section class="panel-grid">
       <div class="panel">
-        <h2>Acciones rápidas</h2>
+        <h2>Acciones rápidas del doctor</h2>
         <div class="quick-actions">
-          <a class="action-card" routerLink="/mis-citas">
+          <a class="action-card" routerLink="/dashboard-doctor/agenda">
             <b>Agenda del día</b>
-            <p>Consulta tus próximas atenciones y horarios ocupados.</p>
+            <p>Revisa las próximas atenciones y los horarios disponibles.</p>
           </a>
-          <a class="action-card" routerLink="/ficha-clinica">
-            <b>Buscar ficha clínica</b>
-            <p>Revisa antecedentes, evolución y atenciones del paciente.</p>
+          <a class="action-card" routerLink="/dashboard-doctor/pacientes">
+            <b>Pacientes asignados</b>
+            <p>Consulta pacientes con controles de nutrición y salud mental.</p>
           </a>
-          <a class="action-card" routerLink="/ficha-clinica">
+          <a class="action-card" routerLink="/dashboard-doctor/fichas">
+            <b>Fichas clínicas</b>
+            <p>Accede a antecedentes, diagnósticos, tratamientos y evolución.</p>
+          </a>
+          <a class="action-card" routerLink="/dashboard-doctor/atencion">
             <b>Registrar atención</b>
-            <p>Agrega diagnóstico, tratamiento y observaciones clínicas.</p>
-          </a>
-          <a class="action-card" routerLink="/mis-citas">
-            <b>Gestionar citas</b>
-            <p>Confirma, realiza o cancela atenciones programadas.</p>
+            <p>Deja observaciones clínicas después de cada consulta.</p>
           </a>
         </div>
       </div>
 
       <div class="panel">
-        <h2>Próxima atención</h2>
-        <div class="appointment">
-          <span class="badge">Confirmada</span>
-          <strong>10:00 · Juan Pérez</strong>
-          <span>Especialidad: Nutrición</span>
-          <span>Motivo: Control alimentario</span>
-        </div>
-        <div class="appointment">
-          <span class="badge">Pendiente</span>
-          <strong>13:00 · María Soto</strong>
-          <span>Especialidad: Salud mental</span>
-          <span>Motivo: Seguimiento psicológico</span>
+        <h2>Próximas atenciones</h2>
+        <div class="appointment-list">
+          <div class="appointment">
+            <span class="badge">Confirmada</span>
+            <strong>10:00 · Juan Pérez</strong>
+            <span>Nutrición · Control alimentario</span>
+          </div>
+          <div class="appointment">
+            <span class="badge">Pendiente</span>
+            <strong>13:00 · María Soto</strong>
+            <span>Salud mental · Seguimiento psicológico</span>
+          </div>
+          <div class="appointment">
+            <span class="badge">Confirmada</span>
+            <strong>16:00 · Camila Rojas</strong>
+            <span>Nutrición · Evaluación de progreso</span>
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="content-card doctor-section">
-      <h2>Resumen clínico del día</h2>
+    <section class="content-card doctor-section" id="doctor-agenda">
+      <h2>Agenda del día</h2>
       <table class="table">
-        <tr><th>Hora</th><th>Paciente</th><th>Área</th><th>Estado</th><th>Acción sugerida</th></tr>
-        <tr><td>10:00</td><td>Juan Pérez</td><td>Nutrición</td><td><span class="badge">Confirmada</span></td><td>Preparar ficha clínica</td></tr>
+        <tr><th>Hora</th><th>Paciente</th><th>Área</th><th>Estado</th><th>Acción</th></tr>
+        <tr><td>10:00</td><td>Juan Pérez</td><td>Nutrición</td><td><span class="badge">Confirmada</span></td><td>Preparar ficha</td></tr>
         <tr><td>13:00</td><td>María Soto</td><td>Salud mental</td><td><span class="badge">Pendiente</span></td><td>Confirmar asistencia</td></tr>
         <tr><td>16:00</td><td>Camila Rojas</td><td>Nutrición</td><td><span class="badge">Confirmada</span></td><td>Registrar evolución</td></tr>
       </table>
+    </section>
+
+    <section class="content-card doctor-section" id="doctor-pacientes">
+      <h2>Pacientes asignados</h2>
+      <table class="table">
+        <tr><th>Paciente</th><th>RUT</th><th>Última atención</th><th>Próximo control</th></tr>
+        <tr><td>Juan Pérez</td><td>21667001-6</td><td>Control alimentario</td><td>26 de mayo · 10:00</td></tr>
+        <tr><td>María Soto</td><td>19876543-2</td><td>Seguimiento psicológico</td><td>26 de mayo · 13:00</td></tr>
+        <tr><td>Camila Rojas</td><td>18765432-1</td><td>Evaluación nutricional</td><td>26 de mayo · 16:00</td></tr>
+      </table>
+    </section>
+
+    <section class="content-card doctor-section" id="doctor-fichas">
+      <h2>Fichas clínicas recientes</h2>
+      <div class="quick-actions">
+        <div class="action-card">
+          <b>Juan Pérez</b>
+          <p>Antecedentes: control nutricional. Última evolución pendiente de actualización.</p>
+        </div>
+        <div class="action-card">
+          <b>María Soto</b>
+          <p>Área: salud mental. Seguimiento activo y registro de observaciones clínicas.</p>
+        </div>
+        <div class="action-card">
+          <b>Camila Rojas</b>
+          <p>Área: nutrición. Revisión de progreso y adherencia al tratamiento.</p>
+        </div>
+        <div class="action-card">
+          <b>Buscar ficha</b>
+          <p>Consulta por nombre, RUT o fecha de atención dentro del sistema H&S.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-card doctor-section" id="doctor-atencion">
+      <h2>Registrar atención clínica</h2>
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Paciente</label>
+          <input class="form-control" value="Juan Pérez">
+        </div>
+        <div class="form-group">
+          <label>Área</label>
+          <select class="form-control">
+            <option>Nutrición</option>
+            <option>Salud mental</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label>Observaciones</label>
+          <textarea class="form-control" rows="4" placeholder="Escribe la evolución, diagnóstico o indicaciones entregadas al paciente."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tratamiento / indicaciones</label>
+          <input class="form-control" placeholder="Ej: plan alimentario, control psicológico, etc.">
+        </div>
+        <div class="form-group">
+          <label>Próximo control</label>
+          <input class="form-control" type="date">
+        </div>
+      </div>
+      <button class="hs-btn" type="button">Guardar atención</button>
     </section>
   </main>
 </div>

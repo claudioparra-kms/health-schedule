@@ -1,0 +1,4 @@
+/* Estilos específicos del subpanel doctor.
+   La mayoría del diseño viene desde src/styles.css para mantener consistencia. */
+.status-soft { background:#e8f6fb; color:#0b83bd; }
+.doctor-note { color:#647789; line-height:1.6; }

@@ -171,3 +171,17 @@ button { cursor: pointer; }
   margin: 0 0 18px;
   font-size: 24px;
 }
+
+
+/* Dashboard doctor: navegación interna exclusiva */
+html {
+  scroll-behavior: smooth;
+}
+.doctor-section {
+  scroll-margin-top: 24px;
+}
+textarea.form-control {
+  min-height: 120px;
+  padding-top: 14px;
+  resize: vertical;
+}

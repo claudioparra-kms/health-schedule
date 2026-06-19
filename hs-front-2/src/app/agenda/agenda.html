@@ -1,43 +1,74 @@
 <div class="app-shell">
-    <aside class="sidebar"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span
-                class="hs-logo-text"><strong>Agenda</strong><span>Reservar hora</span></span></a>
-        <nav class="side-nav"><a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a><a
-                class="side-link active" routerLink="/agenda">📅 Agendar</a><a class="side-link"
-                routerLink="/mis-citas">🕘 Mis citas</a><a class="side-link" routerLink="/ficha-clinica">📋 Ficha
-                clínica</a></nav>
-    </aside>
-    <main class="main-content">
-        <div class="page-head">
-            <div>
-                <h1>Agendar hora</h1>
-                <p>Selecciona especialidad, profesional y horario disponible.</p>
-            </div>
+  <aside class="sidebar">
+    <a class="hs-logo" (click)="volverInicio()" style="cursor:pointer">
+      <span class="hs-logo-mark">H&S</span>
+      <span class="hs-logo-text">
+        <strong>Agenda</strong>
+        <span>{{ esInvitado ? 'Agenda invitado' : 'Reservar hora' }}</span>
+      </span>
+    </a>
+
+    <nav class="side-nav">
+      <a class="side-link" (click)="volverInicio()" style="cursor:pointer">🏠 Inicio</a>
+      <a class="side-link active" routerLink="/agenda">📅 Agendar</a>
+      <a class="side-link" *ngIf="!esInvitado" routerLink="/mis-citas">🕘 Mis citas</a>
+      <a class="side-link" *ngIf="!esInvitado" routerLink="/ficha-clinica">📋 Ficha clínica</a>
+      <a class="side-link" *ngIf="esInvitado" routerLink="/registro-paciente">📝 Crear cuenta</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div>
+        <h1>Agendar hora</h1>
+        <p *ngIf="!esInvitado">Selecciona especialidad, profesional y horario disponible.</p>
+        <p *ngIf="esInvitado">Puedes solicitar una atención como invitado. Para ver ficha clínica, mis citas o modificar datos debes crear una cuenta.</p>
+      </div>
+    </div>
+
+    <div class="content-card">
+      <form (ngSubmit)="agendar()" class="form-grid">
+        <div class="form-group">
+          <label>Especialidad</label>
+          <select class="form-control" [(ngModel)]="especialidad" name="especialidad">
+            <option value="">Seleccione especialidad</option>
+            <option value="Nutrición">Nutrición</option>
+            <option value="Psicología">Psicología</option>
+          </select>
         </div>
-        <div class="content-card">
-            <form (ngSubmit)="agendar()" class="form-grid">
-                <div class="form-group"><label>Especialidad</label><select class="form-control"
-                        [(ngModel)]="especialidad" name="especialidad">
-                        <option value="">Seleccione especialidad</option>
-                        <option value="Nutrición">Nutrición</option>
-                        <option value="Psicología">Psicología</option>
-                    </select></div>
-                <div class="form-group"><label>Profesional</label><select class="form-control" [(ngModel)]="doctorId"
-                        name="doctorId">
-                        <option [ngValue]="0">Seleccione profesional</option>
-                        <option [ngValue]="1">Profesional 1</option>
-                        <option [ngValue]="2">Profesional 2</option>
-                    </select></div>
-                <div class="form-group"><label>Fecha</label><input class="form-control" type="date" [(ngModel)]="fecha"
-                        name="fecha"></div>
-                <div class="form-group"><label>Motivo</label><input class="form-control" [(ngModel)]="motivo"
-                        name="motivo" placeholder="Motivo de consulta"></div>
-                <div class="form-group full"><label>Horario</label>
-                    <div class="time-grid"><button type="button" class="time-btn" *ngFor="let h of horarios"
-                            [class.active]="hora===h" (click)="hora=h">{{h}}</button></div>
-                </div>
-                <p class="form-error full" *ngIf="mensajeError">{{mensajeError}}</p>
-                <div class="full"><button class="hs-btn" type="submit">Confirmar hora</button></div>
-            </form>
+
+        <div class="form-group">
+          <label>Profesional</label>
+          <select class="form-control" [(ngModel)]="doctorId" name="doctorId">
+            <option [ngValue]="0">Seleccione profesional</option>
+            <option [ngValue]="1">Profesional 1</option>
+            <option [ngValue]="2">Profesional 2</option>
+          </select>
         </div>
-    </main>
+
+        <div class="form-group">
+          <label>Fecha</label>
+          <input class="form-control" type="date" [(ngModel)]="fecha" name="fecha">
+        </div>
+
+        <div class="form-group">
+          <label>Motivo</label>
+          <input class="form-control" [(ngModel)]="motivo" name="motivo" placeholder="Motivo de consulta">
+        </div>
+
+        <div class="form-group full">
+          <label>Horario</label>
+          <div class="time-grid">
+            <button type="button" class="time-btn" *ngFor="let h of horarios" [class.active]="hora===h" (click)="hora=h">{{h}}</button>
+          </div>
+        </div>
+
+        <p class="form-error full" *ngIf="mensajeError">{{mensajeError}}</p>
+
+        <div class="full">
+          <button class="hs-btn" type="submit">Confirmar hora</button>
+        </div>
+      </form>
+    </div>
+  </main>
 </div>

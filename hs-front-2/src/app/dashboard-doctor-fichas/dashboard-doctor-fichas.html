@@ -1,0 +1,57 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-doctor">
+      <span class="hs-logo-mark">H&amp;S</span>
+      <span class="hs-logo-text"><strong>Doctor</strong><span>Fichas</span></span>
+    </a>
+
+    <nav class="side-nav">
+      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
+      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
+      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
+      <a class="side-link active" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
+      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
+      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div>
+        <h1>Fichas clínicas</h1>
+        <p>Accede a antecedentes, tratamientos, evolución y observaciones clínicas.</p>
+      </div>
+      <a class="hs-btn" routerLink="/dashboard-doctor/atencion">Nueva atención</a>
+    </div>
+
+    <section class="panel-grid">
+      <div class="content-card">
+        <h2>Juan Pérez</h2>
+        <table class="table">
+          <tr><th>Área</th><td>Nutrición</td></tr>
+          <tr><th>Alergias</th><td>Sin alergias declaradas</td></tr>
+          <tr><th>Antecedentes</th><td>Control de peso y alimentación.</td></tr>
+          <tr><th>Última evolución</th><td>Mejora adherencia al plan alimentario.</td></tr>
+        </table>
+      </div>
+
+      <div class="content-card">
+        <h2>María Soto</h2>
+        <table class="table">
+          <tr><th>Área</th><td>Salud mental</td></tr>
+          <tr><th>Alergias</th><td>No registra</td></tr>
+          <tr><th>Antecedentes</th><td>Seguimiento psicológico mensual.</td></tr>
+          <tr><th>Última evolución</th><td>Paciente mantiene controles activos.</td></tr>
+        </table>
+      </div>
+    </section>
+
+    <section class="content-card">
+      <h2>Últimas actualizaciones</h2>
+      <div class="appointment-list">
+        <div class="appointment"><span class="badge">Actualizada</span><strong>Camila Rojas</strong><span>Evaluación nutricional con indicaciones de progreso.</span></div>
+        <div class="appointment"><span class="badge">Pendiente</span><strong>Diego Morales</strong><span>Ficha creada, falta completar primera atención.</span></div>
+      </div>
+    </section>
+  </main>
+</div>

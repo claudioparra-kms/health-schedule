@@ -1,0 +1,87 @@
+<div class="app-shell">
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-doctor">
+      <span class="hs-logo-mark">H&amp;S</span>
+      <span class="hs-logo-text"><strong>Doctor</strong><span>Atención</span></span>
+    </a>
+
+    <nav class="side-nav">
+      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
+      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
+      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
+      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
+      <a class="side-link active" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
+      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div>
+        <h1>Registrar atención</h1>
+        <p>Registra la evolución clínica y las indicaciones entregadas al paciente.</p>
+      </div>
+    </div>
+
+    <section class="content-card">
+      <form class="form-grid">
+        <div class="form-group">
+          <label>Paciente</label>
+          <select class="form-control">
+            <option>Seleccione paciente</option>
+            <option>Juan Pérez</option>
+            <option>María Soto</option>
+            <option>Camila Rojas</option>
+            <option>Diego Morales</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Área de atención</label>
+          <select class="form-control">
+            <option>Nutrición</option>
+            <option>Salud mental</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha de atención</label>
+          <input class="form-control" type="date">
+        </div>
+
+        <div class="form-group">
+          <label>Motivo / diagnóstico</label>
+          <input class="form-control" placeholder="Ej: control alimentario, seguimiento psicológico">
+        </div>
+
+        <div class="form-group full">
+          <label>Observaciones clínicas</label>
+          <textarea class="form-control" rows="5" placeholder="Describe evolución, antecedentes relevantes y respuesta del paciente."></textarea>
+        </div>
+
+        <div class="form-group full">
+          <label>Tratamiento e indicaciones</label>
+          <textarea class="form-control" rows="4" placeholder="Ej: plan alimentario, ejercicios, seguimiento o recomendaciones."></textarea>
+        </div>
+
+        <div class="form-group">
+          <label>Próximo control</label>
+          <input class="form-control" type="date">
+        </div>
+
+        <div class="form-group">
+          <label>Estado de atención</label>
+          <select class="form-control">
+            <option>Completada</option>
+            <option>Requiere seguimiento</option>
+            <option>Derivación sugerida</option>
+          </select>
+        </div>
+
+        <div class="full">
+          <button class="hs-btn" type="button">Guardar atención</button>
+        </div>
+      </form>
+    </section>
+  </main>
+</div>
