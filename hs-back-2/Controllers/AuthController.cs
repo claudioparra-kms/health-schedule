@@ -25,7 +25,7 @@ namespace proyecto_ids_api.Controllers
                 conn.Open();
 
                 string sql = @"
-                    SELECT u.id, u.nombre, u.rut, u.rol_id, r.nombre AS rol,
+                    SELECT u.id, u.nombre, u.rut, u.correo, u.rol_id, r.nombre AS rol,
                     p.id AS paciente_id, d.id AS doctor_id
                     FROM usuarios u
                     INNER JOIN roles r ON u.rol_id = r.id
@@ -51,6 +51,7 @@ namespace proyecto_ids_api.Controllers
                     id = reader["id"],
                     nombre = reader["nombre"],
                     rut = reader["rut"],
+                    correo = reader["correo"] == DBNull.Value ? null : reader["correo"],
                     rol_id = reader["rol_id"],
                     rol = reader["rol"],
                     paciente_id = reader["paciente_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["paciente_id"]),
@@ -211,6 +212,149 @@ namespace proyecto_ids_api.Controllers
                 Console.WriteLine($"Error en Registro: {ex.Message}");
                 return StatusCode(500, new { mensaje = "Error al registrar usuario" });
             }
+        }
+
+        [HttpPost("RecuperarPassword")]
+        public IActionResult RecuperarPassword([FromBody] RecuperarPasswordModel model)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(model.RutOCorreo))
+                {
+                    return BadRequest(new { mensaje = "Debe ingresar su RUT o correo." });
+                }
+
+                using var conn = new MySqlConnection(_connectionString);
+                conn.Open();
+
+                string sqlBuscar = @"
+                    SELECT id FROM usuarios
+                    WHERE rut = @valor OR correo = @valor;
+                ";
+
+                using var cmdBuscar = new MySqlCommand(sqlBuscar, conn);
+                cmdBuscar.Parameters.AddWithValue("@valor", model.RutOCorreo.Trim());
+
+                var idObj = cmdBuscar.ExecuteScalar();
+
+                if (idObj == null)
+                {
+                    return NotFound(new { mensaje = "No se encontró una cuenta con ese RUT o correo." });
+                }
+
+                int usuarioId = Convert.ToInt32(idObj);
+
+                // Genera una contraseña temporal de 10 caracteres (letras + números)
+                string passwordTemporal = GenerarPasswordTemporal(10);
+
+                string sqlActualizar = @"
+                    UPDATE usuarios
+                    SET password_hash = @password
+                    WHERE id = @id;
+                ";
+
+                using var cmdActualizar = new MySqlCommand(sqlActualizar, conn);
+                cmdActualizar.Parameters.AddWithValue("@password", passwordTemporal);
+                cmdActualizar.Parameters.AddWithValue("@id", usuarioId);
+                cmdActualizar.ExecuteNonQuery();
+
+                return Ok(new
+                {
+                    mensaje = "Contraseña temporal generada correctamente.",
+                    passwordTemporal = passwordTemporal
+                });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en RecuperarPassword: {ex.Message}");
+                return StatusCode(500, new { mensaje = "Error interno del servidor" });
+            }
+        }
+
+        [HttpPut("ActualizarPerfil")]
+        public IActionResult ActualizarPerfil([FromBody] ActualizarPerfilModel model)
+        {
+            try
+            {
+                if (model.UsuarioId <= 0)
+                {
+                    return BadRequest(new { mensaje = "Usuario inválido." });
+                }
+
+                if (string.IsNullOrWhiteSpace(model.Correo))
+                {
+                    return BadRequest(new { mensaje = "El correo es obligatorio." });
+                }
+
+                using var conn = new MySqlConnection(_connectionString);
+                conn.Open();
+                using var transaction = conn.BeginTransaction();
+
+                // Actualiza correo y teléfono siempre; password solo si viene informado
+                string sqlUsuario = @"
+                    UPDATE usuarios
+                    SET correo = @correo,
+                        telefono = @telefono
+                        " + (string.IsNullOrWhiteSpace(model.Password) ? "" : ", password_hash = @password") + @"
+                    WHERE id = @usuarioId;
+                ";
+
+                using var cmdUsuario = new MySqlCommand(sqlUsuario, conn, transaction);
+                cmdUsuario.Parameters.AddWithValue("@correo", model.Correo.Trim());
+                cmdUsuario.Parameters.AddWithValue("@telefono", string.IsNullOrWhiteSpace(model.Telefono) ? DBNull.Value : model.Telefono.Trim());
+                if (!string.IsNullOrWhiteSpace(model.Password))
+                {
+                    cmdUsuario.Parameters.AddWithValue("@password", model.Password);
+                }
+                cmdUsuario.Parameters.AddWithValue("@usuarioId", model.UsuarioId);
+
+                int filasUsuario = cmdUsuario.ExecuteNonQuery();
+
+                if (filasUsuario == 0)
+                {
+                    transaction.Rollback();
+                    return NotFound(new { mensaje = "Usuario no encontrado." });
+                }
+
+                // Actualiza datos propios del paciente (dirección, fecha de nacimiento)
+                string sqlPaciente = @"
+                    UPDATE pacientes
+                    SET direccion = @direccion,
+                        fecha_nacimiento = @fechaNacimiento
+                    WHERE usuario_id = @usuarioId;
+                ";
+
+                using var cmdPaciente = new MySqlCommand(sqlPaciente, conn, transaction);
+                cmdPaciente.Parameters.AddWithValue("@direccion", string.IsNullOrWhiteSpace(model.Direccion) ? DBNull.Value : model.Direccion.Trim());
+                cmdPaciente.Parameters.AddWithValue("@fechaNacimiento", model.FechaNacimiento.HasValue ? (object)model.FechaNacimiento.Value : DBNull.Value);
+                cmdPaciente.Parameters.AddWithValue("@usuarioId", model.UsuarioId);
+
+                cmdPaciente.ExecuteNonQuery();
+
+                transaction.Commit();
+
+                return Ok(new { mensaje = "Datos actualizados correctamente" });
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error en ActualizarPerfil: {ex.Message}");
+                return StatusCode(500, new { mensaje = "Error al actualizar los datos" });
+            }
+        }
+
+        private static string GenerarPasswordTemporal(int longitud)
+        {
+            const string caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+            var bytes = new byte[longitud];
+            System.Security.Cryptography.RandomNumberGenerator.Fill(bytes);
+
+            var resultado = new char[longitud];
+            for (int i = 0; i < longitud; i++)
+            {
+                resultado[i] = caracteres[bytes[i] % caracteres.Length];
+            }
+
+            return new string(resultado);
         }
     }
 }

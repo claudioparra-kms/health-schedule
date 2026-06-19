@@ -30,13 +30,10 @@ export class MisCitas implements OnInit {
   this.http.get<any[]>(`http://localhost:5220/Citas/Paciente/${pacienteId}`)
     .subscribe({
       next: (data) => {
-        console.log('Respuesta del backend:', data);
         this.citas = data;
         this.cargando = false;
-        console.log("cargando ahora es", this.cargando);
       },
       error: (err) => {
-        console.log('Error del backend:', err);
         this.mensajeError = 'Error al cargar las citas.';
         this.cargando = false;
       }

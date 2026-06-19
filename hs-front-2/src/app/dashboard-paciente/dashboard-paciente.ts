@@ -1,4 +1,38 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterLink } from '@angular/router';
-@Component({selector:'app-dashboard-paciente', standalone:true, imports:[RouterLink], templateUrl:'./dashboard-paciente.html', styleUrls:['./dashboard-paciente.css']})
-export class DashboardPaciente { usuario:any = JSON.parse(localStorage.getItem('usuario') || '{}'); }
+import { HttpClient } from '@angular/common/http';
+import { CommonModule } from '@angular/common';
+
+@Component({
+  selector: 'app-dashboard-paciente',
+  standalone: true,
+  imports: [RouterLink, CommonModule],
+  templateUrl: './dashboard-paciente.html',
+  styleUrls: ['./dashboard-paciente.css']
+})
+export class DashboardPaciente implements OnInit {
+  nombre = localStorage.getItem('nombre') || 'Paciente';
+  citas: any[] = [];
+
+  constructor(private http: HttpClient) {}
+
+  ngOnInit() {
+    const pacienteId = localStorage.getItem('paciente_id');
+    if (!pacienteId) return;
+
+    this.http.get<any[]>(`http://localhost:5220/Citas/Paciente/${pacienteId}`)
+      .subscribe({
+        next: (data) => this.citas = data,
+        error: (err) => console.log('Error al cargar citas:', err)
+      });
+  }
+
+  get citasProximas(): number {
+    const ahora = new Date();
+    return this.citas.filter(c =>
+      new Date(c.fechaInicio) >= ahora &&
+      c.estado !== 'cancelada' &&
+      c.estado !== 'no_asiste'
+    ).length;
+  }
+}

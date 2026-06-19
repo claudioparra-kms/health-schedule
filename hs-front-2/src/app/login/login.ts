@@ -54,9 +54,11 @@ export class Login {
         localStorage.clear();
 
         // Guardar datos individuales
+        localStorage.setItem('id',          data.id?.toString() ?? '');
         localStorage.setItem('rol',        data.rol);
         localStorage.setItem('nombre',     data.nombre);
         localStorage.setItem('rut',        data.rut);
+        localStorage.setItem('correo',     data.correo ?? '');
         localStorage.setItem('paciente_id', data.paciente_id?.toString() ?? '');
         localStorage.setItem('doctor_id',   data.doctor_id?.toString() ?? '');
 
