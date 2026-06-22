@@ -12,6 +12,7 @@ export class ModificarPerfil {
   direccion = '';
   password = '';
   fechaNacimiento = '';
+  edad = '';
   mensaje = '';
 
   constructor(private http: HttpClient) {}
@@ -25,13 +26,14 @@ export class ModificarPerfil {
       telefono: this.telefono,
       direccion: this.direccion,
       password: this.password,
-      fechaNacimiento: this.fechaNacimiento || null
+      fechaNacimiento: this.fechaNacimiento || null,
+      edad: this.edad || null,
     }).subscribe({
       next: (r) => {
         this.mensaje = r.mensaje || 'Datos actualizados';
-        // Mantener el correo actualizado en localStorage
+      
         localStorage.setItem('correo', this.correo);
-        // Limpiar el campo contraseña tras guardar
+        localStorage.setItem('edad', this.edad);
         this.password = '';
       },
       error: (e) => this.mensaje = e.error?.mensaje || 'Error al actualizar'

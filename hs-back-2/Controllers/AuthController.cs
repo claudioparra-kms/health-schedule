@@ -26,7 +26,7 @@ namespace proyecto_ids_api.Controllers
 
                 string sql = @"
                     SELECT u.id, u.nombre, u.rut, u.correo, u.rol_id, r.nombre AS rol,
-                    p.id AS paciente_id, d.id AS doctor_id
+                    p.id AS paciente_id, d.id AS doctor_id, p.edad AS edad
                     FROM usuarios u
                     INNER JOIN roles r ON u.rol_id = r.id
                     LEFT JOIN pacientes p ON p.usuario_id = u.id
@@ -51,9 +51,11 @@ namespace proyecto_ids_api.Controllers
                     id = reader["id"],
                     nombre = reader["nombre"],
                     rut = reader["rut"],
+                  
                     correo = reader["correo"] == DBNull.Value ? null : reader["correo"],
                     rol_id = reader["rol_id"],
                     rol = reader["rol"],
+                    edad = reader["edad"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["edad"]),
                     paciente_id = reader["paciente_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["paciente_id"]),
                     doctor_id = reader["doctor_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["doctor_id"])
                 });
@@ -290,11 +292,11 @@ namespace proyecto_ids_api.Controllers
                 conn.Open();
                 using var transaction = conn.BeginTransaction();
 
-                // Actualiza correo y teléfono siempre; password solo si viene informado
                 string sqlUsuario = @"
                     UPDATE usuarios
                     SET correo = @correo,
-                        telefono = @telefono
+                        telefono = @telefono,
+                        edad = @edad
                         " + (string.IsNullOrWhiteSpace(model.Password) ? "" : ", password_hash = @password") + @"
                     WHERE id = @usuarioId;
                 ";
@@ -302,11 +304,13 @@ namespace proyecto_ids_api.Controllers
                 using var cmdUsuario = new MySqlCommand(sqlUsuario, conn, transaction);
                 cmdUsuario.Parameters.AddWithValue("@correo", model.Correo.Trim());
                 cmdUsuario.Parameters.AddWithValue("@telefono", string.IsNullOrWhiteSpace(model.Telefono) ? DBNull.Value : model.Telefono.Trim());
+            
                 if (!string.IsNullOrWhiteSpace(model.Password))
                 {
                     cmdUsuario.Parameters.AddWithValue("@password", model.Password);
                 }
                 cmdUsuario.Parameters.AddWithValue("@usuarioId", model.UsuarioId);
+                
 
                 int filasUsuario = cmdUsuario.ExecuteNonQuery();
 
@@ -320,13 +324,15 @@ namespace proyecto_ids_api.Controllers
                 string sqlPaciente = @"
                     UPDATE pacientes
                     SET direccion = @direccion,
-                        fecha_nacimiento = @fechaNacimiento
+                        fecha_nacimiento = @fechaNacimiento,
+                        edad = @edad
                     WHERE usuario_id = @usuarioId;
                 ";
 
                 using var cmdPaciente = new MySqlCommand(sqlPaciente, conn, transaction);
                 cmdPaciente.Parameters.AddWithValue("@direccion", string.IsNullOrWhiteSpace(model.Direccion) ? DBNull.Value : model.Direccion.Trim());
                 cmdPaciente.Parameters.AddWithValue("@fechaNacimiento", model.FechaNacimiento.HasValue ? (object)model.FechaNacimiento.Value : DBNull.Value);
+            
                 cmdPaciente.Parameters.AddWithValue("@usuarioId", model.UsuarioId);
 
                 cmdPaciente.ExecuteNonQuery();

@@ -70,6 +70,7 @@ CREATE TABLE pacientes (
     prevision VARCHAR(50),
     alergias TEXT,
     antecedentes TEXT,
+    edad INT NOT NULL DEFAULT 50,
 
     CONSTRAINT fk_pacientes_usuarios
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)

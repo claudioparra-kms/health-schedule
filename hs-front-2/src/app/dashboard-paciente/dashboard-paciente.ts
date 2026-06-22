@@ -36,6 +36,11 @@ export class DashboardPaciente implements OnInit {
     ).length;
   }
 
+  get edad(): string {
+    const edad = localStorage.getItem('edad');
+    return edad ? edad : 'N/A';
+  }
+
   get nextAppointment(): any | null {
     const ahora = new Date();
     const proximas = this.citas

@@ -60,6 +60,7 @@ export class Login {
         localStorage.setItem('correo',     data.correo ?? '');
         localStorage.setItem('paciente_id', data.paciente_id?.toString() ?? '');
         localStorage.setItem('doctor_id',   data.doctor_id?.toString() ?? '');
+        localStorage.setItem('edad',        data.edad?.toString() ?? '');
 
         if (data.rol === 'admin')    this.router.navigate(['/dashboard-admin']);
         else if (data.rol === 'doctor')   this.router.navigate(['/dashboard-doctor']);
