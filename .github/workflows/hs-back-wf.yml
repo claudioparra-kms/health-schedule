@@ -22,7 +22,7 @@ jobs:
     env:
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
-      PROJECT_DIR: DotnetBestPractices
+      PROJECT_DIR: hs-back-2
     steps:
       - name: "Checkout del código fuente"
         uses: actions/checkout@v4
