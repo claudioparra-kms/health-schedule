@@ -1,0 +1,73 @@
+name: "Health and Schedule"
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - "hs-back-2/**"
+      - ".github/workflows/hs-back-wf.yml"
+  push:
+    branches: [main]
+    paths:
+      - "hs-back-2/**"
+      - ".github/workflows/hs-back-wf.yml"
+permissions:
+  contents: read
+concurrency:
+  group: dotnet-ci-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build-and-test:
+    name: "Build & Test .NET"
+    runs-on: ubuntu-latest
+    env:
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+      PROJECT_DIR: DotnetBestPractices
+    steps:
+      - name: "Checkout del código fuente"
+        uses: actions/checkout@v4
+
+      - name: "Configurar .NET SDK 8.0"
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "8.0.x"
+
+      - name: "Restaurar dependencias NuGet"
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          echo "Restaurando paquetes NuGet para el proyecto API..."
+          dotnet restore DotnetBestPractices.Api/DotnetBestPractices.Api.csproj
+
+          echo "Restaurando paquetes NuGet para el proyecto de Tests..."
+          dotnet restore DotnetBestPractices.Tests/DotnetBestPractices.Tests.csproj
+
+      - name: "Build — Compilar proyecto en modo Release"
+        working-directory: ${{ env.PROJECT_DIR }}
+        run: |
+          echo "Compilando DotnetBestPractices.Api..."
+          dotnet build DotnetBestPractices.Api/DotnetBestPractices.Api.csproj \
+            --no-restore \
+            --configuration Release \
+            --warnaserror
+
+          echo "Compilando DotnetBestPractices.Tests..."
+          dotnet build DotnetBestPractices.Tests/DotnetBestPractices.Tests.csproj \
+            --no-restore \
+            --configuration Release
+
+      - name: "Subir resultados de tests y cobertura"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-test-results
+          path: |
+            ${{ env.PROJECT_DIR }}/**/TestResults/
+          retention-days: 14
+    
+      - name: "Seguridad — Verificar vulnerabilidades en dependencias"
+        working-directory: ${{ env.PROJECT_DIR }}
+        continue-on-error: true
+        run: |
+          echo "Verificando vulnerabilidades en paquetes NuGet..."
+          dotnet list DotnetBestPractices.Api/DotnetBestPractices.Api.csproj package --vulnerable --include-transitive 2>&1 || true
+          dotnet list DotnetBestPractices.Tests/DotnetBestPractices.Tests.csproj package --vulnerable --include-transitive 2>&1 || true

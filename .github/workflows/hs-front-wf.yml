@@ -21,7 +21,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        node-version: [10.x]
+        node-version: [22]
     steps:
       - name: "Checkout del código fuente"
         uses: actions/checkout@v4
