@@ -36,10 +36,7 @@ jobs:
         working-directory: ${{ env.PROJECT_DIR }}
         run: |
           echo "Restaurando paquetes NuGet para el proyecto API..."
-          dotnet restore DotnetBestPractices.Api/DotnetBestPractices.Api.csproj
-
-          echo "Restaurando paquetes NuGet para el proyecto de Tests..."
-          dotnet restore DotnetBestPractices.Tests/DotnetBestPractices.Tests.csproj
+          dotnet restore hs-back-2/proyecto-ids-api.csproj
 
       - name: "Build — Compilar proyecto en modo Release"
         working-directory: ${{ env.PROJECT_DIR }}
