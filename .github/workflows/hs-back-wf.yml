@@ -41,18 +41,13 @@ jobs:
       - name: "Build — Compilar proyecto en modo Release"
         working-directory: ${{ env.PROJECT_DIR }}
         run: |
-          echo "Compilando DotnetBestPractices.Api..."
-          dotnet build DotnetBestPractices.Api/DotnetBestPractices.Api.csproj \
+          echo "Compilando Do.Api..."
+          dotnet build hs-back-2/proyecto-ids-api.csproj \
             --no-restore \
             --configuration Release \
             --warnaserror
 
-          echo "Compilando DotnetBestPractices.Tests..."
-          dotnet build DotnetBestPractices.Tests/DotnetBestPractices.Tests.csproj \
-            --no-restore \
-            --configuration Release
-
-      - name: "Subir resultados de tests y cobertura"
+      - name: "Subir resultados"
         if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -66,5 +61,4 @@ jobs:
         continue-on-error: true
         run: |
           echo "Verificando vulnerabilidades en paquetes NuGet..."
-          dotnet list DotnetBestPractices.Api/DotnetBestPractices.Api.csproj package --vulnerable --include-transitive 2>&1 || true
-          dotnet list DotnetBestPractices.Tests/DotnetBestPractices.Tests.csproj package --vulnerable --include-transitive 2>&1 || true
+          dotnet list hs-back-2/proyecto-ids-api.csproj package --vulnerable --include-transitive 2>&1 || true
