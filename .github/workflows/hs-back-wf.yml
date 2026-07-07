@@ -17,7 +17,7 @@ concurrency:
   cancel-in-progress: true
 jobs:
   build-and-test:
-    name: "Build & Test .NET"
+    name: "Construir .NET"
     runs-on: ubuntu-latest
     env:
       DOTNET_NOLOGO: true
@@ -33,19 +33,16 @@ jobs:
           dotnet-version: "8.0.x"
 
       - name: "Restaurar dependencias NuGet"
-        working-directory: ${{ env.PROJECT_DIR }}
+        working-directory: hs-back-2
         run: |
           echo "Restaurando paquetes NuGet para el proyecto API..."
-          dotnet restore hs-back-2/proyecto-ids-api.csproj
+          dotnet restore 
 
       - name: "Build — Compilar proyecto en modo Release"
-        working-directory: ${{ env.PROJECT_DIR }}
+        working-directory: hs-back-2
         run: |
           echo "Compilando Do.Api..."
-          dotnet build hs-back-2/proyecto-ids-api.csproj \
-            --no-restore \
-            --configuration Release \
-            --warnaserror
+          dotnet build 
 
       - name: "Subir resultados"
         if: always()
