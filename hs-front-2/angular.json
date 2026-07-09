@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "pryecto-ids": {
+    "health-schedule": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -23,6 +23,11 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "**/*",
+                "input": "src/assets",
+                "output": "assets"
               }
             ],
             "styles": [
@@ -57,10 +62,10 @@
           "builder": "@angular/build:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "pryecto-ids:build:production"
+              "buildTarget": "health-schedule:build:production"
             },
             "development": {
-              "buildTarget": "pryecto-ids:build:development"
+              "buildTarget": "health-schedule:build:development"
             }
           },
           "defaultConfiguration": "development"

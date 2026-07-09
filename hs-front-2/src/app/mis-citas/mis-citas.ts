@@ -1,64 +1,96 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
+import { AuthService } from '../core/auth.service';
+import { CitaPaciente } from '../core/models';
+import { HealthService } from '../core/health.service';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-mis-citas',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [CommonModule, RouterLink],
   templateUrl: './mis-citas.html',
-  styleUrls: ['./mis-citas.css']
+  styleUrls: ['./mis-citas.css'],
 })
 export class MisCitas implements OnInit {
-  citas: any[] = [];
+  private readonly cdr = inject(ChangeDetectorRef);
+
+  citas: CitaPaciente[] = [];
   cargando = true;
   mensajeError = '';
+  mensaje = (history.state as { mensaje?: string }).mensaje ?? '';
+  filtro = 'todas';
+  cancelandoId: number | null = null;
 
-  constructor(private http: HttpClient) {}
+  constructor(readonly auth: AuthService, private readonly health: HealthService) {}
 
-  ngOnInit() {
-  const pacienteId = localStorage.getItem('paciente_id');
-  console.log('paciente_id en localStorage:', pacienteId);
-
-  if (!pacienteId) {
-    this.mensajeError = 'No se pudo identificar al paciente.';
-    this.cargando = false;
-    return;
+  ngOnInit(): void {
+    this.cargarCitas();
   }
 
-  this.http.get<any[]>(`http://localhost:5220/Citas/Paciente/${pacienteId}`)
-    .subscribe({
-      next: (data) => {
-        this.citas = data;
+  get esInvitado(): boolean {
+    return this.auth.usuario?.rol === 'invitado';
+  }
+
+  get inicioLink(): string {
+    return this.esInvitado ? '/dashboard-invitado' : '/dashboard-paciente';
+  }
+
+  get citasFiltradas(): CitaPaciente[] {
+    const ahora = Date.now();
+    if (this.filtro === 'proximas') {
+      return this.citas.filter((cita) => new Date(cita.fechaInicio).getTime() >= ahora && ['pendiente', 'confirmada'].includes(cita.estado));
+    }
+    if (this.filtro === 'historial') {
+      return this.citas.filter((cita) => new Date(cita.fechaInicio).getTime() < ahora || ['realizada', 'cancelada', 'no_asiste'].includes(cita.estado));
+    }
+    return this.citas;
+  }
+
+  puedeCancelar(cita: CitaPaciente): boolean {
+    return new Date(cita.fechaInicio).getTime() > Date.now() && ['pendiente', 'confirmada'].includes(cita.estado);
+  }
+
+  cancelar(cita: CitaPaciente): void {
+    if (!this.puedeCancelar(cita) || !confirm('¿Confirmas que deseas cancelar esta cita?')) return;
+
+    this.cancelandoId = cita.id;
+    this.mensaje = '';
+    this.mensajeError = '';
+    this.health.cancelarCita(cita.id).pipe(finalize(() => this.cdr.markForCheck())).subscribe({
+      next: (response) => {
+        this.cancelandoId = null;
+        this.mensaje = response.mensaje;
+        this.cargarCitas(false);
+      },
+      error: (error: HttpErrorResponse) => {
+        this.cancelandoId = null;
+        this.mensajeError = error.error?.mensaje ?? 'No fue posible cancelar la cita.';
+      },
+    });
+  }
+
+  formatearFecha(fecha: string): string {
+    return new Date(fecha).toLocaleDateString('es-CL', { weekday: 'long', day: '2-digit', month: 'long', year: 'numeric' });
+  }
+
+  formatearHora(fecha: string): string {
+    return new Date(fecha).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+  }
+
+  private cargarCitas(mostrarCarga = true): void {
+    if (mostrarCarga) this.cargando = true;
+    this.health.getMisCitas().pipe(finalize(() => this.cdr.markForCheck())).subscribe({
+      next: (citas) => {
+        this.citas = citas;
         this.cargando = false;
       },
-      error: (err) => {
-        this.mensajeError = 'Error al cargar las citas.';
+      error: () => {
+        this.mensajeError = 'No fue posible cargar tus citas.';
         this.cargando = false;
-      }
+      },
     });
-}
- 
-
-  formatearFecha(fechaStr: string): string {
-    const fecha = new Date(fechaStr);
-    return fecha.toLocaleDateString('es-CL');
-  }
-
-  formatearHora(fechaStr: string): string {
-    const fecha = new Date(fechaStr);
-    return fecha.toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
-  }
-
-  badgeClase(estado: string): string {
-    const clases: Record<string, string> = {
-      confirmada: 'badge badge-confirmada',
-      pendiente:  'badge badge-pendiente',
-      cancelada:  'badge badge-cancelada',
-      realizada:  'badge badge-realizada',
-      no_asiste:  'badge badge-no-asiste'
-    };
-    return clases[estado] ?? 'badge';
   }
 }

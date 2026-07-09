@@ -1,42 +1,25 @@
 <div class="app-shell">
-    <aside class="sidebar"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span
-                class="hs-logo-text"><strong>Admin</strong><span>Gestión</span></span></a>
-        <nav class="side-nav"><a class="side-link active">🏠 Inicio</a><a class="side-link">👥 Usuarios</a><a
-                class="side-link">🩺 Doctores</a><a class="side-link">📅 Citas</a><a class="side-link"
-                routerLink="/login">🚪 Cerrar sesión</a></nav>
-    </aside>
-    <main class="main-content">
-        <div class="page-head">
-            <div>
-                <h1>Panel Administrativo</h1>
-                <p>Control general de usuarios, roles, profesionales y agenda.</p>
-            </div>
-        </div>
-        <section class="stats-grid">
-            <div class="stat-card"><span>Usuarios</span><strong>128</strong></div>
-            <div class="stat-card"><span>Doctores</span><strong>12</strong></div>
-            <div class="stat-card"><span>Pacientes</span><strong>96</strong></div>
-            <div class="stat-card"><span>Citas</span><strong>42</strong></div>
-        </section>
-        <div class="table-panel">
-            <h2>Resumen de actividad</h2>
-            <table class="table">
-                <tr>
-                    <th>Tipo</th>
-                    <th>Detalle</th>
-                    <th>Estado</th>
-                </tr>
-                <tr>
-                    <td>Registro</td>
-                    <td>Nuevo paciente creado</td>
-                    <td><span class="badge">OK</span></td>
-                </tr>
-                <tr>
-                    <td>Agenda</td>
-                    <td>Cita confirmada</td>
-                    <td><span class="badge">OK</span></td>
-                </tr>
-            </table>
-        </div>
-    </main>
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-admin"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Administración</strong><span>Control del centro</span></span></a>
+    <nav class="side-nav"><button class="side-link" [class.active]="seccion === 'usuarios'" type="button" (click)="seccion = 'usuarios'; busqueda = ''">👥 Usuarios</button><button class="side-link" [class.active]="seccion === 'citas'" type="button" (click)="seccion = 'citas'; busqueda = ''">📅 Citas</button><a class="side-link" routerLink="/">🌐 Sitio principal</a><button class="side-link logout-link" type="button" (click)="cerrarSesion()">🚪 Cerrar sesión</button></nav>
+  </aside>
+  <main class="main-content">
+    <div class="page-head"><div><span class="eyebrow">Panel administrativo</span><h1>Gestión general</h1><p>Supervisa cuentas, profesionales y actividad de la agenda.</p></div><span class="admin-user">{{ auth.usuario?.nombre }}</span></div>
+    <div class="notice" [class.error-notice]="esError" [class.success-notice]="!esError" *ngIf="mensaje">{{ mensaje }}</div>
+    <div class="loading-card" *ngIf="cargando">Cargando información administrativa…</div>
+
+    <ng-container *ngIf="!cargando">
+      <section class="stats-grid admin-stats"><div class="stat-card"><span>Usuarios activos</span><strong>{{ resumen.usuarios }}</strong></div><div class="stat-card"><span>Pacientes</span><strong>{{ resumen.pacientes }}</strong></div><div class="stat-card"><span>Profesionales</span><strong>{{ resumen.doctores }}</strong></div><div class="stat-card"><span>Citas de hoy</span><strong>{{ resumen.citasHoy }}</strong><small>{{ resumen.citasPendientes }} pendientes totales</small></div></section>
+
+      <section class="content-card admin-section" *ngIf="seccion === 'usuarios'">
+        <div class="section-heading admin-heading"><div><h2>Usuarios del sistema</h2><p>Activa o desactiva el acceso sin eliminar los registros clínicos.</p></div><input class="form-control admin-search" [(ngModel)]="busqueda" placeholder="Buscar nombre, RUT, correo o rol…"></div>
+        <div class="responsive-table"><table class="table"><thead><tr><th>Usuario</th><th>Contacto</th><th>Rol</th><th>Creado</th><th>Estado</th><th></th></tr></thead><tbody><tr *ngFor="let usuario of usuariosFiltrados"><td><strong>{{ usuario.nombre }}</strong><small>{{ usuario.rut }}</small></td><td><span>{{ usuario.correo || 'Sin correo' }}</span><small>{{ usuario.telefono || 'Sin teléfono' }}</small></td><td><span class="badge role-badge">{{ usuario.rol }}</span></td><td>{{ formatearFecha(usuario.creadoEn) }}</td><td><span [class]="usuario.activo ? 'badge badge-realizada' : 'badge badge-cancelada'">{{ usuario.activo ? 'activo' : 'inactivo' }}</span></td><td><button type="button" class="mini-button" [class.danger]="usuario.activo" [disabled]="procesandoId === usuario.id" (click)="alternarUsuario(usuario)">{{ usuario.activo ? 'Desactivar' : 'Activar' }}</button></td></tr></tbody></table></div>
+      </section>
+
+      <section class="content-card admin-section" *ngIf="seccion === 'citas'">
+        <div class="section-heading admin-heading"><div><h2>Agenda global</h2><p>Últimas 200 citas registradas en el centro.</p></div><div class="admin-filters"><input class="form-control" [(ngModel)]="busqueda" placeholder="Buscar paciente o profesional…"><select class="form-control" [(ngModel)]="filtroEstado"><option value="todas">Todos los estados</option><option value="pendiente">Pendientes</option><option value="confirmada">Confirmadas</option><option value="realizada">Realizadas</option><option value="cancelada">Canceladas</option><option value="no_asiste">No asistió</option></select></div></div>
+        <div class="responsive-table"><table class="table"><thead><tr><th>Fecha</th><th>Paciente</th><th>Profesional</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let cita of citasFiltradas"><td><strong>{{ formatearFecha(cita.fechaInicio) }}</strong><small>{{ cita.motivo }}</small></td><td><strong>{{ cita.paciente }}</strong><small>{{ cita.rutPaciente }}</small></td><td><strong>{{ cita.doctor }}</strong><small>{{ cita.especialidad }}</small></td><td><span [class]="'badge badge-' + cita.estado">{{ cita.estado }}</span></td><td class="action-buttons"><button type="button" class="mini-button success" *ngIf="cita.estado === 'pendiente'" [disabled]="procesandoId === cita.id" (click)="cambiarEstadoCita(cita, 'confirmada')">Confirmar</button><button type="button" class="mini-button danger" *ngIf="['pendiente','confirmada'].includes(cita.estado)" [disabled]="procesandoId === cita.id" (click)="cambiarEstadoCita(cita, 'cancelada')">Cancelar</button></td></tr></tbody></table></div>
+      </section>
+    </ng-container>
+  </main>
 </div>

@@ -1,74 +1,52 @@
 <div class="app-shell">
   <aside class="sidebar">
-    <a class="hs-logo" (click)="volverInicio()" style="cursor:pointer">
-      <span class="hs-logo-mark">H&S</span>
-      <span class="hs-logo-text">
-        <strong>Agenda</strong>
-        <span>{{ esInvitado ? 'Agenda invitado' : 'Reservar hora' }}</span>
-      </span>
-    </a>
-
+    <a class="hs-logo" [routerLink]="inicioLink"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Agenda</strong><span>{{ esInvitado ? 'Acceso invitado' : 'Portal paciente' }}</span></span></a>
     <nav class="side-nav">
-      <a class="side-link" (click)="volverInicio()" style="cursor:pointer">🏠 Inicio</a>
-      <a class="side-link active" routerLink="/agenda">📅 Agendar</a>
-      <a class="side-link" *ngIf="!esInvitado" routerLink="/mis-citas">🕘 Mis citas</a>
+      <a class="side-link" [routerLink]="inicioLink">🏠 Inicio</a>
+      <a class="side-link active" routerLink="/agenda">📅 Reservar hora</a>
+      <a class="side-link" routerLink="/mis-citas">🕘 Mis citas</a>
       <a class="side-link" *ngIf="!esInvitado" routerLink="/ficha-clinica">📋 Ficha clínica</a>
       <a class="side-link" *ngIf="esInvitado" routerLink="/registro-paciente">📝 Crear cuenta</a>
     </nav>
   </aside>
 
   <main class="main-content">
-    <div class="page-head">
-      <div>
-        <h1>Agendar hora</h1>
-        <p *ngIf="!esInvitado">Selecciona especialidad, profesional y horario disponible.</p>
-        <p *ngIf="esInvitado">Puedes solicitar una atención como invitado. Para ver ficha clínica, mis citas o modificar datos debes crear una cuenta.</p>
-      </div>
-    </div>
+    <div class="page-head"><div><span class="eyebrow">Reserva en línea</span><h1>Agendar una atención</h1><p>Solo se muestran horarios configurados y disponibles para cada profesional.</p></div></div>
+    <div class="notice info-notice" *ngIf="esInvitado">La reserva quedará asociada a tu RUT. Regístrate con el mismo RUT para conservarla en tu cuenta.</div>
 
-    <div class="content-card">
-      <form (ngSubmit)="agendar()" class="form-grid">
-        <div class="form-group">
-          <label>Especialidad</label>
-          <select class="form-control" [(ngModel)]="especialidad" name="especialidad">
-            <option value="">Seleccione especialidad</option>
-            <option value="Nutrición">Nutrición</option>
-            <option value="Psicología">Psicología</option>
-          </select>
+    <form class="booking-layout" (ngSubmit)="agendar()">
+      <section class="content-card booking-form">
+        <div class="step-title"><span>1</span><div><h2>Especialidad y profesional</h2><p>Selecciona el tipo de atención que necesitas.</p></div></div>
+        <div class="form-grid">
+          <div class="form-group"><label for="especialidad">Especialidad</label><select id="especialidad" class="form-control" [(ngModel)]="especialidad" name="especialidad" (ngModelChange)="cambiarEspecialidad()"><option value="">Selecciona una especialidad</option><option *ngFor="let item of especialidades" [value]="item">{{ item }}</option></select></div>
+          <div class="form-group"><label for="doctor">Profesional</label><select id="doctor" class="form-control" [(ngModel)]="doctorId" name="doctorId" (ngModelChange)="cargarHorarios()" [disabled]="!especialidad || cargandoDoctores"><option [ngValue]="0">{{ cargandoDoctores ? 'Cargando…' : 'Selecciona un profesional' }}</option><option *ngFor="let doctor of doctores" [ngValue]="doctor.id">{{ doctor.nombre }}</option></select></div>
         </div>
 
-        <div class="form-group">
-          <label>Profesional</label>
-          <select class="form-control" [(ngModel)]="doctorId" name="doctorId">
-            <option [ngValue]="0">Seleccione profesional</option>
-            <option [ngValue]="1">Profesional 1</option>
-            <option [ngValue]="2">Profesional 2</option>
-          </select>
+        <div class="step-title"><span>2</span><div><h2>Fecha y horario</h2><p>La disponibilidad se actualiza al elegir una fecha.</p></div></div>
+        <div class="form-group date-field"><label for="fecha">Fecha de atención</label><input id="fecha" type="date" class="form-control" [(ngModel)]="fecha" name="fecha" [min]="fechaMinima" [max]="fechaMaxima" (ngModelChange)="cargarHorarios()"></div>
+        <div class="slot-status" *ngIf="cargandoHorarios">Consultando agenda…</div>
+        <div class="time-grid" *ngIf="!cargandoHorarios && horarios.length > 0">
+          <button type="button" class="time-btn" *ngFor="let horario of horarios" [class.active]="horarioSeleccionado?.hora === horario.hora" (click)="horarioSeleccionado = horario">{{ horario.hora }}</button>
         </div>
+        <div class="empty-inline" *ngIf="!cargandoHorarios && doctorId > 0 && fecha && horarios.length === 0">No hay horas disponibles para esa fecha. Prueba otro día.</div>
 
-        <div class="form-group">
-          <label>Fecha</label>
-          <input class="form-control" type="date" [(ngModel)]="fecha" name="fecha">
-        </div>
+        <div class="step-title"><span>3</span><div><h2>Motivo de consulta</h2><p>Entrega una referencia breve al profesional.</p></div></div>
+        <div class="form-group"><label for="motivo">Motivo</label><textarea id="motivo" class="form-control" [(ngModel)]="motivo" name="motivo" maxlength="500" placeholder="Ej.: control preventivo, dolor lumbar, orientación nutricional…"></textarea><small class="field-note">{{ motivo.length }}/500 caracteres</small></div>
+        <p class="form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
+      </section>
 
-        <div class="form-group">
-          <label>Motivo</label>
-          <input class="form-control" [(ngModel)]="motivo" name="motivo" placeholder="Motivo de consulta">
-        </div>
-
-        <div class="form-group full">
-          <label>Horario</label>
-          <div class="time-grid">
-            <button type="button" class="time-btn" *ngFor="let h of horarios" [class.active]="hora===h" (click)="hora=h">{{h}}</button>
-          </div>
-        </div>
-
-        <p class="form-error full" *ngIf="mensajeError">{{mensajeError}}</p>
-
-        <div class="full">
-          <button class="hs-btn" type="submit">Confirmar hora</button>
-        </div>
-      </form>
-    </div>
+      <aside class="content-card booking-summary">
+        <h2>Resumen</h2>
+        <dl>
+          <div><dt>Paciente</dt><dd>{{ auth.usuario?.nombre }}</dd></div>
+          <div><dt>Especialidad</dt><dd>{{ especialidad || 'Por seleccionar' }}</dd></div>
+          <div><dt>Profesional</dt><dd>{{ nombreDoctorSeleccionado }}</dd></div>
+          <div><dt>Fecha</dt><dd>{{ fecha || 'Por seleccionar' }}</dd></div>
+          <div><dt>Hora</dt><dd>{{ horarioSeleccionado?.hora || 'Por seleccionar' }}</dd></div>
+        </dl>
+        <button class="hs-btn full-button" type="submit" [disabled]="guardando">{{ guardando ? 'Reservando…' : 'Confirmar reserva' }}</button>
+        <a class="summary-back" [routerLink]="inicioLink">Cancelar y volver</a>
+      </aside>
+    </form>
   </main>
 </div>

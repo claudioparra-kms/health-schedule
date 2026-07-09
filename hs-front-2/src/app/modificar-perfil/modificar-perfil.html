@@ -1,31 +1,30 @@
 <div class="app-shell">
-    <aside class="sidebar"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span
-                class="hs-logo-text"><strong>Perfil</strong><span>Mis datos</span></span></a>
-        <nav class="side-nav"><a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a><a
-                class="side-link active" routerLink="/modificar-perfil">⚙️ Modificar datos</a></nav>
-    </aside>
-    <main class="main-content">hs
-        <div class="page-head">
-            <div>
-                <h1>Modificar datos</h1>
-                <p>Actualiza correo, teléfono, dirección, contraseña y fecha de nacimiento.</p>
-            </div>
-        </div>
-        <div class="content-card">
-            <form (ngSubmit)="guardar()" class="form-grid">
-                <div class="form-group"><label>Correo</label><input class="form-control" [(ngModel)]="correo"
-                        name="correo"></div>
-                <div class="form-group"><label>Teléfono</label><input class="form-control" [(ngModel)]="telefono"
-                        name="telefono"></div>
-                <div class="form-group"><label>Dirección</label><input class="form-control" [(ngModel)]="direccion"
-                        name="direccion"></div>
-                <div class="form-group"><label>Fecha nacimiento</label><input class="form-control" type="date"
-                        [(ngModel)]="fechaNacimiento" name="fechaNacimiento"></div>
-                <div class="form-group full"><label>Nueva contraseña</label><input class="form-control" type="password"
-                        [(ngModel)]="password" name="password"></div>
-                <p class="form-error full" *ngIf="mensaje">{{mensaje}}</p>
-                <div class="full"><button class="hs-btn" type="submit">Guardar cambios</button></div>
-            </form>
-        </div>
-    </main>
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-paciente"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Paciente</strong><span>Mis datos</span></span></a>
+    <nav class="side-nav"><a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a><a class="side-link" routerLink="/agenda">📅 Reservar hora</a><a class="side-link" routerLink="/mis-citas">🕘 Mis citas</a><a class="side-link" routerLink="/ficha-clinica">📋 Ficha clínica</a><a class="side-link active" routerLink="/modificar-perfil">⚙️ Mis datos</a></nav>
+  </aside>
+  <main class="main-content">
+    <div class="page-head"><div><span class="eyebrow">Perfil del paciente</span><h1>Mis datos</h1><p>Mantén actualizada tu información de contacto y antecedentes personales.</p></div></div>
+    <div class="loading-card" *ngIf="cargando">Cargando datos…</div>
+
+    <form class="profile-layout" (ngSubmit)="guardar()" *ngIf="!cargando">
+      <section class="content-card">
+        <div class="section-heading"><div><h2>Datos de identificación</h2><p>El nombre y RUT no se modifican desde este formulario.</p></div></div>
+        <div class="form-grid"><div class="form-group"><label>Nombre completo</label><input class="form-control" [value]="nombre" disabled></div><div class="form-group"><label>RUT</label><input class="form-control" [value]="rut" disabled></div><div class="form-group"><label for="correo">Correo</label><input id="correo" type="email" class="form-control" [(ngModel)]="correo" name="correo"></div><div class="form-group"><label for="telefono">Teléfono</label><input id="telefono" class="form-control" [(ngModel)]="telefono" name="telefono"></div><div class="form-group full"><label for="direccion">Dirección</label><input id="direccion" class="form-control" [(ngModel)]="direccion" name="direccion"></div><div class="form-group"><label for="fecha">Fecha de nacimiento</label><input id="fecha" type="date" class="form-control" [(ngModel)]="fechaNacimiento" name="fechaNacimiento"></div><div class="form-group"><label for="prevision">Previsión</label><select id="prevision" class="form-control" [(ngModel)]="prevision" name="prevision"><option value="">Sin informar</option><option value="Fonasa">Fonasa</option><option value="Isapre">Isapre</option><option value="Particular">Particular</option><option value="Otra">Otra</option></select></div></div>
+      </section>
+
+      <section class="content-card">
+        <div class="section-heading"><div><h2>Antecedentes de salud</h2><p>Esta información será visible para los profesionales que te atienden.</p></div></div>
+        <div class="form-group"><label for="alergias">Alergias</label><textarea id="alergias" class="form-control" [(ngModel)]="alergias" name="alergias" placeholder="Indica alergias conocidas o escribe “Sin alergias conocidas”."></textarea></div>
+        <div class="form-group"><label for="antecedentes">Antecedentes relevantes</label><textarea id="antecedentes" class="form-control" [(ngModel)]="antecedentes" name="antecedentes" placeholder="Enfermedades crónicas, cirugías u otros antecedentes relevantes."></textarea></div>
+      </section>
+
+      <section class="content-card">
+        <div class="section-heading"><div><h2>Cambiar contraseña</h2><p>Deja estos campos vacíos para conservar tu contraseña actual.</p></div></div>
+        <div class="form-grid"><div class="form-group full"><label for="actual">Contraseña actual</label><input id="actual" type="password" class="form-control" [(ngModel)]="passwordActual" name="passwordActual"></div><div class="form-group"><label for="nueva">Nueva contraseña</label><input id="nueva" type="password" class="form-control" [(ngModel)]="passwordNueva" name="passwordNueva"></div><div class="form-group"><label for="confirmar">Confirmar contraseña</label><input id="confirmar" type="password" class="form-control" [(ngModel)]="confirmarPassword" name="confirmarPassword"></div></div>
+      </section>
+
+      <div class="profile-actions"><p [class.form-error]="esError" [class.form-success]="!esError" *ngIf="mensaje">{{ mensaje }}</p><button class="hs-btn" type="submit" [disabled]="guardando">{{ guardando ? 'Guardando…' : 'Guardar cambios' }}</button></div>
+    </form>
+  </main>
 </div>

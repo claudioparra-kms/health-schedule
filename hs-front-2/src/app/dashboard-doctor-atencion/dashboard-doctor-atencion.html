@@ -1,87 +1,15 @@
 <div class="app-shell">
-  <aside class="sidebar">
-    <a class="hs-logo" routerLink="/dashboard-doctor">
-      <span class="hs-logo-mark">H&amp;S</span>
-      <span class="hs-logo-text"><strong>Doctor</strong><span>Atención</span></span>
-    </a>
-
-    <nav class="side-nav">
-      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
-      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
-      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
-      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
-      <a class="side-link active" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
-      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
-    </nav>
-  </aside>
-
+  <aside class="sidebar"><a class="hs-logo" routerLink="/dashboard-doctor"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Profesional</strong><span>Registrar atención</span></span></a><nav class="side-nav"><a class="side-link" routerLink="/dashboard-doctor">🏠 Resumen</a><a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Mi agenda</a><a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Mis pacientes</a><a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a><a class="side-link active" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a></nav></aside>
   <main class="main-content">
-    <div class="page-head">
-      <div>
-        <h1>Registrar atención</h1>
-        <p>Registra la evolución clínica y las indicaciones entregadas al paciente.</p>
-      </div>
-    </div>
-
-    <section class="content-card">
-      <form class="form-grid">
-        <div class="form-group">
-          <label>Paciente</label>
-          <select class="form-control">
-            <option>Seleccione paciente</option>
-            <option>Juan Pérez</option>
-            <option>María Soto</option>
-            <option>Camila Rojas</option>
-            <option>Diego Morales</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Área de atención</label>
-          <select class="form-control">
-            <option>Nutrición</option>
-            <option>Salud mental</option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Fecha de atención</label>
-          <input class="form-control" type="date">
-        </div>
-
-        <div class="form-group">
-          <label>Motivo / diagnóstico</label>
-          <input class="form-control" placeholder="Ej: control alimentario, seguimiento psicológico">
-        </div>
-
-        <div class="form-group full">
-          <label>Observaciones clínicas</label>
-          <textarea class="form-control" rows="5" placeholder="Describe evolución, antecedentes relevantes y respuesta del paciente."></textarea>
-        </div>
-
-        <div class="form-group full">
-          <label>Tratamiento e indicaciones</label>
-          <textarea class="form-control" rows="4" placeholder="Ej: plan alimentario, ejercicios, seguimiento o recomendaciones."></textarea>
-        </div>
-
-        <div class="form-group">
-          <label>Próximo control</label>
-          <input class="form-control" type="date">
-        </div>
-
-        <div class="form-group">
-          <label>Estado de atención</label>
-          <select class="form-control">
-            <option>Completada</option>
-            <option>Requiere seguimiento</option>
-            <option>Derivación sugerida</option>
-          </select>
-        </div>
-
-        <div class="full">
-          <button class="hs-btn" type="button">Guardar atención</button>
-        </div>
-      </form>
-    </section>
+    <div class="page-head"><div><span class="eyebrow">Registro clínico</span><h1>Nueva atención</h1><p>Al guardar, la cita quedará marcada como realizada y el registro se añadirá a la ficha.</p></div></div>
+    <div class="loading-card" *ngIf="cargando">Cargando citas disponibles…</div>
+    <form class="content-card clinical-form" (ngSubmit)="registrar()" *ngIf="!cargando">
+      <div class="form-group"><label for="cita">Cita atendida</label><select id="cita" class="form-control" [(ngModel)]="citaId" name="citaId" (ngModelChange)="seleccionarCita()"><option [ngValue]="0">Selecciona una cita pendiente o confirmada</option><option *ngFor="let cita of citasDisponibles" [ngValue]="cita.id">{{ etiquetaCita(cita) }}</option></select></div>
+      <div class="form-group"><label for="motivo">Motivo de atención</label><input id="motivo" class="form-control" [(ngModel)]="motivo" name="motivo"></div>
+      <div class="form-grid"><div class="form-group full"><label for="diagnostico">Diagnóstico *</label><textarea id="diagnostico" class="form-control" [(ngModel)]="diagnostico" name="diagnostico" placeholder="Evaluación y diagnóstico clínico"></textarea></div><div class="form-group full"><label for="tratamiento">Tratamiento o plan *</label><textarea id="tratamiento" class="form-control" [(ngModel)]="tratamiento" name="tratamiento" placeholder="Indicaciones, plan de seguimiento o tratamiento"></textarea></div><div class="form-group"><label for="receta">Receta o indicaciones</label><textarea id="receta" class="form-control" [(ngModel)]="receta" name="receta"></textarea></div><div class="form-group"><label for="observaciones">Observaciones</label><textarea id="observaciones" class="form-control" [(ngModel)]="observaciones" name="observaciones"></textarea></div></div>
+      <p [class.form-error]="esError" [class.form-success]="!esError" *ngIf="mensaje">{{ mensaje }}</p>
+      <div class="form-actions"><a class="hs-btn-outline" routerLink="/dashboard-doctor">Cancelar</a><button class="hs-btn" type="submit" [disabled]="guardando || citasDisponibles.length === 0">{{ guardando ? 'Guardando…' : 'Guardar atención' }}</button></div>
+      <div class="empty-inline" *ngIf="citasDisponibles.length === 0">No hay citas pendientes o confirmadas disponibles para registrar.</div>
+    </form>
   </main>
 </div>

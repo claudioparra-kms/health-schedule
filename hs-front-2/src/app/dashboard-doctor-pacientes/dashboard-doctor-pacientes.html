@@ -1,47 +1,4 @@
 <div class="app-shell">
-  <aside class="sidebar">
-    <a class="hs-logo" routerLink="/dashboard-doctor">
-      <span class="hs-logo-mark">H&amp;S</span>
-      <span class="hs-logo-text"><strong>Doctor</strong><span>Pacientes</span></span>
-    </a>
-
-    <nav class="side-nav">
-      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
-      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
-      <a class="side-link active" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
-      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
-      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
-      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
-    </nav>
-  </aside>
-
-  <main class="main-content">
-    <div class="page-head">
-      <div>
-        <h1>Pacientes asignados</h1>
-        <p>Consulta pacientes activos, controles pendientes y el avance de cada tratamiento.</p>
-      </div>
-      <a class="hs-btn" routerLink="/dashboard-doctor/fichas">Ver fichas clínicas</a>
-    </div>
-
-    <section class="stats-grid">
-      <div class="stat-card"><span>Pacientes activos</span><strong>24</strong></div>
-      <div class="stat-card"><span>Nutrición</span><strong>14</strong></div>
-      <div class="stat-card"><span>Salud mental</span><strong>10</strong></div>
-      <div class="stat-card"><span>Controles pendientes</span><strong>5</strong></div>
-    </section>
-
-    <section class="table-panel">
-      <h2>Listado de seguimiento</h2>
-      <table class="table">
-        <tr><th>Paciente</th><th>RUT</th><th>Área</th><th>Teléfono</th><th>Última atención</th><th>Próximo control</th></tr>
-        <tr><td>Juan Pérez</td><td>21667001-6</td><td>Nutrición</td><td>+56 9 8727 1476</td><td>Control alimentario</td><td>26/05 · 10:00</td></tr>
-        <tr><td>María Soto</td><td>19876543-2</td><td>Salud mental</td><td>+56 9 4455 2211</td><td>Seguimiento psicológico</td><td>26/05 · 13:00</td></tr>
-        <tr><td>Camila Rojas</td><td>18765432-1</td><td>Nutrición</td><td>+56 9 9988 7766</td><td>Evaluación nutricional</td><td>26/05 · 16:00</td></tr>
-        <tr><td>Diego Morales</td><td>17654321-0</td><td>Salud mental</td><td>+56 9 3344 7788</td><td>Primera evaluación</td><td>Pendiente</td></tr>
-      </table>
-    </section>
-
-    
-  </main>
+  <aside class="sidebar"><a class="hs-logo" routerLink="/dashboard-doctor"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Profesional</strong><span>Mis pacientes</span></span></a><nav class="side-nav"><a class="side-link" routerLink="/dashboard-doctor">🏠 Resumen</a><a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Mi agenda</a><a class="side-link active" routerLink="/dashboard-doctor/pacientes">👥 Mis pacientes</a><a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a><a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a></nav></aside>
+  <main class="main-content"><div class="page-head"><div><span class="eyebrow">Seguimiento clínico</span><h1>Mis pacientes</h1><p>Se incluyen pacientes que tienen o tuvieron citas en tu agenda.</p></div></div><div class="search-card"><input class="form-control" [(ngModel)]="busqueda" placeholder="Buscar por nombre o RUT…"><span>{{ pacientesFiltrados.length }} paciente(s)</span></div><div class="notice error-notice" *ngIf="mensajeError">{{ mensajeError }}</div><div class="loading-card" *ngIf="cargando">Cargando pacientes…</div><div class="patient-card-grid" *ngIf="!cargando"><article class="patient-card" *ngFor="let paciente of pacientesFiltrados"><div class="patient-avatar">{{ paciente.nombre.charAt(0) }}</div><div class="patient-card-body"><h3>{{ paciente.nombre }}</h3><p>{{ paciente.rut }}</p><dl><div><dt>Previsión</dt><dd>{{ paciente.prevision || 'Sin informar' }}</dd></div><div><dt>Total citas</dt><dd>{{ paciente.totalCitas }}</dd></div><div><dt>Próxima cita</dt><dd>{{ formatearFecha(paciente.proximaCita) }}</dd></div><div><dt>Alergias</dt><dd>{{ paciente.alergias || 'Sin informar' }}</dd></div></dl><button class="hs-btn-light full-button" type="button" (click)="abrirFicha(paciente.id)">Ver ficha clínica</button></div></article><div class="empty-state content-card" *ngIf="pacientesFiltrados.length === 0"><span>👥</span><h3>No se encontraron pacientes</h3><p>Prueba con otro nombre o RUT.</p></div></div></main>
 </div>

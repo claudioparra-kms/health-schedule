@@ -1,19 +1,38 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { of } from 'rxjs';
+import { AuthService } from '../core/auth.service';
+import { HealthService } from '../core/health.service';
 import { DashboardPaciente } from './dashboard-paciente';
 
 describe('DashboardPaciente', () => {
   let component: DashboardPaciente;
   let fixture: ComponentFixture<DashboardPaciente>;
-  let compiled: HTMLElement;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [DashboardPaciente]
+      imports: [DashboardPaciente],
+      providers: [
+        provideRouter([]),
+        {
+          provide: AuthService,
+          useValue: {
+            session: { nombre: 'Paciente Demo', rol: 'paciente' },
+            logout: () => of(void 0),
+          },
+        },
+        {
+          provide: HealthService,
+          useValue: {
+            getPerfil: () => of({ nombre: 'Paciente Demo', correo: 'demo@correo.cl' }),
+            getMisCitas: () => of([]),
+          },
+        },
+      ],
     }).compileComponents();
 
     fixture = TestBed.createComponent(DashboardPaciente);
     component = fixture.componentInstance;
-    compiled = fixture.nativeElement as HTMLElement;
     fixture.detectChanges();
   });
 
@@ -21,6 +40,3 @@ describe('DashboardPaciente', () => {
     expect(component).toBeTruthy();
   });
 });
-import { HttpClient } from '@angular/common/http';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-

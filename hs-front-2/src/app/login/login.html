@@ -1,33 +1,53 @@
 <div class="auth-page">
-  <section class="auth-brand"><a class="hs-logo" routerLink="/"><span class="hs-logo-mark">H&S</span><span
-        class="hs-logo-text"><strong>Health & Schedule</strong><span>Agenda y ficha clínica</span></span></a>
+  <section class="auth-brand">
+    <a class="hs-logo" routerLink="/">
+      <span class="hs-logo-mark">H&amp;S</span>
+      <span class="hs-logo-text"><strong>Health &amp; Schedule</strong><span>Portal del centro médico</span></span>
+    </a>
     <div>
-      <h2>Accede a tu espacio de salud.</h2>
-      <p>Gestiona tus citas, revisa tu ficha clínica y mantén actualizada tu información personal.</p>
+      <h2>Tu atención comienza antes de entrar a la consulta.</h2>
+      <p>Accede a tus citas, ficha clínica y datos personales. Los profesionales pueden administrar su agenda y registrar atenciones.</p>
+      <div class="auth-demo-box">
+        <strong>Cuenta de demostración paciente</strong>
+        <span>RUT: 12345678-5</span>
+        <span>Contraseña: paciente123</span>
+      </div>
     </div>
   </section>
+
   <section class="auth-panel">
     <div class="auth-card">
       <h2>Iniciar sesión</h2>
-      <p>Ingresa con tu RUT y contraseña registrada.</p>
-      <form (ngSubmit)="login()">
-        <div class="form-group"><label>RUT</label><input class="form-control" type="text" [(ngModel)]="rut" name="rut"
-            required (blur)="formatearRut()" placeholder="21667001-6"></div>
-        <div class="form-group"><label>Contraseña</label><input class="form-control" type="password"
-            [(ngModel)]="password" name="password" required minlength="8" placeholder="Mínimo 8 caracteres"></div>
-        <p class="form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
-        <div class="form-help"><a routerLink="/recuperar-password">¿Olvidaste tu contraseña?</a><a
-            routerLink="/registro-paciente">Crear cuenta</a></div>
-        <div class="auth-actions"><button class="hs-btn" type="submit">Iniciar sesión</button></div>
-      </form>
-      <hr>
-      <form (ngSubmit)="guestLogin()">
-        <div class="form-group"><label>Entrar como invitado</label><input class="form-control" type="text"
-            [(ngModel)]="rutInvitado" name="rutInvitado" placeholder="Ingresa tu RUT" (blur)="formatearRutInvitado()">
+      <p>Ingresa con el RUT y contraseña de tu cuenta.</p>
+
+      <form (ngSubmit)="login()" novalidate>
+        <div class="form-group">
+          <label for="rut">RUT</label>
+          <input id="rut" class="form-control" [(ngModel)]="rut" name="rut" autocomplete="username" placeholder="12345678-5" (blur)="formatearRut()">
         </div>
-        <p class="form-error" *ngIf="mensajeErrorInvitado">{{ mensajeErrorInvitado }}</p><button class="hs-btn-outline"
-          type="submit">Entrar como invitado</button>
+        <div class="form-group">
+          <label for="password">Contraseña</label>
+          <div class="password-field">
+            <input id="password" class="form-control" [type]="mostrarPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" autocomplete="current-password">
+            <button type="button" class="password-toggle" (click)="mostrarPassword = !mostrarPassword">{{ mostrarPassword ? 'Ocultar' : 'Ver' }}</button>
+          </div>
+        </div>
+        <div class="form-help"><a routerLink="/recuperar-password">Olvidé mi contraseña</a><a routerLink="/registro-paciente">Crear cuenta</a></div>
+        <p class="form-error" *ngIf="mensajeError">{{ mensajeError }}</p>
+        <button class="hs-btn full-button" type="submit" [disabled]="cargando">{{ cargando ? 'Ingresando…' : 'Ingresar' }}</button>
       </form>
+
+      <div class="auth-divider"><span>o agenda como invitado</span></div>
+
+      <form (ngSubmit)="guestLogin()" novalidate>
+        <div class="form-group">
+          <label for="rutInvitado">RUT del paciente</label>
+          <input id="rutInvitado" class="form-control" [(ngModel)]="rutInvitado" name="rutInvitado" placeholder="12345678-5" (blur)="formatearRutInvitado()">
+        </div>
+        <p class="form-error" *ngIf="mensajeErrorInvitado">{{ mensajeErrorInvitado }}</p>
+        <button class="hs-btn-outline full-button" type="submit" [disabled]="cargandoInvitado">{{ cargandoInvitado ? 'Preparando acceso…' : 'Continuar como invitado' }}</button>
+      </form>
+      <p class="auth-link"><a routerLink="/">Volver al sitio principal</a></p>
     </div>
   </section>
 </div>

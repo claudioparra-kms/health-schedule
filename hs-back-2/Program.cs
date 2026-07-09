@@ -1,34 +1,61 @@
 using MySqlConnector;
+using proyecto_ids_api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
+builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddScoped<SessionService>();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAngular",
-        policy => policy.WithOrigins("http://localhost:4200")
-                        .AllowAnyHeader()
-                        .AllowAnyMethod());
+    options.AddPolicy("LocalAngular", policy =>
+        policy.WithOrigins("http://localhost:4200", "http://127.0.0.1:4200")
+              .AllowAnyHeader()
+              .AllowAnyMethod());
 });
 
 var app = builder.Build();
+var logger = app.Services.GetRequiredService<ILoggerFactory>().CreateLogger("H&S");
 
-var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-try
+app.Use(async (context, next) =>
 {
-    using var conn = new MySqlConnection(connString);
-    conn.Open();
-    Console.WriteLine("✅ Conectado a MySQL");
-}
-catch (Exception ex)
-{
-    Console.WriteLine($"⚠️ Error conectando a MySQL: {ex.Message}");
-}
+    try
+    {
+        await next();
+    }
+    catch (Exception exception)
+    {
+        logger.LogError(exception, "Error no controlado al procesar {Method} {Path}", context.Request.Method, context.Request.Path);
+        if (context.Response.HasStarted) throw;
 
-app.UseCors("AllowAngular");
+        context.Response.Clear();
+        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+        await context.Response.WriteAsJsonAsync(new
+        {
+            mensaje = "Ocurrió un error interno. Revisa la conexión y los registros del backend."
+        });
+    }
+});
+
+app.UseCors("LocalAngular");
+
+app.MapGet("/api/salud", async (IConfiguration configuration) =>
+{
+    try
+    {
+        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        await using var connection = new MySqlConnection(connectionString);
+        await connection.OpenAsync();
+        return Results.Ok(new { estado = "ok", baseDeDatos = "conectada" });
+    }
+    catch
+    {
+        return Results.Json(
+            new { estado = "error", baseDeDatos = "sin conexión" },
+            statusCode: StatusCodes.Status503ServiceUnavailable);
+    }
+});
 
 app.MapControllers();
-
 app.Run();

@@ -1,23 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "jcjDlPdCbHw=",
+  "dgSpecHash": "3ZNgf7GV1YM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+  "projectFilePath": "C:\\Users\\Guta\\Music\\health-schedule\\health-schedule\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\claud\\.nuget\\packages\\microsoft.aspnetcore.openapi\\10.0.7\\microsoft.aspnetcore.openapi.10.0.7.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\microsoft.openapi\\2.0.0\\microsoft.openapi.2.0.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\npgsql\\10.0.2\\npgsql.10.0.2.nupkg.sha512"
+    "C:\\Users\\Guta\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512"
   ],
-  "logs": [
-    {
-      "code": "Undefined",
-      "level": "Warning",
-      "message": "Problem reading the cache file C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\obj\\project.nuget.cache : '<' is an invalid start of a property name. Expected a '\"'. Path: $ | LineNumber: 2 | BytePositionInLine: 0.",
-      "projectPath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
-      "warningLevel": 1,
-      "filePath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
-      "targetGraphs": []
-    }
-  ]
+  "logs": []
 }

@@ -1,76 +1,10 @@
 <div class="app-shell">
-  <aside class="sidebar">
-    <a class="hs-logo" routerLink="/dashboard-doctor">
-      <span class="hs-logo-mark">H&amp;S</span>
-      <span class="hs-logo-text"><strong>Doctor</strong><span>Panel clínico</span></span>
-    </a>
-
-    <nav class="side-nav">
-      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
-      <a class="side-link active" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
-      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
-      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
-      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
-      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
-    </nav>
-  </aside>
-
+  <aside class="sidebar"><a class="hs-logo" routerLink="/dashboard-doctor"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Profesional</strong><span>Mi agenda</span></span></a><nav class="side-nav"><a class="side-link" routerLink="/dashboard-doctor">🏠 Resumen</a><a class="side-link active" routerLink="/dashboard-doctor/agenda">📅 Mi agenda</a><a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Mis pacientes</a><a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a><a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a></nav></aside>
   <main class="main-content">
-    <div class="page-head">
-      <div>
-        <h1>Agenda del día</h1>
-        <p>Revisa las atenciones programadas y prioriza las citas pendientes de confirmación.</p>
-      </div>
-      <a class="hs-btn" routerLink="/dashboard-doctor/atencion">Registrar atención</a>
-    </div>
-
-    <section class="stats-grid">
-      <div class="stat-card"><span>Citas hoy</span><strong>{{ citasHoy }}</strong></div>
-      <div class="stat-card"><span>Confirmadas</span><strong>{{ confirmadas }}</strong></div>
-      <div class="stat-card"><span>Pendientes</span><strong>{{ pendientes }}</strong></div>
-      <div class="stat-card"><span>Bloques libres</span><strong>3</strong></div>
-    </section>
-
-    <section class="table-panel">
-      <h2>Atenciones programadas</h2>
-
-      @if (cargando) {
-        <p>Cargando agenda...</p>
-      }
-
-      @if (mensajeError) {
-        <p class="error">{{ mensajeError }}</p>
-      }
-
-      @if (!cargando && !mensajeError && citas.length === 0) {
-        <p>No tienes citas programadas.</p>
-      }
-
-      @if (!cargando && citas.length > 0) {
-        <table class="table">
-          <tr><th>Hora</th><th>Paciente</th><th>Motivo</th><th>Estado</th></tr>
-          @for (cita of citas; track cita.id) {
-            <tr>
-              <td>{{ formatearHora(cita.fechaInicio) }}</td>
-              <td>{{ cita.paciente }}</td>
-              <td>{{ cita.motivo }}</td>
-              <td><span [class]="badgeClase(cita.estado)">{{ cita.estado }}</span></td>
-            </tr>
-          }
-        </table>
-      }
-    </section>
-
-    <section class="panel-grid">
-      <div class="content-card">
-        <h2>Bloques disponibles</h2>
-        <div class="time-grid">
-          <button class="time-btn" type="button">09:00</button>
-          <button class="time-btn" type="button">14:30</button>
-          <button class="time-btn" type="button">17:30</button>
-        </div>
-      </div>
-      
-    </section>
+    <div class="page-head"><div><span class="eyebrow">Gestión de agenda</span><h1>Mis citas</h1><p>Confirma solicitudes y registra cambios de estado.</p></div></div>
+    <div class="toolbar-card"><div class="form-group compact"><label for="estado">Estado</label><select id="estado" class="form-control" [(ngModel)]="filtroEstado"><option value="activas">Activas</option><option value="todas">Todas</option><option value="pendiente">Pendientes</option><option value="confirmada">Confirmadas</option><option value="realizada">Realizadas</option><option value="cancelada">Canceladas</option><option value="no_asiste">No asistió</option></select></div><div class="form-group compact"><label for="fecha">Fecha</label><input id="fecha" type="date" class="form-control" [(ngModel)]="filtroFecha"></div><button type="button" class="hs-btn-light clear-filter" (click)="filtroFecha = ''; filtroEstado = 'activas'">Limpiar filtros</button></div>
+    <p [class.form-error]="esError" [class.form-success]="!esError" *ngIf="mensaje">{{ mensaje }}</p>
+    <div class="loading-card" *ngIf="cargando">Cargando agenda…</div>
+    <div class="content-card" *ngIf="!cargando"><div class="empty-state" *ngIf="citasFiltradas.length === 0"><span>📅</span><h3>No hay citas para estos filtros</h3><p>Cambia la fecha o el estado seleccionado.</p></div><div class="responsive-table" *ngIf="citasFiltradas.length > 0"><table class="table"><thead><tr><th>Fecha</th><th>Paciente</th><th>Motivo</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let cita of citasFiltradas"><td><strong>{{ formatearFecha(cita.fechaInicio) }}</strong><small>{{ formatearHora(cita.fechaInicio) }}</small></td><td><strong>{{ cita.paciente }}</strong><small>{{ cita.rutPaciente }}</small></td><td>{{ cita.motivo }}</td><td><span [class]="'badge badge-' + cita.estado">{{ cita.estado }}</span></td><td class="action-buttons"><button type="button" class="mini-button success" *ngIf="cita.estado === 'pendiente'" [disabled]="actualizandoId === cita.id" (click)="cambiarEstado(cita, 'confirmada')">Confirmar</button><button type="button" class="mini-button" *ngIf="['pendiente','confirmada'].includes(cita.estado)" [disabled]="actualizandoId === cita.id" (click)="cambiarEstado(cita, 'no_asiste')">No asistió</button><button type="button" class="mini-button danger" *ngIf="['pendiente','confirmada'].includes(cita.estado)" [disabled]="actualizandoId === cita.id" (click)="cambiarEstado(cita, 'cancelada')">Cancelar</button></td></tr></tbody></table></div></div>
   </main>
 </div>

@@ -1,55 +1,35 @@
 <div class="app-shell">
-    <aside class="sidebar">
-        <a class="hs-logo" routerLink="/">
-            <span class="hs-logo-mark">H&S</span>
-            <span class="hs-logo-text">
-                <strong>Ficha</strong><span>Clínica</span>
-            </span>
-        </a>
-        <nav class="side-nav">
-            <a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a>
-            <a class="side-link" routerLink="/agenda">📅 Agendar</a>
-            <a class="side-link active" routerLink="/ficha-clinica">📋 Ficha clínica</a>
-        </nav>
-    </aside>
-    <main class="main-content">
-        <div class="page-head">
-            <div>
-                <h1>Ficha clínica</h1>
-                <p>Información clínica resumida del paciente.</p>
-            </div>
-        </div>
-        <section class="panel-grid">
-            <div class="content-card">
-                <h2>Datos personales</h2>
-                <table class="table">
-                    <tr>
-                        <th>Nombre</th>
-                        <td>{{usuario.nombre || 'Paciente'}}</td>
-                    </tr>
-                    <tr>
-                        <th>RUT</th>
-                        <td>{{usuario.rut || 'No registrado'}}</td>
-                    </tr>
-                    <tr>
-                        <th>Correo</th>
-                        <td>{{usuario.correo || 'No registrado'}}</td>
-                    </tr>
-                    <tr>
-                        <th>Teléfono</th>
-                        <td>No registrado</td>
-                    </tr>
-                </table>
-            </div>
-            <div class="content-card">
-                <h2>Antecedentes</h2>
-                <div class="appointment-list">
-                    <div class="appointment"><strong>Alergias</strong><span>Sin alergias declaradas</span></div>
-                    <div class="appointment"><strong>Enfermedades crónicas</strong><span>Sin antecedentes
-                            registrados</span></div>
-                    <div class="appointment"><strong>Última atención</strong><span>Control preventivo</span></div>
-                </div>
-            </div>
-        </section>
-    </main>
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-paciente"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Paciente</strong><span>Ficha clínica</span></span></a>
+    <nav class="side-nav"><a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a><a class="side-link" routerLink="/agenda">📅 Reservar hora</a><a class="side-link" routerLink="/mis-citas">🕘 Mis citas</a><a class="side-link active" routerLink="/ficha-clinica">📋 Ficha clínica</a><a class="side-link" routerLink="/modificar-perfil">⚙️ Mis datos</a></nav>
+  </aside>
+  <main class="main-content">
+    <div class="page-head"><div><span class="eyebrow">Información clínica</span><h1>Mi ficha clínica</h1><p>Consulta el registro que han incorporado tus profesionales.</p></div></div>
+    <div class="notice privacy-notice">🔒 Esta información es privada y solo está disponible para ti y los profesionales que te atienden.</div>
+    <div class="loading-card" *ngIf="cargando">Cargando ficha clínica…</div>
+    <div class="notice error-notice" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+    <ng-container *ngIf="ficha">
+      <section class="patient-summary content-card">
+        <div><span>Paciente</span><strong>{{ ficha.paciente.nombre }}</strong><small>{{ ficha.paciente.rut }}</small></div>
+        <div><span>Previsión</span><strong>{{ ficha.paciente.prevision || 'Sin informar' }}</strong></div>
+        <div><span>Alergias</span><strong>{{ ficha.paciente.alergias || 'Sin informar' }}</strong></div>
+        <div><span>Ficha creada</span><strong>{{ formatearFecha(ficha.creadaEn) }}</strong></div>
+      </section>
+
+      <section class="content-card clinical-overview">
+        <h2>Antecedentes y observaciones generales</h2>
+        <div class="clinical-grid"><div><h3>Antecedentes declarados</h3><p>{{ ficha.paciente.antecedentes || 'No hay antecedentes registrados.' }}</p></div><div><h3>Observaciones de la ficha</h3><p>{{ ficha.observacionesGenerales || 'No hay observaciones generales.' }}</p></div></div>
+      </section>
+
+      <section class="clinical-history">
+        <div class="section-heading"><div><h2>Historial de atenciones</h2><p>{{ ficha.atenciones.length }} registro(s) clínico(s)</p></div></div>
+        <div class="empty-state content-card" *ngIf="ficha.atenciones.length === 0"><span>🩺</span><h3>Aún no hay atenciones registradas</h3><p>Cuando un profesional finalice una atención, aparecerá aquí.</p></div>
+        <article class="clinical-entry" *ngFor="let atencion of ficha.atenciones">
+          <div class="clinical-entry-head"><div><span>{{ formatearFecha(atencion.fecha) }}</span><h3>{{ atencion.motivo }}</h3><p>{{ atencion.doctor }} · {{ atencion.especialidad }}</p></div><span class="badge badge-realizada">realizada</span></div>
+          <div class="clinical-entry-grid"><div><b>Diagnóstico</b><p>{{ atencion.diagnostico || 'Sin registro' }}</p></div><div><b>Tratamiento</b><p>{{ atencion.tratamiento || 'Sin registro' }}</p></div><div><b>Receta</b><p>{{ atencion.receta || 'Sin indicación' }}</p></div><div><b>Observaciones</b><p>{{ atencion.observaciones || 'Sin observaciones adicionales' }}</p></div></div>
+        </article>
+      </section>
+    </ng-container>
+  </main>
 </div>

@@ -1,60 +1,55 @@
 <div class="app-shell">
-    <aside class="sidebar">
-        <a class="hs-logo" routerLink="/">
-            <span class="hs-logo-mark">H&S</span>
-            <span class="hs-logo-text">
-                <strong>Paciente</strong>
-                <span>Mi salud</span>
-            </span>
-        </a>
-        <nav class="side-nav">
-            <a class="side-link active" routerLink="/dashboard-paciente">🏠 Inicio</a>
-            <a class="side-link" routerLink="/agenda">📅 Agendar hora</a>
-            <a class="side-link" routerLink="/mis-citas">🕘 Mis citas</a>
-            <a class="side-link" routerLink="/ficha-clinica">📋 Ficha clínica</a>
-            <a class="side-link" routerLink="/modificar-perfil">⚙️ Modificar datos</a>
-            <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
-        </nav>
-    </aside>
-    <main class="main-content">
-        <div class="page-head">
-            <div>
-                <h1>Hola, {{nombre}}</h1>
-                <p>Agenda tus atenciones y revisa tu información clínica.</p>
-            </div><a class="hs-btn" routerLink="/agenda">Agendar hora</a>
+  <aside class="sidebar">
+    <a class="hs-logo" routerLink="/dashboard-paciente"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Paciente</strong><span>Mi portal de salud</span></span></a>
+    <nav class="side-nav">
+      <a class="side-link active" routerLink="/dashboard-paciente">🏠 Inicio</a>
+      <a class="side-link" routerLink="/agenda">📅 Reservar hora</a>
+      <a class="side-link" routerLink="/mis-citas">🕘 Mis citas</a>
+      <a class="side-link" routerLink="/ficha-clinica">📋 Ficha clínica</a>
+      <a class="side-link" routerLink="/modificar-perfil">⚙️ Mis datos</a>
+      <button class="side-link logout-link" type="button" (click)="cerrarSesion()">🚪 Cerrar sesión</button>
+    </nav>
+  </aside>
+
+  <main class="main-content">
+    <div class="page-head">
+      <div><span class="eyebrow">Portal de paciente</span><h1>Hola, {{ auth.usuario?.nombre }}</h1><p>Gestiona tus próximas atenciones y mantén tus datos de salud al día.</p></div>
+      <a class="hs-btn" routerLink="/agenda">+ Reservar una hora</a>
+    </div>
+
+    <div class="notice error-notice" *ngIf="mensajeError">{{ mensajeError }}</div>
+    <div class="loading-card" *ngIf="cargando">Cargando tu información…</div>
+
+    <ng-container *ngIf="!cargando">
+      <section class="stats-grid">
+        <div class="stat-card"><span>Próximas citas</span><strong>{{ proximas.length }}</strong><small>pendientes o confirmadas</small></div>
+        <div class="stat-card"><span>Por confirmar</span><strong>{{ pendientes }}</strong><small>solicitudes en revisión</small></div>
+        <div class="stat-card"><span>Atenciones realizadas</span><strong>{{ realizadas }}</strong><small>en tu historial</small></div>
+        <div class="stat-card"><span>Previsión</span><strong class="stat-text">{{ perfil?.prevision || 'Sin informar' }}</strong><small>puedes editarla en Mis datos</small></div>
+      </section>
+
+      <section class="panel-grid">
+        <div class="panel">
+          <div class="panel-heading"><div><h2>Próximas atenciones</h2><p>Las citas se muestran directamente desde la agenda del centro.</p></div><a routerLink="/mis-citas">Ver todas</a></div>
+          <div class="empty-state" *ngIf="proximas.length === 0"><span>📅</span><h3>No tienes próximas citas</h3><p>Busca un profesional y reserva el horario que más te acomode.</p><a class="hs-btn-light" routerLink="/agenda">Reservar ahora</a></div>
+          <div class="appointment-list" *ngIf="proximas.length > 0">
+            <article class="appointment appointment-row" *ngFor="let cita of proximas">
+              <div class="date-tile"><strong>{{ formatearFecha(cita.fechaInicio) }}</strong><span>{{ formatearHora(cita.fechaInicio) }}</span></div>
+              <div><strong>{{ cita.doctor }}</strong><span>{{ cita.especialidad }} · {{ cita.motivo }}</span></div>
+              <span [class]="'badge badge-' + cita.estado">{{ cita.estado }}</span>
+            </article>
+          </div>
         </div>
-        <section class="stats-grid">
-            <div class="stat-card"><span>Próxima cita</span><strong>{{citasProximas}}</strong></div>
-            <div class="stat-card"><span>Ficha</span><strong>OK</strong></div>
-            <div class="stat-card"><span>Edad</span><strong>{{edad}}</strong></div>
-        </section>
-        <section class="panel-grid">
-            <div class="panel">
-                <h2>Acciones rápidas</h2>
-                <div class="quick-actions"><a class="action-card" routerLink="/agenda"><b>Agendar atención</b>
-                        <p>Reserva hora en nutrición o salud mental.</p>
-                    </a><a class="action-card" routerLink="/mis-citas"><b>Ver mis citas</b>
-                        <p>Consulta tus próximas atenciones.</p>
-                    </a><a class="action-card" routerLink="/ficha-clinica"><b>Mi ficha clínica</b>
-                        <p>Revisa antecedentes y evolución.</p>
-                    </a><a class="action-card" routerLink="/modificar-perfil"><b>Modificar datos</b>
-                        <p>Actualiza correo, teléfono y dirección.</p>
-                    </a></div>
-            </div>
-            <div class="panel">
-                <h2>Próxima atención</h2>
-                <ng-container *ngIf="nextAppointment as appt; else noNext">
-                    <div class="appointment">
-                        <span class="badge">{{ appt.estado | titlecase }}</span>
-                        <strong>Consulta · {{ appt.doctor }}</strong>
-                        <span>{{ appt.fechaInicio | date:'d \'de\' MMMM · HH:mm' }}</span>
-                        <span>Motivo: {{ appt.motivo || 'Sin motivo' }}</span>
-                    </div>
-                </ng-container>
-                <ng-template #noNext>
-                    <div class="appointment empty">No hay próximas atenciones</div>
-                </ng-template>
-            </div>
-        </section>
-    </main>
+
+        <div class="panel">
+          <h2>Accesos rápidos</h2>
+          <div class="quick-actions single-column">
+            <a class="action-card" routerLink="/agenda"><span class="action-icon">📅</span><b>Agendar atención</b><p>Consulta horas disponibles en tiempo real.</p></a>
+            <a class="action-card" routerLink="/ficha-clinica"><span class="action-icon">📋</span><b>Revisar ficha clínica</b><p>Consulta las atenciones registradas por tus profesionales.</p></a>
+            <a class="action-card" routerLink="/modificar-perfil"><span class="action-icon">⚙️</span><b>Completar mis datos</b><p>Actualiza previsión, contacto y antecedentes.</p></a>
+          </div>
+        </div>
+      </section>
+    </ng-container>
+  </main>
 </div>

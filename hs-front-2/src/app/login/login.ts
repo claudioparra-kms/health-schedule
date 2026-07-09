@@ -1,98 +1,97 @@
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpClient } from '@angular/common/http';
-import { Router, RouterLink } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, ChangeDetectorRef, inject } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { AuthService } from '../core/auth.service';
+import { Rol } from '../core/models';
+import { normalizarRut, validarRut } from '../core/rut';
+import { finalize } from 'rxjs';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, RouterLink, CommonModule],
+  imports: [CommonModule, FormsModule, RouterLink],
   templateUrl: './login.html',
-  styleUrls: ['./login.css']
+  styleUrls: ['./login.css'],
 })
 export class Login {
+  private readonly cdr = inject(ChangeDetectorRef);
+
   rut = '';
   password = '';
   rutInvitado = '';
   mensajeError = '';
   mensajeErrorInvitado = '';
+  cargando = false;
+  cargandoInvitado = false;
+  mostrarPassword = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private readonly auth: AuthService, private readonly router: Router) {}
 
-  formatearRut() {
-    let r = this.rut.replace(/\./g, '').replace(/-/g, '').trim();
-    if (r.length < 2) { this.mensajeError = 'El RUT ingresado no es válido'; return; }
-    this.rut = r.slice(0, -1) + '-' + r.slice(-1);
+  formatearRut(): void {
+    this.rut = normalizarRut(this.rut);
   }
 
-  formatearRutInvitado() {
-    let r = this.rutInvitado.replace(/\./g, '').replace(/-/g, '').trim();
-    if (r.length < 2) { this.mensajeErrorInvitado = 'El RUT ingresado no es válido'; return; }
-    this.rutInvitado = r.slice(0, -1) + '-' + r.slice(-1);
+  formatearRutInvitado(): void {
+    this.rutInvitado = normalizarRut(this.rutInvitado);
   }
 
-  validarRut(rut: string) {
-    return /^[0-9]{7,8}-[0-9Kk]$/.test(rut);
-  }
-
-  login() {
+  login(): void {
     this.mensajeError = '';
     this.formatearRut();
 
-    if (!this.rut.trim()) { this.mensajeError = 'El RUT es obligatorio'; return; }
-    if (!this.validarRut(this.rut)) { this.mensajeError = 'El RUT ingresado no es válido. Ejemplo: 21667001-6'; return; }
-    if (!this.password.trim()) { this.mensajeError = 'La contraseña es obligatoria'; return; }
-    if (this.password.length < 8) { this.mensajeError = 'La contraseña debe tener mínimo 8 caracteres'; return; }
+    if (!validarRut(this.rut)) {
+      this.mensajeError = 'Ingresa un RUT chileno válido, por ejemplo 12345678-5.';
+      return;
+    }
+    if (this.password.length < 8) {
+      this.mensajeError = 'La contraseña debe tener al menos 8 caracteres.';
+      return;
+    }
 
-    this.http.post<any>('http://localhost:5220/Auth/Login', {
-      rut: this.rut,
-      password: this.password
-    }).subscribe({
-      next: (data) => {
-  
-        localStorage.clear();
-
-        localStorage.setItem('id',          data.id?.toString() ?? '');
-        localStorage.setItem('rol',        data.rol);
-        localStorage.setItem('nombre',     data.nombre);
-        localStorage.setItem('rut',        data.rut);
-        localStorage.setItem('correo',     data.correo ?? '');
-        localStorage.setItem('paciente_id', data.paciente_id?.toString() ?? '');
-        localStorage.setItem('doctor_id',   data.doctor_id?.toString() ?? '');
-        localStorage.setItem('edad',        data.edad?.toString() ?? '');
-
-        if (data.rol === 'admin')    this.router.navigate(['/dashboard-admin']);
-        else if (data.rol === 'doctor')   this.router.navigate(['/dashboard-doctor']);
-        else if (data.rol === 'paciente') this.router.navigate(['/dashboard-paciente']);
+    this.cargando = true;
+    this.auth.login(this.rut, this.password).pipe(finalize(() => this.cdr.markForCheck())).subscribe({
+      next: ({ usuario }) => {
+        this.cargando = false;
+        this.irAlPanel(usuario.rol);
       },
-      error: () => this.mensajeError = 'RUT o contraseña incorrectos'
+      error: (error: HttpErrorResponse) => {
+        this.cargando = false;
+        this.mensajeError = error.error?.mensaje ?? 'No fue posible iniciar sesión. Revisa que el backend esté ejecutándose.';
+      },
     });
   }
 
-  guestLogin() {
+  guestLogin(): void {
     this.mensajeErrorInvitado = '';
-
-    if (!this.rutInvitado.trim()) { this.mensajeErrorInvitado = 'Ingresa tu RUT para continuar como invitado'; return; }
     this.formatearRutInvitado();
-    if (!this.validarRut(this.rutInvitado)) { this.mensajeErrorInvitado = 'El RUT ingresado no es válido. Ejemplo: 21667001-6'; return; }
 
-    this.http.post<any>('http://localhost:5220/Auth/Invitado', {
-      rut: this.rutInvitado
-    }).subscribe({
-      next: (data) => {
+    if (!validarRut(this.rutInvitado)) {
+      this.mensajeErrorInvitado = 'Ingresa un RUT chileno válido.';
+      return;
+    }
 
-        localStorage.clear();
-
-
-        localStorage.setItem('rol',         'invitado');
-        localStorage.setItem('nombre',      'Invitado');
-        localStorage.setItem('rut',         this.rutInvitado);
-        localStorage.setItem('paciente_id', data.paciente_id?.toString() ?? '');
-
+    this.cargandoInvitado = true;
+    this.auth.ingresarInvitado(this.rutInvitado).pipe(finalize(() => this.cdr.markForCheck())).subscribe({
+      next: () => {
+        this.cargandoInvitado = false;
         this.router.navigate(['/dashboard-invitado']);
       },
-      error: () => this.mensajeErrorInvitado = 'Error al registrar ingreso como invitado'
+      error: (error: HttpErrorResponse) => {
+        this.cargandoInvitado = false;
+        this.mensajeErrorInvitado = error.error?.mensaje ?? 'No fue posible continuar como invitado.';
+      },
     });
+  }
+
+  private irAlPanel(rol: Rol): void {
+    const routes: Record<Rol, string> = {
+      paciente: '/dashboard-paciente',
+      doctor: '/dashboard-doctor',
+      admin: '/dashboard-admin',
+      invitado: '/dashboard-invitado',
+    };
+    this.router.navigate([routes[rol]]);
   }
 }

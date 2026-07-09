@@ -1,63 +1,43 @@
 <div class="app-shell">
   <aside class="sidebar">
-    <a class="hs-logo" routerLink="/">
-      <span class="hs-logo-mark">H&S</span>
-      <span class="hs-logo-text">
-        <strong>Citas</strong>
-        <span>Mis atenciones</span>
-      </span>
-    </a>
+    <a class="hs-logo" [routerLink]="inicioLink"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>{{ esInvitado ? 'Invitado' : 'Paciente' }}</strong><span>Mis reservas</span></span></a>
     <nav class="side-nav">
-      <a class="side-link" routerLink="/dashboard-paciente">🏠 Inicio</a>
-      <a class="side-link" routerLink="/agenda">📅 Agendar</a>
+      <a class="side-link" [routerLink]="inicioLink">🏠 Inicio</a>
+      <a class="side-link" routerLink="/agenda">📅 Reservar hora</a>
       <a class="side-link active" routerLink="/mis-citas">🕘 Mis citas</a>
+      <a class="side-link" *ngIf="!esInvitado" routerLink="/ficha-clinica">📋 Ficha clínica</a>
+      <a class="side-link" *ngIf="esInvitado" routerLink="/registro-paciente">📝 Crear cuenta</a>
     </nav>
   </aside>
 
   <main class="main-content">
-    <div class="page-head">
-      <div>
-        <h1>Mis citas</h1>
-        <p>Revisa tus próximas atenciones y su estado.</p>
-      </div>
-      <a class="hs-btn" routerLink="/agenda">Nueva cita</a>
+    <div class="page-head"><div><span class="eyebrow">Agenda personal</span><h1>Mis citas</h1><p>Revisa el estado, profesional y horario de cada atención.</p></div><a class="hs-btn" routerLink="/agenda">+ Nueva reserva</a></div>
+    <div class="notice success-notice" *ngIf="mensaje">{{ mensaje }}</div>
+    <div class="notice error-notice" *ngIf="mensajeError">{{ mensajeError }}</div>
+
+    <div class="filter-tabs">
+      <button type="button" [class.active]="filtro === 'todas'" (click)="filtro = 'todas'">Todas</button>
+      <button type="button" [class.active]="filtro === 'proximas'" (click)="filtro = 'proximas'">Próximas</button>
+      <button type="button" [class.active]="filtro === 'historial'" (click)="filtro = 'historial'">Historial</button>
     </div>
 
-    <div class="table-panel">
-
-  @if (cargando) {
-    <p>Cargando citas...</p>
-  }
-
-  @if (mensajeError) {
-    <p class="error">{{ mensajeError }}</p>
-  }
-
-  @if (!cargando && !mensajeError && citas.length === 0) {
-    <p>No tienes citas registradas.</p>
-  }
-
-  @if (!cargando && citas.length > 0) {
-    <table class="table">
-      <tr>
-        <th>Fecha</th>
-        <th>Hora</th>
-        <th>Doctor</th>
-        <th>Motivo</th>
-        <th>Estado</th>
-      </tr>
-      @for (cita of citas; track cita.id) {
-        <tr>
-          <td>{{ formatearFecha(cita.fechaInicio) }}</td>
-          <td>{{ formatearHora(cita.fechaInicio) }}</td>
-          <td>{{ cita.doctor }}</td>
-          <td>{{ cita.motivo }}</td>
-          <td><span [class]="badgeClase(cita.estado)">{{ cita.estado }}</span></td>
-        </tr>
-      }
-    </table>
-  }
-
-</div>
+    <div class="loading-card" *ngIf="cargando">Cargando citas…</div>
+    <div class="content-card" *ngIf="!cargando">
+      <div class="empty-state" *ngIf="citasFiltradas.length === 0"><span>🗓️</span><h3>No hay citas en esta sección</h3><p>Puedes revisar otro filtro o reservar una nueva atención.</p></div>
+      <div class="responsive-table" *ngIf="citasFiltradas.length > 0">
+        <table class="table appointments-table">
+          <thead><tr><th>Fecha y hora</th><th>Profesional</th><th>Motivo</th><th>Estado</th><th></th></tr></thead>
+          <tbody>
+            <tr *ngFor="let cita of citasFiltradas">
+              <td><strong>{{ formatearFecha(cita.fechaInicio) }}</strong><small>{{ formatearHora(cita.fechaInicio) }}</small></td>
+              <td><strong>{{ cita.doctor }}</strong><small>{{ cita.especialidad }}</small></td>
+              <td>{{ cita.motivo }}</td>
+              <td><span [class]="'badge badge-' + cita.estado">{{ cita.estado }}</span></td>
+              <td class="table-actions"><button type="button" class="text-button danger-text" *ngIf="puedeCancelar(cita)" [disabled]="cancelandoId === cita.id" (click)="cancelar(cita)">{{ cancelandoId === cita.id ? 'Cancelando…' : 'Cancelar' }}</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </main>
 </div>

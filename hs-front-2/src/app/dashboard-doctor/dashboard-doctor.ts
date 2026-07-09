@@ -1,59 +1,66 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterLink } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
+import { finalize, forkJoin } from 'rxjs';
+import { AuthService } from '../core/auth.service';
+import { CitaDoctor, ResumenDoctor } from '../core/models';
+import { HealthService } from '../core/health.service';
 
 @Component({
-	selector: 'app-dashboard-doctor',
-	standalone: true,
-	imports: [RouterLink, CommonModule],
-	templateUrl: './dashboard-doctor.html',
-	styleUrls: ['./dashboard-doctor.css']
+  selector: 'app-dashboard-doctor',
+  standalone: true,
+  imports: [CommonModule, RouterLink],
+  templateUrl: './dashboard-doctor.html',
+  styleUrls: ['./dashboard-doctor.css'],
 })
 export class DashboardDoctor implements OnInit {
-	usuario: any = JSON.parse(localStorage.getItem('usuario') || '{}');
-	citas: any[] = [];
+  private readonly cdr = inject(ChangeDetectorRef);
 
-	constructor(private http: HttpClient) {}
+  resumen: ResumenDoctor = { citasHoy: 0, proximas: 0, pendientes: 0, pacientes: 0 };
+  citas: CitaDoctor[] = [];
+  cargando = true;
+  mensajeError = '';
 
-	ngOnInit() {
-		const doctorId = localStorage.getItem('doctor_id') || this.usuario?.id;
-		if (!doctorId) return;
+  constructor(
+    readonly auth: AuthService,
+    private readonly health: HealthService,
+    private readonly router: Router,
+  ) {}
 
-		this.http.get<any[]>(`http://localhost:5220/Citas/Doctor/${doctorId}`)
-			.subscribe({
-				next: data => this.citas = data,
-				error: err => console.log('Error al cargar citas doctor:', err)
-			});
-	}
+  ngOnInit(): void {
+    forkJoin({ resumen: this.health.getResumenDoctor(), citas: this.health.getAgendaDoctor() }).pipe(finalize(() => this.cdr.markForCheck())).subscribe({
+      next: ({ resumen, citas }) => {
+        this.resumen = resumen;
+        this.citas = citas;
+        this.cargando = false;
+      },
+      error: () => {
+        this.mensajeError = 'No fue posible cargar el panel profesional.';
+        this.cargando = false;
+      },
+    });
+  }
 
-	get nombre(): string {
-		return this.usuario?.nombre || localStorage.getItem('nombre') || 'Doctor';
-	}
+  get proximasCitas(): CitaDoctor[] {
+    const ahora = Date.now();
+    return this.citas
+      .filter((cita) => new Date(cita.fechaInicio).getTime() >= ahora && ['pendiente', 'confirmada'].includes(cita.estado))
+      .sort((a, b) => new Date(a.fechaInicio).getTime() - new Date(b.fechaInicio).getTime())
+      .slice(0, 5);
+  }
 
-	private normalizeDates(list: any[]) {
-		return list.map(c => ({ ...c, _fecha: new Date(c.fechaInicio) }));
-	}
+  formatearFecha(fecha: string): string {
+    return new Date(fecha).toLocaleDateString('es-CL', { weekday: 'short', day: '2-digit', month: 'short' });
+  }
 
-	get citasHoy(): any[] {
-		const start = new Date(); start.setHours(0, 0, 0, 0);
-		const end = new Date(start); end.setDate(end.getDate() + 1);
-		return this.normalizeDates(this.citas)
-			.filter(c => c._fecha >= start && c._fecha < end && c.estado !== 'cancelada' && c.estado !== 'no_asiste')
-			.sort((a, b) => a._fecha.getTime() - b._fecha.getTime());
-	}
+  formatearHora(fecha: string): string {
+    return new Date(fecha).toLocaleTimeString('es-CL', { hour: '2-digit', minute: '2-digit' });
+  }
 
-	get citasHoyCount(): number {
-		return this.citasHoy.length;
-	}
-
-	get porConfirmar(): any[] {
-		return this.normalizeDates(this.citas)
-			.filter(c => c.estado === 'pendiente')
-			.sort((a, b) => a._fecha.getTime() - b._fecha.getTime());
-	}
-
-	get porConfirmarCount(): number {
-		return this.porConfirmar.length;
-	}
+  cerrarSesion(): void {
+    this.auth.logout().pipe(finalize(() => this.cdr.markForCheck())).subscribe({
+      next: () => this.router.navigate(['/']),
+      error: () => this.router.navigate(['/']),
+    });
+  }
 }

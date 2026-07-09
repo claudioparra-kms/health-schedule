@@ -1,88 +1,18 @@
 <div class="app-shell">
   <aside class="sidebar">
-    <a class="hs-logo" routerLink="/dashboard-doctor">
-      <span class="hs-logo-mark">H&S</span>
-      <span class="hs-logo-text"><strong>Doctor</strong><span>Panel clínico</span></span>
-    </a>
-
-    <nav class="side-nav">
-      <a class="side-link active" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
-      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
-      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
-      <a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
-      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
-      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
-    </nav>
+    <a class="hs-logo" routerLink="/dashboard-doctor"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Profesional</strong><span>{{ auth.usuario?.especialidad }}</span></span></a>
+    <nav class="side-nav"><a class="side-link active" routerLink="/dashboard-doctor">🏠 Resumen</a><a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Mi agenda</a><a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Mis pacientes</a><a class="side-link" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a><a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a><button class="side-link logout-link" type="button" (click)="cerrarSesion()">🚪 Cerrar sesión</button></nav>
   </aside>
-
-  <main class="main-content" id="doctor-inicio">
-    <div class="page-head">
-      <div>
-        <h1>Hola, {{ nombre }}</h1>
-        <p>Gestiona tu agenda, revisa pacientes y registra la evolución clínica desde tu panel.</p>
-      </div>
-      <a class="hs-btn" routerLink="/dashboard-doctor/agenda">Ver agenda del día</a>
-    </div>
-
-    <section class="stats-grid">
-      <div class="stat-card"><span>Citas hoy</span><strong>{{ citasHoyCount }}</strong></div>
-      <div class="stat-card"><span>Por confirmar</span><strong>{{ porConfirmarCount }}</strong></div>
-    </section>
-
-    <section class="panel-grid">
-      <div class="panel">
-        <h2>Acciones rápidas del doctor</h2>
-        <div class="quick-actions">
-          <a class="action-card" routerLink="/dashboard-doctor/agenda">
-            <b>Agenda del día</b>
-            <p>Revisa las próximas atenciones y los horarios disponibles.</p>
-          </a>
-          <a class="action-card" routerLink="/dashboard-doctor/pacientes">
-            <b>Pacientes asignados</b>
-            <p>Consulta pacientes con controles de nutrición y salud mental.</p>
-          </a>
-          <a class="action-card" routerLink="/dashboard-doctor/fichas">
-            <b>Fichas clínicas</b>
-            <p>Accede a antecedentes, diagnósticos, tratamientos y evolución.</p>
-          </a>
-          <a class="action-card" routerLink="/dashboard-doctor/atencion">
-            <b>Registrar atención</b>
-            <p>Deja observaciones clínicas después de cada consulta.</p>
-          </a>
-        </div>
-      </div>
-
-      <div class="panel">
-        <h2>Citas hoy</h2>
-        <ng-container *ngIf="citasHoy.length; else noHoy">
-          <div class="appointment-list">
-            <div class="appointment" *ngFor="let c of citasHoy">
-              <span class="badge">{{ c.estado | titlecase }}</span>
-              <strong>{{ c._fecha | date:'HH:mm' }} · {{ c.paciente }}</strong>
-              <span>{{ c.motivo || 'Sin motivo' }}</span>
-            </div>
-          </div>
-        </ng-container>
-        <ng-template #noHoy>
-          <div class="appointment empty">No hay citas hoy</div>
-        </ng-template>
-      </div>
-
-      <div class="panel">
-        <h2>Por confirmar</h2>
-        <ng-container *ngIf="porConfirmar.length; else noPor">
-          <div class="appointment-list">
-            <div class="appointment" *ngFor="let c of porConfirmar">
-              <span class="badge">{{ c.estado | titlecase }}</span>
-              <strong>{{ c._fecha | date:'d MMM · HH:mm' }} · {{ c.paciente }}</strong>
-              <span>{{ c.motivo || 'Sin motivo' }}</span>
-            </div>
-          </div>
-        </ng-container>
-        <ng-template #noPor>
-          <div class="appointment empty">No hay citas por confirmar</div>
-        </ng-template>
-      </div>
-    </section>
-
-    
+  <main class="main-content">
+    <div class="page-head"><div><span class="eyebrow">Panel profesional</span><h1>Hola, {{ auth.usuario?.nombre }}</h1><p>Revisa tu agenda y continúa el seguimiento de tus pacientes.</p></div><a class="hs-btn" routerLink="/dashboard-doctor/atencion">Registrar atención</a></div>
+    <div class="notice error-notice" *ngIf="mensajeError">{{ mensajeError }}</div>
+    <div class="loading-card" *ngIf="cargando">Cargando agenda profesional…</div>
+    <ng-container *ngIf="!cargando">
+      <section class="stats-grid"><div class="stat-card"><span>Citas de hoy</span><strong>{{ resumen.citasHoy }}</strong><small>pendientes o confirmadas</small></div><div class="stat-card"><span>Próximas</span><strong>{{ resumen.proximas }}</strong><small>desde ahora</small></div><div class="stat-card"><span>Por confirmar</span><strong>{{ resumen.pendientes }}</strong><small>requieren revisión</small></div><div class="stat-card"><span>Pacientes</span><strong>{{ resumen.pacientes }}</strong><small>con atenciones asociadas</small></div></section>
+      <section class="panel-grid">
+        <div class="panel"><div class="panel-heading"><div><h2>Próximas atenciones</h2><p>Ordenadas por fecha y hora.</p></div><a routerLink="/dashboard-doctor/agenda">Agenda completa</a></div><div class="empty-state" *ngIf="proximasCitas.length === 0"><span>☕</span><h3>No hay atenciones próximas</h3><p>Tu agenda no tiene citas pendientes o confirmadas.</p></div><div class="appointment-list"><article class="appointment appointment-row" *ngFor="let cita of proximasCitas"><div class="date-tile"><strong>{{ formatearFecha(cita.fechaInicio) }}</strong><span>{{ formatearHora(cita.fechaInicio) }}</span></div><div><strong>{{ cita.paciente }}</strong><span>{{ cita.rutPaciente }} · {{ cita.motivo }}</span></div><span [class]="'badge badge-' + cita.estado">{{ cita.estado }}</span></article></div></div>
+        <div class="panel"><h2>Herramientas clínicas</h2><div class="quick-actions single-column"><a class="action-card" routerLink="/dashboard-doctor/agenda"><span class="action-icon">📅</span><b>Gestionar agenda</b><p>Confirma, cancela o marca inasistencias.</p></a><a class="action-card" routerLink="/dashboard-doctor/fichas"><span class="action-icon">📋</span><b>Consultar fichas</b><p>Revisa antecedentes y atenciones anteriores.</p></a><a class="action-card" routerLink="/dashboard-doctor/atencion"><span class="action-icon">🩺</span><b>Registrar atención</b><p>Incorpora diagnóstico, tratamiento y receta.</p></a></div></div>
+      </section>
+    </ng-container>
+  </main>
+</div>

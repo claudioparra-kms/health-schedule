@@ -1,366 +1,441 @@
+using System.Security.Cryptography;
 using Microsoft.AspNetCore.Mvc;
 using MySqlConnector;
 using proyecto_ids_api.Models;
+using proyecto_ids_api.Services;
 
-namespace proyecto_ids_api.Controllers
+namespace proyecto_ids_api.Controllers;
+
+[ApiController]
+[Route("api/auth")]
+public sealed class AuthController : ControllerBase
 {
-    [ApiController]
-    [Route("[controller]")]
-    public class AuthController : ControllerBase
+    private readonly string _connectionString;
+    private readonly PasswordHasher _passwordHasher;
+    private readonly SessionService _sessions;
+
+    public AuthController(
+        IConfiguration configuration,
+        PasswordHasher passwordHasher,
+        SessionService sessions)
     {
-        private readonly string _connectionString;
+        _connectionString = configuration.GetConnectionString("DefaultConnection")
+            ?? throw new InvalidOperationException("No se configuró la conexión a MySQL.");
+        _passwordHasher = passwordHasher;
+        _sessions = sessions;
+    }
 
-        public AuthController(IConfiguration configuration)
-        {
-            _connectionString = configuration.GetConnectionString("DefaultConnection")
-                ?? throw new InvalidOperationException("Connection string no encontrada.");
-        }
+    [HttpPost("login")]
+    public async Task<IActionResult> Login(LoginRequest model, CancellationToken cancellationToken)
+    {
+        var rut = RutValidator.Normalize(model.Rut);
+        if (!RutValidator.IsValid(rut))
+            return BadRequest(new { mensaje = "El RUT no es válido." });
 
-        [HttpPost("Login")]
-        public IActionResult Login([FromBody] LoginModel model)
-        {
-            try
-            {
-                using var conn = new MySqlConnection(_connectionString);
-                conn.Open();
+        const string sql = """
+            SELECT
+                u.id,
+                u.nombre,
+                u.rut,
+                u.correo,
+                u.password_hash,
+                r.nombre AS rol,
+                p.id AS paciente_id,
+                d.id AS doctor_id,
+                d.especialidad
+            FROM usuarios u
+            INNER JOIN roles r ON r.id = u.rol_id
+            LEFT JOIN pacientes p ON p.usuario_id = u.id
+            LEFT JOIN doctores d ON d.usuario_id = u.id
+            WHERE u.rut = @rut AND u.activo = TRUE
+            LIMIT 1;
+            """;
 
-                string sql = @"
-                    SELECT u.id, u.nombre, u.rut, u.correo, u.rol_id, r.nombre AS rol,
-                    p.id AS paciente_id, d.id AS doctor_id, p.edad AS edad
-                    FROM usuarios u
-                    INNER JOIN roles r ON u.rol_id = r.id
-                    LEFT JOIN pacientes p ON p.usuario_id = u.id
-                    LEFT JOIN doctores d ON d.usuario_id = u.id
-                    WHERE u.rut = @rut AND u.password_hash = @password;
-                ";
+        await using var conn = new MySqlConnection(_connectionString);
+        await conn.OpenAsync(cancellationToken);
+        await using var cmd = new MySqlCommand(sql, conn);
+        cmd.Parameters.AddWithValue("@rut", rut);
+        await using var reader = await cmd.ExecuteReaderAsync(cancellationToken);
 
-                using var cmd = new MySqlCommand(sql, conn);
-                cmd.Parameters.AddWithValue("@rut", model.Rut);
-                cmd.Parameters.AddWithValue("@password", model.Password);
+        if (!await reader.ReadAsync(cancellationToken))
+            return Unauthorized(new { mensaje = "RUT o contraseña incorrectos." });
 
-                using var reader = cmd.ExecuteReader();
+        var passwordHash = reader.GetString("password_hash");
+        if (!_passwordHasher.Verify(model.Password, passwordHash))
+            return Unauthorized(new { mensaje = "RUT o contraseña incorrectos." });
 
-                if (!reader.Read())
-                {
-                    return Unauthorized(new { mensaje = "Rut o contraseña incorrectos" });
-                }
+        var usuario = ReadUser(reader);
+        await reader.CloseAsync();
 
-                return Ok(new
-                {
-                    mensaje = "Login correcto",
-                    id = reader["id"],
-                    nombre = reader["nombre"],
-                    rut = reader["rut"],
-                  
-                    correo = reader["correo"] == DBNull.Value ? null : reader["correo"],
-                    rol_id = reader["rol_id"],
-                    rol = reader["rol"],
-                    edad = reader["edad"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["edad"]),
-                    paciente_id = reader["paciente_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["paciente_id"]),
-                    doctor_id = reader["doctor_id"] == DBNull.Value ? (int?)null : Convert.ToInt32(reader["doctor_id"])
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en Login: {ex.Message}");
-                return StatusCode(500, new { mensaje = "Error interno del servidor" });
-            }
-        }
+        var token = await _sessions.CreateAsync(conn, null, usuario.UsuarioId, cancellationToken);
+        return Ok(CreateSessionResponse(token, usuario));
+    }
 
-        [HttpPost("Invitado")]
-        public IActionResult Invitado([FromBody] InvitadoModel model)
-        {
+    [HttpPost("invitado")]
+    public async Task<IActionResult> Invitado(InvitadoRequest model, CancellationToken cancellationToken)
+    {
+        var rut = RutValidator.Normalize(model.Rut);
+        if (!RutValidator.IsValid(rut))
+            return BadRequest(new { mensaje = "El RUT no es válido." });
+
+        await using var conn = new MySqlConnection(_connectionString);
+        await conn.OpenAsync(cancellationToken);
+        await using var transaction = await conn.BeginTransactionAsync(cancellationToken);
+
         try
-            {
-            using var conn = new MySqlConnection(_connectionString);
-            conn.Open();
-            using var transaction = conn.BeginTransaction();
-
-            string sqlVerificar = @"
-                SELECT COUNT(*) FROM usuarios 
-                WHERE rut = @rut 
-                AND rol_id != (SELECT id FROM roles WHERE nombre = 'invitado');
-                ";
-            using var cmdVerificar = new MySqlCommand(sqlVerificar, conn, transaction);
-            cmdVerificar.Parameters.AddWithValue("@rut", model.Rut);
-
-            if (Convert.ToInt32(cmdVerificar.ExecuteScalar()) > 0)
-            {
-                return BadRequest(new { mensaje = "Ya existe una cuenta registrada con ese RUT. Inicia sesión normalmente." });
-            }
-
-        // Buscar si ya existe un paciente invitado con ese RUT
-        string sqlBuscarPaciente = @"
-            SELECT p.id FROM pacientes p
-            INNER JOIN usuarios u ON p.usuario_id = u.id
-            WHERE u.rut = @rut;
-        ";
-        using var cmdBuscarPaciente = new MySqlCommand(sqlBuscarPaciente, conn, transaction);
-        cmdBuscarPaciente.Parameters.AddWithValue("@rut", model.Rut);
-        var pacienteIdObj = cmdBuscarPaciente.ExecuteScalar();
-
-        int pacienteId;
-
-        if (pacienteIdObj == null)
         {
-            string sqlUsuario = @"
-                INSERT INTO usuarios (rut, nombre, password_hash, rol_id)
-                VALUES (@rut, 'Invitado', 'invitado123',
-                        (SELECT id FROM roles WHERE nombre = 'invitado'));
-                SELECT LAST_INSERT_ID();
-            ";
-            using var cmdUsuario = new MySqlCommand(sqlUsuario, conn, transaction);
-            cmdUsuario.Parameters.AddWithValue("@rut", model.Rut);
-            int usuarioId = Convert.ToInt32(cmdUsuario.ExecuteScalar());
+            const string buscarSql = """
+                SELECT u.id, r.nombre AS rol, p.id AS paciente_id
+                FROM usuarios u
+                INNER JOIN roles r ON r.id = u.rol_id
+                LEFT JOIN pacientes p ON p.usuario_id = u.id
+                WHERE u.rut = @rut
+                LIMIT 1;
+                """;
 
-            string sqlPaciente = @"
-                INSERT INTO pacientes (usuario_id) VALUES (@usuarioId);
-                SELECT LAST_INSERT_ID();
-            ";
-            using var cmdPaciente = new MySqlCommand(sqlPaciente, conn, transaction);
-            cmdPaciente.Parameters.AddWithValue("@usuarioId", usuarioId);
-            pacienteId = Convert.ToInt32(cmdPaciente.ExecuteScalar());
-            }
-            else
+            int usuarioId;
+            int pacienteId;
+            string? rolExistente = null;
+
+            await using (var buscar = new MySqlCommand(buscarSql, conn, transaction))
             {
-                pacienteId = Convert.ToInt32(pacienteIdObj);
+                buscar.Parameters.AddWithValue("@rut", rut);
+                await using var reader = await buscar.ExecuteReaderAsync(cancellationToken);
+
+                if (await reader.ReadAsync(cancellationToken))
+                {
+                    usuarioId = reader.GetInt32("id");
+                    rolExistente = reader.GetString("rol");
+                    pacienteId = reader.IsDBNull(reader.GetOrdinal("paciente_id"))
+                        ? 0
+                        : reader.GetInt32("paciente_id");
+                }
+                else
+                {
+                    usuarioId = 0;
+                    pacienteId = 0;
+                }
             }
 
-            string sqlIngreso = @"
-                INSERT INTO ingresos_invitados (rut, paciente_id)
-                VALUES (@rut, @pacienteId);
-            ";
-            using var cmdIngreso = new MySqlCommand(sqlIngreso, conn, transaction);
-            cmdIngreso.Parameters.AddWithValue("@rut", model.Rut);
-            cmdIngreso.Parameters.AddWithValue("@pacienteId", pacienteId);
-            cmdIngreso.ExecuteNonQuery();
-
-            transaction.Commit();
-
-            return Ok(new
+            if (usuarioId > 0 && rolExistente != "invitado")
             {
-                mensaje = "Ingreso como invitado registrado",
-                rol = "invitado",
-                paciente_id = pacienteId,
-                rut = model.Rut
-            });
+                await transaction.RollbackAsync(cancellationToken);
+                return Conflict(new { mensaje = "Este RUT ya tiene una cuenta. Inicia sesión con tu contraseña." });
             }
-        catch (Exception ex)
+
+            if (usuarioId == 0)
+            {
+                const string insertarUsuarioSql = """
+                    INSERT INTO usuarios (rut, nombre, correo, password_hash, telefono, rol_id, activo)
+                    VALUES (
+                        @rut,
+                        'Paciente invitado',
+                        NULL,
+                        @passwordHash,
+                        NULL,
+                        (SELECT id FROM roles WHERE nombre = 'invitado'),
+                        TRUE
+                    );
+                    SELECT LAST_INSERT_ID();
+                    """;
+
+                await using var insertarUsuario = new MySqlCommand(insertarUsuarioSql, conn, transaction);
+                insertarUsuario.Parameters.AddWithValue("@rut", rut);
+                insertarUsuario.Parameters.AddWithValue(
+                    "@passwordHash",
+                    _passwordHasher.Hash(Convert.ToHexString(RandomNumberGenerator.GetBytes(24))));
+                usuarioId = Convert.ToInt32(await insertarUsuario.ExecuteScalarAsync(cancellationToken));
+
+                const string insertarPacienteSql = """
+                    INSERT INTO pacientes (usuario_id) VALUES (@usuarioId);
+                    SELECT LAST_INSERT_ID();
+                    """;
+                await using var insertarPaciente = new MySqlCommand(insertarPacienteSql, conn, transaction);
+                insertarPaciente.Parameters.AddWithValue("@usuarioId", usuarioId);
+                pacienteId = Convert.ToInt32(await insertarPaciente.ExecuteScalarAsync(cancellationToken));
+
+                await using var ficha = new MySqlCommand(
+                    "INSERT INTO fichas_clinicas (paciente_id, observaciones_generales) VALUES (@pacienteId, 'Ficha de invitado.');",
+                    conn,
+                    transaction);
+                ficha.Parameters.AddWithValue("@pacienteId", pacienteId);
+                await ficha.ExecuteNonQueryAsync(cancellationToken);
+            }
+
+            await using (var ingreso = new MySqlCommand(
+                "INSERT INTO ingresos_invitados (rut, paciente_id) VALUES (@rut, @pacienteId);",
+                conn,
+                transaction))
+            {
+                ingreso.Parameters.AddWithValue("@rut", rut);
+                ingreso.Parameters.AddWithValue("@pacienteId", pacienteId);
+                await ingreso.ExecuteNonQueryAsync(cancellationToken);
+            }
+
+            var token = await _sessions.CreateAsync(conn, transaction, usuarioId, cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+
+            var usuario = new SessionUser(
+                usuarioId,
+                "Paciente invitado",
+                rut,
+                null,
+                "invitado",
+                pacienteId,
+                null,
+                null);
+
+            return Ok(CreateSessionResponse(token, usuario));
+        }
+        catch
         {
-            Console.WriteLine($"Error en Invitado: {ex.Message}");
-            return StatusCode(500, new { mensaje = "Error interno del servidor" });
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
         }
     }
 
-        [HttpPost("Registro")]
-        public IActionResult Registro([FromBody] RegistroModel model)
+    [HttpPost("registro")]
+    public async Task<IActionResult> Registro(RegistroRequest model, CancellationToken cancellationToken)
+    {
+        var rut = RutValidator.Normalize(model.Rut);
+        var nombre = model.Nombre.Trim();
+        var correo = model.Correo.Trim().ToLowerInvariant();
+        var telefono = model.Telefono.Trim();
+
+        if (!RutValidator.IsValid(rut))
+            return BadRequest(new { mensaje = "El RUT no es válido." });
+        if (nombre.Length < 4)
+            return BadRequest(new { mensaje = "Ingresa tu nombre completo." });
+        if (model.Password.Length < 8)
+            return BadRequest(new { mensaje = "La contraseña debe tener al menos 8 caracteres." });
+
+        await using var conn = new MySqlConnection(_connectionString);
+        await conn.OpenAsync(cancellationToken);
+        await using var transaction = await conn.BeginTransactionAsync(cancellationToken);
+
+        try
         {
-            try
+            int usuarioId = 0;
+            int pacienteId = 0;
+            string? rolExistente = null;
+
+            const string buscarSql = """
+                SELECT u.id, r.nombre AS rol, p.id AS paciente_id
+                FROM usuarios u
+                INNER JOIN roles r ON r.id = u.rol_id
+                LEFT JOIN pacientes p ON p.usuario_id = u.id
+                WHERE u.rut = @rut
+                LIMIT 1;
+                """;
+
+            await using (var buscar = new MySqlCommand(buscarSql, conn, transaction))
             {
-                using var conn = new MySqlConnection(_connectionString);
-                conn.Open();
+                buscar.Parameters.AddWithValue("@rut", rut);
+                await using var reader = await buscar.ExecuteReaderAsync(cancellationToken);
+                if (await reader.ReadAsync(cancellationToken))
+                {
+                    usuarioId = reader.GetInt32("id");
+                    rolExistente = reader.GetString("rol");
+                    pacienteId = reader.IsDBNull(reader.GetOrdinal("paciente_id"))
+                        ? 0
+                        : reader.GetInt32("paciente_id");
+                }
+            }
 
-                using var transaction = conn.BeginTransaction();
+            var hash = _passwordHasher.Hash(model.Password);
 
-                string sqlUsuario = @"
-                    INSERT INTO usuarios (rut, nombre, correo, telefono, password_hash, rol_id)
+            if (usuarioId > 0 && rolExistente != "invitado")
+            {
+                await transaction.RollbackAsync(cancellationToken);
+                return Conflict(new { mensaje = "Ya existe una cuenta con ese RUT." });
+            }
+
+            if (usuarioId > 0)
+            {
+                const string actualizarInvitadoSql = """
+                    UPDATE usuarios
+                    SET nombre = @nombre,
+                        correo = @correo,
+                        telefono = @telefono,
+                        password_hash = @passwordHash,
+                        rol_id = (SELECT id FROM roles WHERE nombre = 'paciente'),
+                        activo = TRUE
+                    WHERE id = @usuarioId;
+                    """;
+                await using var actualizar = new MySqlCommand(actualizarInvitadoSql, conn, transaction);
+                actualizar.Parameters.AddWithValue("@nombre", nombre);
+                actualizar.Parameters.AddWithValue("@correo", correo);
+                actualizar.Parameters.AddWithValue("@telefono", DbValue(telefono));
+                actualizar.Parameters.AddWithValue("@passwordHash", hash);
+                actualizar.Parameters.AddWithValue("@usuarioId", usuarioId);
+                await actualizar.ExecuteNonQueryAsync(cancellationToken);
+            }
+            else
+            {
+                const string insertarUsuarioSql = """
+                    INSERT INTO usuarios (rut, nombre, correo, password_hash, telefono, rol_id, activo)
                     VALUES (
                         @rut,
                         @nombre,
                         @correo,
+                        @passwordHash,
                         @telefono,
-                        @password,
-                        (SELECT id FROM roles WHERE nombre = 'paciente')
+                        (SELECT id FROM roles WHERE nombre = 'paciente'),
+                        TRUE
                     );
                     SELECT LAST_INSERT_ID();
-                ";
+                    """;
+                await using var insertarUsuario = new MySqlCommand(insertarUsuarioSql, conn, transaction);
+                insertarUsuario.Parameters.AddWithValue("@rut", rut);
+                insertarUsuario.Parameters.AddWithValue("@nombre", nombre);
+                insertarUsuario.Parameters.AddWithValue("@correo", correo);
+                insertarUsuario.Parameters.AddWithValue("@passwordHash", hash);
+                insertarUsuario.Parameters.AddWithValue("@telefono", DbValue(telefono));
+                usuarioId = Convert.ToInt32(await insertarUsuario.ExecuteScalarAsync(cancellationToken));
 
-                using var cmdUsuario = new MySqlCommand(sqlUsuario, conn, transaction);
-                cmdUsuario.Parameters.AddWithValue("@rut", model.Rut);
-                cmdUsuario.Parameters.AddWithValue("@nombre", model.Nombre);
-                cmdUsuario.Parameters.AddWithValue("@correo", model.Correo);
-                cmdUsuario.Parameters.AddWithValue("@telefono", model.Telefono);
-                cmdUsuario.Parameters.AddWithValue("@password", model.Password);
+                await using var insertarPaciente = new MySqlCommand(
+                    "INSERT INTO pacientes (usuario_id) VALUES (@usuarioId); SELECT LAST_INSERT_ID();",
+                    conn,
+                    transaction);
+                insertarPaciente.Parameters.AddWithValue("@usuarioId", usuarioId);
+                pacienteId = Convert.ToInt32(await insertarPaciente.ExecuteScalarAsync(cancellationToken));
 
-                int usuarioId = Convert.ToInt32(cmdUsuario.ExecuteScalar());
-
-                string sqlPaciente = @"
-                    INSERT INTO pacientes (usuario_id)
-                    VALUES (@usuarioId);
-                    SELECT LAST_INSERT_ID();
-                ";
-
-                using var cmdPaciente = new MySqlCommand(sqlPaciente, conn, transaction);
-                cmdPaciente.Parameters.AddWithValue("@usuarioId", usuarioId);
-
-                int pacienteId = Convert.ToInt32(cmdPaciente.ExecuteScalar());
-
-                string sqlFicha = @"
-                    INSERT INTO fichas_clinicas (paciente_id, observaciones_generales)
-                    VALUES (@pacienteId, 'Ficha clínica creada automáticamente.');
-                ";
-
-                using var cmdFicha = new MySqlCommand(sqlFicha, conn, transaction);
-                cmdFicha.Parameters.AddWithValue("@pacienteId", pacienteId);
-                cmdFicha.ExecuteNonQuery();
-
-                transaction.Commit();
-
-                return Ok(new { mensaje = "Usuario registrado correctamente",
-                                paciente_id = pacienteId});
+                await using var insertarFicha = new MySqlCommand(
+                    "INSERT INTO fichas_clinicas (paciente_id, observaciones_generales) VALUES (@pacienteId, 'Ficha clínica creada al registrar la cuenta.');",
+                    conn,
+                    transaction);
+                insertarFicha.Parameters.AddWithValue("@pacienteId", pacienteId);
+                await insertarFicha.ExecuteNonQueryAsync(cancellationToken);
             }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en Registro: {ex.Message}");
-                return StatusCode(500, new { mensaje = "Error al registrar usuario" });
-            }
+
+            if (rolExistente == "invitado")
+                await _sessions.RevokeAllForUserAsync(conn, transaction, usuarioId, cancellationToken);
+
+            var token = await _sessions.CreateAsync(conn, transaction, usuarioId, cancellationToken);
+            await transaction.CommitAsync(cancellationToken);
+
+            var usuario = new SessionUser(
+                usuarioId,
+                nombre,
+                rut,
+                correo,
+                "paciente",
+                pacienteId,
+                null,
+                null);
+
+            return Ok(CreateSessionResponse(token, usuario));
         }
-
-        [HttpPost("RecuperarPassword")]
-        public IActionResult RecuperarPassword([FromBody] RecuperarPasswordModel model)
+        catch (MySqlException ex) when (ex.Number == 1062)
         {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(model.RutOCorreo))
-                {
-                    return BadRequest(new { mensaje = "Debe ingresar su RUT o correo." });
-                }
-
-                using var conn = new MySqlConnection(_connectionString);
-                conn.Open();
-
-                string sqlBuscar = @"
-                    SELECT id FROM usuarios
-                    WHERE rut = @valor OR correo = @valor;
-                ";
-
-                using var cmdBuscar = new MySqlCommand(sqlBuscar, conn);
-                cmdBuscar.Parameters.AddWithValue("@valor", model.RutOCorreo.Trim());
-
-                var idObj = cmdBuscar.ExecuteScalar();
-
-                if (idObj == null)
-                {
-                    return NotFound(new { mensaje = "No se encontró una cuenta con ese RUT o correo." });
-                }
-
-                int usuarioId = Convert.ToInt32(idObj);
-
-                // Genera una contraseña temporal de 10 caracteres (letras + números)
-                string passwordTemporal = GenerarPasswordTemporal(10);
-
-                string sqlActualizar = @"
-                    UPDATE usuarios
-                    SET password_hash = @password
-                    WHERE id = @id;
-                ";
-
-                using var cmdActualizar = new MySqlCommand(sqlActualizar, conn);
-                cmdActualizar.Parameters.AddWithValue("@password", passwordTemporal);
-                cmdActualizar.Parameters.AddWithValue("@id", usuarioId);
-                cmdActualizar.ExecuteNonQuery();
-
-                return Ok(new
-                {
-                    mensaje = "Contraseña temporal generada correctamente.",
-                    passwordTemporal = passwordTemporal
-                });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en RecuperarPassword: {ex.Message}");
-                return StatusCode(500, new { mensaje = "Error interno del servidor" });
-            }
+            await transaction.RollbackAsync(cancellationToken);
+            return Conflict(new { mensaje = "El RUT o correo ya está registrado." });
         }
-
-        [HttpPut("ActualizarPerfil")]
-        public IActionResult ActualizarPerfil([FromBody] ActualizarPerfilModel model)
+        catch
         {
-            try
-            {
-                if (model.UsuarioId <= 0)
-                {
-                    return BadRequest(new { mensaje = "Usuario inválido." });
-                }
-
-                if (string.IsNullOrWhiteSpace(model.Correo))
-                {
-                    return BadRequest(new { mensaje = "El correo es obligatorio." });
-                }
-
-                using var conn = new MySqlConnection(_connectionString);
-                conn.Open();
-                using var transaction = conn.BeginTransaction();
-
-                string sqlUsuario = @"
-                    UPDATE usuarios
-                    SET correo = @correo,
-                        telefono = @telefono,
-                        edad = @edad
-                        " + (string.IsNullOrWhiteSpace(model.Password) ? "" : ", password_hash = @password") + @"
-                    WHERE id = @usuarioId;
-                ";
-
-                using var cmdUsuario = new MySqlCommand(sqlUsuario, conn, transaction);
-                cmdUsuario.Parameters.AddWithValue("@correo", model.Correo.Trim());
-                cmdUsuario.Parameters.AddWithValue("@telefono", string.IsNullOrWhiteSpace(model.Telefono) ? DBNull.Value : model.Telefono.Trim());
-            
-                if (!string.IsNullOrWhiteSpace(model.Password))
-                {
-                    cmdUsuario.Parameters.AddWithValue("@password", model.Password);
-                }
-                cmdUsuario.Parameters.AddWithValue("@usuarioId", model.UsuarioId);
-                
-
-                int filasUsuario = cmdUsuario.ExecuteNonQuery();
-
-                if (filasUsuario == 0)
-                {
-                    transaction.Rollback();
-                    return NotFound(new { mensaje = "Usuario no encontrado." });
-                }
-
-                // Actualiza datos propios del paciente (dirección, fecha de nacimiento)
-                string sqlPaciente = @"
-                    UPDATE pacientes
-                    SET direccion = @direccion,
-                        fecha_nacimiento = @fechaNacimiento,
-                        edad = @edad
-                    WHERE usuario_id = @usuarioId;
-                ";
-
-                using var cmdPaciente = new MySqlCommand(sqlPaciente, conn, transaction);
-                cmdPaciente.Parameters.AddWithValue("@direccion", string.IsNullOrWhiteSpace(model.Direccion) ? DBNull.Value : model.Direccion.Trim());
-                cmdPaciente.Parameters.AddWithValue("@fechaNacimiento", model.FechaNacimiento.HasValue ? (object)model.FechaNacimiento.Value : DBNull.Value);
-            
-                cmdPaciente.Parameters.AddWithValue("@usuarioId", model.UsuarioId);
-
-                cmdPaciente.ExecuteNonQuery();
-
-                transaction.Commit();
-
-                return Ok(new { mensaje = "Datos actualizados correctamente" });
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error en ActualizarPerfil: {ex.Message}");
-                return StatusCode(500, new { mensaje = "Error al actualizar los datos" });
-            }
+            await transaction.RollbackAsync(cancellationToken);
+            throw;
         }
+    }
 
-        private static string GenerarPasswordTemporal(int longitud)
+    [HttpPost("recuperar-password")]
+    public async Task<IActionResult> RecuperarPassword(
+        RecuperarPasswordRequest model,
+        CancellationToken cancellationToken)
+    {
+        var valor = model.RutOCorreo.Trim();
+        if (string.IsNullOrWhiteSpace(valor))
+            return BadRequest(new { mensaje = "Ingresa tu RUT o correo." });
+
+        if (!valor.Contains('@')) valor = RutValidator.Normalize(valor);
+
+        await using var conn = new MySqlConnection(_connectionString);
+        await conn.OpenAsync(cancellationToken);
+        await using var transaction = await conn.BeginTransactionAsync(cancellationToken);
+
+        const string buscarSql = "SELECT id FROM usuarios WHERE (rut = @valor OR correo = @valor) AND activo = TRUE LIMIT 1;";
+        await using var buscar = new MySqlCommand(buscarSql, conn, transaction);
+        buscar.Parameters.AddWithValue("@valor", valor.ToLowerInvariant());
+        var usuarioIdObj = await buscar.ExecuteScalarAsync(cancellationToken);
+
+        if (usuarioIdObj is null)
         {
-            const string caracteres = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
-            var bytes = new byte[longitud];
-            System.Security.Cryptography.RandomNumberGenerator.Fill(bytes);
-
-            var resultado = new char[longitud];
-            for (int i = 0; i < longitud; i++)
-            {
-                resultado[i] = caracteres[bytes[i] % caracteres.Length];
-            }
-
-            return new string(resultado);
+            await transaction.RollbackAsync(cancellationToken);
+            return NotFound(new { mensaje = "No encontramos una cuenta activa con esos datos." });
         }
+
+        var usuarioId = Convert.ToInt32(usuarioIdObj);
+        var temporal = GenerateTemporaryPassword(10);
+
+        await using var actualizar = new MySqlCommand(
+            "UPDATE usuarios SET password_hash = @hash WHERE id = @usuarioId;",
+            conn,
+            transaction);
+        actualizar.Parameters.AddWithValue("@hash", _passwordHasher.Hash(temporal));
+        actualizar.Parameters.AddWithValue("@usuarioId", usuarioId);
+        await actualizar.ExecuteNonQueryAsync(cancellationToken);
+        await _sessions.RevokeAllForUserAsync(conn, transaction, usuarioId, cancellationToken);
+        await transaction.CommitAsync(cancellationToken);
+
+        return Ok(new
+        {
+            mensaje = "Contraseña temporal generada. En este prototipo local se muestra en pantalla.",
+            passwordTemporal = temporal,
+            modoLocal = true
+        });
+    }
+
+    [HttpGet("me")]
+    public async Task<IActionResult> Me(CancellationToken cancellationToken)
+    {
+        var usuario = await _sessions.GetCurrentAsync(Request, cancellationToken);
+        return usuario is null
+            ? Unauthorized(new { mensaje = "La sesión expiró. Inicia sesión nuevamente." })
+            : Ok(new { usuario = ToUserObject(usuario) });
+    }
+
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout(CancellationToken cancellationToken)
+    {
+        await _sessions.RevokeCurrentAsync(Request, cancellationToken);
+        return Ok(new { mensaje = "Sesión cerrada correctamente." });
+    }
+
+    private static SessionUser ReadUser(MySqlDataReader reader) => new(
+        reader.GetInt32("id"),
+        reader.GetString("nombre"),
+        reader.GetString("rut"),
+        reader.IsDBNull(reader.GetOrdinal("correo")) ? null : reader.GetString("correo"),
+        reader.GetString("rol"),
+        reader.IsDBNull(reader.GetOrdinal("paciente_id")) ? null : reader.GetInt32("paciente_id"),
+        reader.IsDBNull(reader.GetOrdinal("doctor_id")) ? null : reader.GetInt32("doctor_id"),
+        reader.IsDBNull(reader.GetOrdinal("especialidad")) ? null : reader.GetString("especialidad"));
+
+    private static object CreateSessionResponse(string token, SessionUser usuario) => new
+    {
+        token,
+        usuario = ToUserObject(usuario)
+    };
+
+    private static object ToUserObject(SessionUser usuario) => new
+    {
+        id = usuario.UsuarioId,
+        nombre = usuario.Nombre,
+        rut = usuario.Rut,
+        correo = usuario.Correo,
+        rol = usuario.Rol,
+        pacienteId = usuario.PacienteId,
+        doctorId = usuario.DoctorId,
+        especialidad = usuario.Especialidad
+    };
+
+    private static object DbValue(string value) =>
+        string.IsNullOrWhiteSpace(value) ? DBNull.Value : value;
+
+    private static string GenerateTemporaryPassword(int length)
+    {
+        const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789";
+        var bytes = RandomNumberGenerator.GetBytes(length);
+        return new string(bytes.Select(b => chars[b % chars.Length]).ToArray());
     }
 }

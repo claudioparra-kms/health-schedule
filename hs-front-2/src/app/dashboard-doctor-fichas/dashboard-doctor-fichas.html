@@ -1,57 +1,14 @@
 <div class="app-shell">
-  <aside class="sidebar">
-    <a class="hs-logo" routerLink="/dashboard-doctor">
-      <span class="hs-logo-mark">H&amp;S</span>
-      <span class="hs-logo-text"><strong>Doctor</strong><span>Fichas</span></span>
-    </a>
-
-    <nav class="side-nav">
-      <a class="side-link" routerLink="/dashboard-doctor">🏠 Inicio doctor</a>
-      <a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Agenda del día</a>
-      <a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Pacientes</a>
-      <a class="side-link active" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a>
-      <a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a>
-      <a class="side-link" routerLink="/login">🚪 Cerrar sesión</a>
-    </nav>
-  </aside>
-
+  <aside class="sidebar"><a class="hs-logo" routerLink="/dashboard-doctor"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Profesional</strong><span>Fichas clínicas</span></span></a><nav class="side-nav"><a class="side-link" routerLink="/dashboard-doctor">🏠 Resumen</a><a class="side-link" routerLink="/dashboard-doctor/agenda">📅 Mi agenda</a><a class="side-link" routerLink="/dashboard-doctor/pacientes">👥 Mis pacientes</a><a class="side-link active" routerLink="/dashboard-doctor/fichas">📋 Fichas clínicas</a><a class="side-link" routerLink="/dashboard-doctor/atencion">🩺 Registrar atención</a></nav></aside>
   <main class="main-content">
-    <div class="page-head">
-      <div>
-        <h1>Fichas clínicas</h1>
-        <p>Accede a antecedentes, tratamientos, evolución y observaciones clínicas.</p>
-      </div>
-      <a class="hs-btn" routerLink="/dashboard-doctor/atencion">Nueva atención</a>
-    </div>
-
-    <section class="panel-grid">
-      <div class="content-card">
-        <h2>Juan Pérez</h2>
-        <table class="table">
-          <tr><th>Área</th><td>Nutrición</td></tr>
-          <tr><th>Alergias</th><td>Sin alergias declaradas</td></tr>
-          <tr><th>Antecedentes</th><td>Control de peso y alimentación.</td></tr>
-          <tr><th>Última evolución</th><td>Mejora adherencia al plan alimentario.</td></tr>
-        </table>
-      </div>
-
-      <div class="content-card">
-        <h2>María Soto</h2>
-        <table class="table">
-          <tr><th>Área</th><td>Salud mental</td></tr>
-          <tr><th>Alergias</th><td>No registra</td></tr>
-          <tr><th>Antecedentes</th><td>Seguimiento psicológico mensual.</td></tr>
-          <tr><th>Última evolución</th><td>Paciente mantiene controles activos.</td></tr>
-        </table>
-      </div>
-    </section>
-
-    <section class="content-card">
-      <h2>Últimas actualizaciones</h2>
-      <div class="appointment-list">
-        <div class="appointment"><span class="badge">Actualizada</span><strong>Camila Rojas</strong><span>Evaluación nutricional con indicaciones de progreso.</span></div>
-        <div class="appointment"><span class="badge">Pendiente</span><strong>Diego Morales</strong><span>Ficha creada, falta completar primera atención.</span></div>
-      </div>
-    </section>
+    <div class="page-head"><div><span class="eyebrow">Consulta clínica</span><h1>Fichas de pacientes</h1><p>Solo puedes revisar pacientes asociados a tu agenda.</p></div></div>
+    <div class="content-card patient-selector"><div class="form-group"><label for="paciente">Paciente</label><select id="paciente" class="form-control" [(ngModel)]="pacienteId" (ngModelChange)="cargarFicha()" [disabled]="cargandoPacientes"><option [ngValue]="0">Selecciona un paciente</option><option *ngFor="let paciente of pacientes" [ngValue]="paciente.id">{{ paciente.nombre }} · {{ paciente.rut }}</option></select></div></div>
+    <div class="notice error-notice" *ngIf="mensajeError">{{ mensajeError }}</div><div class="loading-card" *ngIf="cargandoFicha">Cargando ficha clínica…</div>
+    <ng-container *ngIf="ficha">
+      <section class="patient-summary content-card"><div><span>Paciente</span><strong>{{ ficha.paciente.nombre }}</strong><small>{{ ficha.paciente.rut }}</small></div><div><span>Previsión</span><strong>{{ ficha.paciente.prevision || 'Sin informar' }}</strong></div><div><span>Alergias</span><strong>{{ ficha.paciente.alergias || 'Sin informar' }}</strong></div><div><span>Atenciones</span><strong>{{ ficha.atenciones.length }}</strong></div></section>
+      <section class="content-card clinical-overview"><h2>Antecedentes</h2><div class="clinical-grid"><div><h3>Antecedentes declarados</h3><p>{{ ficha.paciente.antecedentes || 'Sin antecedentes registrados.' }}</p></div><div><h3>Observaciones generales</h3><p>{{ ficha.observacionesGenerales || 'Sin observaciones generales.' }}</p></div></div></section>
+      <section class="clinical-history"><div class="section-heading"><div><h2>Historial de atenciones</h2><p>Registros clínicos ordenados desde el más reciente.</p></div><a class="hs-btn" routerLink="/dashboard-doctor/atencion">Registrar atención</a></div><div class="empty-state content-card" *ngIf="ficha.atenciones.length === 0"><span>📄</span><h3>Sin atenciones clínicas</h3><p>Este paciente todavía no tiene registros de atención.</p></div><article class="clinical-entry" *ngFor="let atencion of ficha.atenciones"><div class="clinical-entry-head"><div><span>{{ formatearFecha(atencion.fecha) }}</span><h3>{{ atencion.motivo }}</h3><p>{{ atencion.doctor }} · {{ atencion.especialidad }}</p></div></div><div class="clinical-entry-grid"><div><b>Diagnóstico</b><p>{{ atencion.diagnostico || 'Sin registro' }}</p></div><div><b>Tratamiento</b><p>{{ atencion.tratamiento || 'Sin registro' }}</p></div><div><b>Receta</b><p>{{ atencion.receta || 'Sin indicación' }}</p></div><div><b>Observaciones</b><p>{{ atencion.observaciones || 'Sin observaciones' }}</p></div></div></article></section>
+    </ng-container>
+    <div class="empty-state content-card" *ngIf="!cargandoPacientes && pacientes.length === 0"><span>👥</span><h3>No hay pacientes asociados</h3><p>Cuando existan citas en tu agenda podrás consultar sus fichas.</p></div>
   </main>
 </div>

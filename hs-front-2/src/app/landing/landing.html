@@ -1,104 +1,93 @@
 <div class="hs-page">
   <div class="hs-topbar">
     <div class="hs-container hs-topbar-inner">
-      <span>Health & Schedule — Nutrición y salud mental</span>
-      <span>Rancagua, Chile · Agenda digital y ficha clínica</span>
+      <span>Centro médico H&amp;S · Rancagua</span>
+      <span>Atención: lunes a viernes, 09:00 a 18:00</span>
     </div>
   </div>
 
   <header class="hs-header">
     <div class="hs-container hs-nav">
       <a class="hs-logo" routerLink="/">
-        <span class="hs-logo-mark">H&S</span>
-        <span class="hs-logo-text">
-          <strong>Health & Schedule</strong>
-          <span>Agenda y ficha clínica</span>
-        </span>
+        <span class="hs-logo-mark">H&amp;S</span>
+        <span class="hs-logo-text"><strong>Health &amp; Schedule</strong><span>Salud cercana y organizada</span></span>
       </a>
-
-      <nav class="hs-menu">
+      <nav class="hs-menu" aria-label="Navegación principal">
         <a href="#servicios">Servicios</a>
-        <a href="#beneficios">Beneficios</a>
-        <a routerLink="/login">Iniciar sesión</a>
+        <a href="#equipo">Nuestro centro</a>
+        <a href="#contacto">Contacto</a>
       </nav>
-
-      <a class="hs-btn" routerLink="/registro-paciente">Crear cuenta</a>
+      <a class="hs-btn" [routerLink]="dashboardLink">
+        {{ auth.usuario ? 'Ir a mi panel' : 'Reservar una hora' }}
+      </a>
     </div>
   </header>
 
-  <section class="hs-hero">
-    <div class="hs-container hs-hero-inner">
-      <div>
-        <div class="hs-kicker">Sistema clínico digital</div>
-        <h1>Agenda médica y fichas clínicas para nutrición y salud mental.</h1>
-        <p>
-          H&S ayuda a pacientes, doctores y administrativos a organizar citas,
-          revisar información clínica y mantener el progreso de atención en una
-          plataforma simple, clara y segura.
-        </p>
-        <div class="hs-hero-actions">
-          <a class="hs-btn" routerLink="/login">Iniciar sesión</a>
-          <a class="hs-btn-outline" routerLink="/registro-paciente">Crear cuenta</a>
+  <main>
+    <section class="hs-hero">
+      <div class="hs-container hs-hero-inner">
+        <div>
+          <span class="hs-kicker">Atención integral y segura</span>
+          <h1>Tu salud, tus horas y tu información en un solo lugar.</h1>
+          <p>Reserva atenciones, revisa tus próximas citas y accede a tu seguimiento clínico desde una plataforma simple para pacientes y profesionales.</p>
+          <div class="hs-hero-actions">
+            <a class="hs-btn" routerLink="/login">Ingresar al portal</a>
+            <a class="hs-btn-outline" routerLink="/registro-paciente">Crear cuenta de paciente</a>
+          </div>
+          <p class="hs-hero-note">También puedes solicitar una hora como invitado usando solamente tu RUT.</p>
         </div>
-        <p class="hs-hero-note">
-          Para agendar una hora debes iniciar sesión o ingresar como invitado.
-        </p>
-      </div>
-    </div>
-  </section>
 
-  <section id="servicios" class="hs-section">
-    <div class="hs-container">
-      <div class="hs-section-title">
-        <h2>Todo el flujo de atención en una página</h2>
-        <p>
-          Diseñado para que el paciente reserve y el profesional gestione su agenda,
-          evolución y ficha clínica sin perder información importante.
-        </p>
-      </div>
-
-      <div class="hs-card-grid">
-        <div class="hs-card">
-          <div class="hs-card-icon">📅</div>
-          <h3>Agenda médica</h3>
-          <p>Reserva de horas por especialidad, profesional, fecha y horario disponible.</p>
-        </div>
-        <div class="hs-card">
-          <div class="hs-card-icon">📋</div>
-          <h3>Ficha clínica</h3>
-          <p>Datos importantes, antecedentes, atenciones y evolución del paciente.</p>
-        </div>
-        <div class="hs-card">
-          <div class="hs-card-icon">🔐</div>
-          <h3>Acceso por roles</h3>
-          <p>Paciente, doctor, administrativo e invitado con pantallas separadas.</p>
+        <div class="hs-hero-card" aria-label="Resumen del centro médico">
+          <div class="hs-hero-img"></div>
+          <div class="hs-hero-info">
+            <h3>Atención coordinada</h3>
+            <p>Profesionales disponibles en nutrición, psicología, kinesiología y medicina general.</p>
+            <div class="hs-mini-grid">
+              <div class="hs-mini-stat"><strong>4</strong><span>Especialidades</span></div>
+              <div class="hs-mini-stat"><strong>30 min</strong><span>Bloques de atención</span></div>
+              <div class="hs-mini-stat"><strong>100%</strong><span>Gestión local</span></div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
 
-
-  <section id="beneficios" class="hs-section">
-    <div class="hs-container">
-      <div class="hs-section-title">
-        <h2>Una experiencia más simple que los sistemas tradicionales</h2>
-        <p>
-          A diferencia de páginas que solo permiten pedir hora, H&S combina agenda,
-          seguimiento clínico y datos del paciente para apoyar el trabajo profesional.
-        </p>
+    <section class="hs-section" id="servicios">
+      <div class="hs-container">
+        <div class="hs-section-title">
+          <span class="hs-kicker">Servicios digitales</span>
+          <h2>Todo lo necesario para una atención ordenada</h2>
+          <p>La plataforma conecta la agenda del centro con la información clínica sin depender de planillas o registros dispersos.</p>
+        </div>
+        <div class="hs-card-grid">
+          <article class="hs-card"><div class="hs-card-icon">📅</div><h3>Agenda en línea</h3><p>Consulta horarios realmente disponibles y reserva sin cruces de horas.</p></article>
+          <article class="hs-card"><div class="hs-card-icon">🩺</div><h3>Seguimiento clínico</h3><p>Los profesionales registran diagnósticos, tratamientos y observaciones de cada atención.</p></article>
+          <article class="hs-card"><div class="hs-card-icon">🔒</div><h3>Acceso por rol</h3><p>Cada paciente, profesional y administrador accede únicamente a las funciones que le corresponden.</p></article>
+        </div>
       </div>
-      <div class="hs-card-grid">
-        <div class="hs-card"><div class="hs-card-icon">⚡</div><h3>Reserva rápida</h3><p>Menos pasos para pedir una atención de nutrición o salud mental.</p></div>
-        <div class="hs-card"><div class="hs-card-icon">🧾</div><h3>Historial claro</h3><p>Información clínica organizada para profesionales y pacientes.</p></div>
-        <div class="hs-card"><div class="hs-card-icon">📈</div><h3>Seguimiento</h3><p>Mejor visualización del progreso y resultados de cada atención.</p></div>
-      </div>
-    </div>
-  </section>
+    </section>
 
-  <footer class="hs-footer">
+    <section class="hs-section hs-soft-section" id="equipo">
+      <div class="hs-container hs-split">
+        <div class="hs-photo" role="img" aria-label="Profesional de salud atendiendo a un paciente"></div>
+        <div>
+          <span class="hs-kicker">Nuestro compromiso</span>
+          <h2>Una experiencia clara para pacientes y equipos clínicos</h2>
+          <p class="section-copy">H&amp;S fue diseñado para que la reserva de una hora sea rápida, pero también para que cada atención tenga continuidad.</p>
+          <div class="hs-check-list">
+            <div class="hs-check"><span><b>Información actualizada.</b> Las citas creadas aparecen de inmediato en los paneles correspondientes.</span></div>
+            <div class="hs-check"><span><b>Agenda protegida.</b> El sistema evita horas duplicadas, bloqueos y cruces del paciente.</span></div>
+            <div class="hs-check"><span><b>Historial trazable.</b> Cada atención queda asociada al profesional, paciente y cita.</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="hs-footer" id="contacto">
     <div class="hs-container hs-footer-inner">
-      <strong>H&S — Health & Schedule</strong>
-      <span>Proyecto universitario · Ingeniería Civil en Computación</span>
+      <div><strong>Health &amp; Schedule</strong><br><small>Proyecto de centro médico para ambiente local</small></div>
+      <div>contacto@hs.local · +56 9 0000 0000</div>
     </div>
   </footer>
 </div>

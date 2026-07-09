@@ -1,6 +1,29 @@
-@proyecto_ids_api_HostAddress = http://localhost:5220
+@host = http://localhost:5220
+@token = REEMPLAZAR_CON_TOKEN
 
-GET {{proyecto_ids_api_HostAddress}}/weatherforecast/
+### Estado de la API y MySQL
+GET {{host}}/api/salud
 Accept: application/json
 
-###
+### Especialidades públicas
+GET {{host}}/api/public/especialidades
+Accept: application/json
+
+### Inicio de sesión de paciente
+POST {{host}}/api/auth/login
+Content-Type: application/json
+
+{
+  "rut": "12345678-5",
+  "password": "paciente123"
+}
+
+### Usuario actual
+GET {{host}}/api/auth/me
+Authorization: Bearer {{token}}
+Accept: application/json
+
+### Citas del paciente
+GET {{host}}/api/citas/mias
+Authorization: Bearer {{token}}
+Accept: application/json

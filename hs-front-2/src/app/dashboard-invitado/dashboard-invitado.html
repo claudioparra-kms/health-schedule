@@ -1,52 +1,27 @@
 <div class="app-shell">
   <aside class="sidebar">
-    <a class="hs-logo" routerLink="/">
-      <span class="hs-logo-mark">H&S</span>
-      <span class="hs-logo-text"><strong>Invitado</strong><span>Agenda rápida</span></span>
-    </a>
-
+    <a class="hs-logo" routerLink="/dashboard-invitado"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Invitado</strong><span>Reserva rápida</span></span></a>
     <nav class="side-nav">
       <a class="side-link active" routerLink="/dashboard-invitado">🏠 Inicio</a>
-      <a class="side-link" routerLink="/agenda">📅 Agendar hora</a>
+      <a class="side-link" routerLink="/agenda">📅 Reservar hora</a>
+      <a class="side-link" routerLink="/mis-citas">🕘 Citas de esta sesión</a>
       <a class="side-link" routerLink="/registro-paciente">📝 Crear cuenta</a>
-      <a class="side-link" routerLink="/login">🚪 Salir</a>
+      <button class="side-link logout-link" type="button" (click)="cerrarSesion()">🚪 Salir</button>
     </nav>
   </aside>
-
   <main class="main-content">
-    <div class="page-head">
-      <div>
-        <h1>Ingreso como invitado</h1>
-        <p>Puedes agendar una atención. Para ver ficha clínica, historial o modificar datos debes crear una cuenta.</p>
-      </div>
-      <a class="hs-btn" routerLink="/agenda">Agendar hora</a>
-    </div>
-
-    
-
-    <section class="panel-grid">
+    <div class="page-head"><div><span class="eyebrow">Acceso temporal</span><h1>Agenda como invitado</h1><p>RUT de ingreso: {{ auth.usuario?.rut }}</p></div><a class="hs-btn" routerLink="/agenda">Reservar una hora</a></div>
+    <div class="notice warning-notice"><strong>Acceso limitado.</strong> Puedes reservar y revisar citas durante esta sesión. Crea una cuenta para acceder a ficha clínica, historial permanente y edición de datos.</div>
+    <section class="panel-grid guest-grid">
       <div class="panel">
         <h2>¿Qué puedes hacer?</h2>
-        <div class="quick-actions">
-          <a class="action-card" routerLink="/agenda">
-            <b>Agendar atención</b>
-            <p>Selecciona nutrición o salud mental, profesional, fecha y horario.</p>
-          </a>
-          <a class="action-card" routerLink="/registro-paciente">
-            <b>Crear cuenta</b>
-            <p>Regístrate para acceder a ficha clínica, mis citas y modificar datos.</p>
-          </a>
+        <div class="quick-actions single-column">
+          <a class="action-card" routerLink="/agenda"><span class="action-icon">📅</span><b>Buscar una hora</b><p>Elige especialidad, profesional, fecha y horario disponible.</p></a>
+          <a class="action-card" routerLink="/mis-citas"><span class="action-icon">🕘</span><b>Revisar reservas</b><p>Actualmente tienes {{ citas.length }} cita(s) asociadas a este acceso.</p></a>
+          <a class="action-card highlighted-action" routerLink="/registro-paciente"><span class="action-icon">✨</span><b>Convertir este acceso en cuenta</b><p>Al registrarte con el mismo RUT conservarás las reservas realizadas.</p></a>
         </div>
       </div>
-
-      <div class="panel">
-        <h2>Limitaciones de invitado</h2>
-        <div class="appointment-list">
-          <div class="appointment"><span class="badge">Permitido</span><strong>Agendar hora</strong><span>Reserva una atención básica.</span></div>
-          <div class="appointment"><span class="badge muted">Restringido</span><strong>Ficha clínica</strong><span>Disponible solo para usuarios registrados.</span></div>
-          <div class="appointment"><span class="badge muted">Restringido</span><strong>Modificar datos</strong><span>Debes crear una cuenta para administrar tu perfil.</span></div>
-        </div>
-      </div>
+      <div class="panel info-panel"><span class="large-icon">🔐</span><h2>Más control con una cuenta</h2><p>Una cuenta registrada protege tu historial con contraseña y permite administrar antecedentes, previsión, contacto y atenciones clínicas.</p><a class="hs-btn-outline" routerLink="/registro-paciente">Crear mi cuenta</a></div>
     </section>
   </main>
 </div>
