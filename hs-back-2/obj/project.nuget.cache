@@ -1,10 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "3ZNgf7GV1YM=",
+  "dgSpecHash": "yfBoCstOSO0=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Guta\\Music\\health-schedule\\health-schedule\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+  "projectFilePath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\Guta\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512"
+    "C:\\Users\\claud\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512"
   ],
   "logs": []
 }
