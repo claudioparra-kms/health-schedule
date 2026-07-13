@@ -111,17 +111,13 @@ C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\p
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.runtimeconfig.json
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.dll
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\proyecto-ids-api.pdb
-C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\Microsoft.AspNetCore.OpenApi.dll
-C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\Microsoft.OpenApi.dll
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\MySqlConnector.dll
-C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\bin\Debug\net10.0\Npgsql.dll
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.AssemblyReference.cache
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\rpswa.dswa.cache.json
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.GeneratedMSBuildEditorConfig.editorconfig
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfoInputs.cache
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.AssemblyInfo.cs
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.csproj.CoreCompileInputs.cache
-C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cs
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.MvcApplicationPartsAssemblyInfo.cache
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\proyecto-ids-api.sourcelink.json
 C:\Users\claud\Documents\Proyectos\health-schedule\hs-back-2\obj\Debug\net10.0\rjimswa.dswa.cache.json
