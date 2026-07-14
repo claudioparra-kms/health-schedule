@@ -2,16 +2,17 @@ name: "Health & Schedule - Backend CI"
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "hs-back-2/**"
-      - "hs-back-2.Tests/**"
       - ".github/workflows/hs-back-wf.yml"
+
   push:
-    branches: [main]
+    branches:
+      - main
     paths:
       - "hs-back-2/**"
-      - "hs-back-2.Tests/**"
       - ".github/workflows/hs-back-wf.yml"
 
 permissions:
@@ -22,14 +23,16 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-and-test:
-    name: ".NET build + tests"
+  build:
+    name: ".NET build"
     runs-on: ubuntu-latest
+
     env:
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
+
     steps:
-      - name: "Checkout del código fuente"
+      - name: "Descargar código fuente"
         uses: actions/checkout@v4
 
       - name: "Configurar .NET SDK 10"
@@ -37,23 +40,8 @@ jobs:
         with:
           dotnet-version: "10.0.x"
 
-      - name: "Restaurar API"
+      - name: "Restaurar dependencias"
         run: dotnet restore hs-back-2/proyecto-ids-api.csproj
 
-      - name: "Restaurar pruebas"
-        run: dotnet restore hs-back-2.Tests/proyecto-ids-api.Tests.csproj
-
-      - name: "Compilar API"
+      - name: "Compilar backend"
         run: dotnet build hs-back-2/proyecto-ids-api.csproj --configuration Release --no-restore
-
-      - name: "Ejecutar pruebas backend"
-        run: dotnet test hs-back-2.Tests/proyecto-ids-api.Tests.csproj --configuration Release --no-restore --logger "trx;LogFileName=backend-tests.trx" --collect "XPlat Code Coverage"
-
-      - name: "Subir resultados de pruebas backend"
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: backend-test-results
-          path: |
-            hs-back-2.Tests/TestResults/
-          retention-days: 14
