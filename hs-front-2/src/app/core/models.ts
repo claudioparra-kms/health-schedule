@@ -146,3 +146,33 @@ export interface CitaAdmin {
   doctor: string;
   especialidad: string;
 }
+
+
+export interface UsuarioAdminDetalle extends UsuarioAdmin {
+  fechaNacimiento: string | null;
+  direccion: string | null;
+  prevision: string | null;
+  alergias: string | null;
+  antecedentes: string | null;
+  especialidad: string | null;
+  numeroRegistro: string | null;
+}
+
+export interface ActualizarUsuarioAdminPayload {
+  rut: string;
+  nombre: string;
+  correo: string | null;
+  telefono: string;
+  fechaNacimiento: string | null;
+  direccion: string;
+  prevision: string;
+  alergias: string;
+  antecedentes: string;
+  especialidad: string;
+  numeroRegistro: string;
+}
+
+export interface CrearUsuarioAdminPayload extends ActualizarUsuarioAdminPayload {
+  rol: Exclude<Rol, 'invitado'>;
+  password: string;
+}

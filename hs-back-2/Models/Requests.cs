@@ -62,6 +62,40 @@ public sealed class RegistrarAtencionRequest
     public string Observaciones { get; set; } = string.Empty;
 }
 
+
+public sealed class ActualizarUsuarioAdminRequest
+{
+    [Required] public string Rut { get; set; } = string.Empty;
+    [Required] public string Nombre { get; set; } = string.Empty;
+    [EmailAddress] public string? Correo { get; set; }
+    public string Telefono { get; set; } = string.Empty;
+    public DateTime? FechaNacimiento { get; set; }
+    public string Direccion { get; set; } = string.Empty;
+    public string Prevision { get; set; } = string.Empty;
+    public string Alergias { get; set; } = string.Empty;
+    public string Antecedentes { get; set; } = string.Empty;
+    public string Especialidad { get; set; } = string.Empty;
+    public string NumeroRegistro { get; set; } = string.Empty;
+}
+
+
+public sealed class CrearUsuarioAdminRequest
+{
+    [Required] public string Rol { get; set; } = "doctor";
+    [Required] public string Rut { get; set; } = string.Empty;
+    [Required] public string Nombre { get; set; } = string.Empty;
+    [Required, EmailAddress] public string Correo { get; set; } = string.Empty;
+    public string Telefono { get; set; } = string.Empty;
+    [Required, MinLength(8)] public string Password { get; set; } = string.Empty;
+    public DateTime? FechaNacimiento { get; set; }
+    public string Direccion { get; set; } = string.Empty;
+    public string Prevision { get; set; } = string.Empty;
+    public string Alergias { get; set; } = string.Empty;
+    public string Antecedentes { get; set; } = string.Empty;
+    public string Especialidad { get; set; } = string.Empty;
+    public string NumeroRegistro { get; set; } = string.Empty;
+}
+
 public sealed class CambiarEstadoUsuarioRequest
 {
     public bool Activo { get; set; }

@@ -14,6 +14,9 @@ import {
   ResumenAdmin,
   ResumenDoctor,
   UsuarioAdmin,
+  UsuarioAdminDetalle,
+  ActualizarUsuarioAdminPayload,
+  CrearUsuarioAdminPayload,
 } from './models';
 
 @Injectable({ providedIn: 'root' })
@@ -105,6 +108,23 @@ export class HealthService {
 
   getUsuariosAdmin(): Observable<UsuarioAdmin[]> {
     return this.http.get<UsuarioAdmin[]>(`${API_URL}/admin/usuarios`);
+  }
+
+  getUsuarioAdmin(id: number): Observable<UsuarioAdminDetalle> {
+    return this.http.get<UsuarioAdminDetalle>(`${API_URL}/admin/usuarios/${id}`);
+  }
+
+  actualizarUsuarioAdmin(
+    id: number,
+    payload: ActualizarUsuarioAdminPayload,
+  ): Observable<{ mensaje: string; usuario: UsuarioAdminDetalle }> {
+    return this.http.put<{ mensaje: string; usuario: UsuarioAdminDetalle }>(`${API_URL}/admin/usuarios/${id}`, payload);
+  }
+
+  crearUsuarioAdmin(
+    payload: CrearUsuarioAdminPayload,
+  ): Observable<{ mensaje: string; usuario: UsuarioAdminDetalle }> {
+    return this.http.post<{ mensaje: string; usuario: UsuarioAdminDetalle }>(`${API_URL}/admin/usuarios`, payload);
   }
 
   getCitasAdmin(): Observable<CitaAdmin[]> {

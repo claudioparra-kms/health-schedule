@@ -1,25 +1,240 @@
 <div class="app-shell">
   <aside class="sidebar">
-    <a class="hs-logo" routerLink="/dashboard-admin"><span class="hs-logo-mark">H&amp;S</span><span class="hs-logo-text"><strong>Administración</strong><span>Control del centro</span></span></a>
-    <nav class="side-nav"><button class="side-link" [class.active]="seccion === 'usuarios'" type="button" (click)="seccion = 'usuarios'; busqueda = ''">👥 Usuarios</button><button class="side-link" [class.active]="seccion === 'citas'" type="button" (click)="seccion = 'citas'; busqueda = ''">📅 Citas</button><a class="side-link" routerLink="/">🌐 Sitio principal</a><button class="side-link logout-link" type="button" (click)="cerrarSesion()">🚪 Cerrar sesión</button></nav>
+    <a class="hs-logo" routerLink="/dashboard-admin">
+      <span class="hs-logo-mark">H&amp;S</span>
+      <span class="hs-logo-text"><strong>Administración</strong><span>Control del centro</span></span>
+    </a>
+    <nav class="side-nav">
+      <button class="side-link" [class.active]="seccion === 'usuarios'" type="button" (click)="seccion = 'usuarios'; busqueda = ''">👥 Usuarios</button>
+      <button class="side-link" [class.active]="seccion === 'citas'" type="button" (click)="seccion = 'citas'; busqueda = ''">📅 Citas</button>
+      <a class="side-link" routerLink="/">🌐 Sitio principal</a>
+      <button class="side-link logout-link" type="button" (click)="cerrarSesion()">🚪 Cerrar sesión</button>
+    </nav>
   </aside>
+
   <main class="main-content">
-    <div class="page-head"><div><span class="eyebrow">Panel administrativo</span><h1>Gestión general</h1><p>Supervisa cuentas, profesionales y actividad de la agenda.</p></div><span class="admin-user">{{ auth.usuario?.nombre }}</span></div>
-    <div class="notice" [class.error-notice]="esError" [class.success-notice]="!esError" *ngIf="mensaje">{{ mensaje }}</div>
+    <div class="page-head">
+      <div>
+        <span class="eyebrow">Panel administrativo</span>
+        <h1>Gestión general</h1>
+        <p>Administra cuentas, profesionales, pacientes y actividad de la agenda del centro.</p>
+      </div>
+      <span class="admin-user">{{ auth.usuario?.nombre }}</span>
+    </div>
+
+    <div class="notice" [class.error-notice]="esError" [class.success-notice]="!esError" *ngIf="mensaje" aria-live="polite">{{ mensaje }}</div>
     <div class="loading-card" *ngIf="cargando">Cargando información administrativa…</div>
 
     <ng-container *ngIf="!cargando">
-      <section class="stats-grid admin-stats"><div class="stat-card"><span>Usuarios activos</span><strong>{{ resumen.usuarios }}</strong></div><div class="stat-card"><span>Pacientes</span><strong>{{ resumen.pacientes }}</strong></div><div class="stat-card"><span>Profesionales</span><strong>{{ resumen.doctores }}</strong></div><div class="stat-card"><span>Citas de hoy</span><strong>{{ resumen.citasHoy }}</strong><small>{{ resumen.citasPendientes }} pendientes totales</small></div></section>
+      <section class="stats-grid admin-stats">
+        <div class="stat-card"><span>Usuarios activos</span><strong>{{ resumen.usuarios }}</strong></div>
+        <div class="stat-card"><span>Pacientes</span><strong>{{ resumen.pacientes }}</strong></div>
+        <div class="stat-card"><span>Profesionales</span><strong>{{ resumen.doctores }}</strong></div>
+        <div class="stat-card"><span>Citas de hoy</span><strong>{{ resumen.citasHoy }}</strong><small>{{ resumen.citasPendientes }} pendientes totales</small></div>
+      </section>
 
       <section class="content-card admin-section" *ngIf="seccion === 'usuarios'">
-        <div class="section-heading admin-heading"><div><h2>Usuarios del sistema</h2><p>Activa o desactiva el acceso sin eliminar los registros clínicos.</p></div><input class="form-control admin-search" [(ngModel)]="busqueda" placeholder="Buscar nombre, RUT, correo o rol…"></div>
-        <div class="responsive-table"><table class="table"><thead><tr><th>Usuario</th><th>Contacto</th><th>Rol</th><th>Creado</th><th>Estado</th><th></th></tr></thead><tbody><tr *ngFor="let usuario of usuariosFiltrados"><td><strong>{{ usuario.nombre }}</strong><small>{{ usuario.rut }}</small></td><td><span>{{ usuario.correo || 'Sin correo' }}</span><small>{{ usuario.telefono || 'Sin teléfono' }}</small></td><td><span class="badge role-badge">{{ usuario.rol }}</span></td><td>{{ formatearFecha(usuario.creadoEn) }}</td><td><span [class]="usuario.activo ? 'badge badge-realizada' : 'badge badge-cancelada'">{{ usuario.activo ? 'activo' : 'inactivo' }}</span></td><td><button type="button" class="mini-button" [class.danger]="usuario.activo" [disabled]="procesandoId === usuario.id" (click)="alternarUsuario(usuario)">{{ usuario.activo ? 'Desactivar' : 'Activar' }}</button></td></tr></tbody></table></div>
+        <div class="section-heading admin-heading">
+          <div>
+            <h2>Usuarios del sistema</h2>
+            <p>Crea profesionales internos, administra pacientes y actualiza datos sin eliminar registros históricos.</p>
+          </div>
+          <div class="admin-toolbar">
+            <button class="hs-btn" type="button" (click)="abrirCreacion()">+ Nuevo usuario</button>
+            <label class="sr-only" for="buscar-usuarios">Buscar usuarios</label>
+            <input id="buscar-usuarios" class="form-control admin-search" [(ngModel)]="busqueda" placeholder="Buscar nombre, RUT, correo o rol…">
+          </div>
+        </div>
+
+        <div class="responsive-table">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Usuario</th>
+                <th>Contacto</th>
+                <th>Rol</th>
+                <th>Creado</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let usuario of usuariosFiltrados">
+                <td><strong>{{ usuario.nombre }}</strong><small>{{ usuario.rut }}</small></td>
+                <td><span>{{ usuario.correo || 'Sin correo' }}</span><small>{{ usuario.telefono || 'Sin teléfono' }}</small></td>
+                <td><span class="badge role-badge">{{ usuario.rol }}</span></td>
+                <td>{{ formatearFecha(usuario.creadoEn) }}</td>
+                <td><span [class]="usuario.activo ? 'badge badge-realizada' : 'badge badge-cancelada'">{{ usuario.activo ? 'activo' : 'inactivo' }}</span></td>
+                <td class="action-buttons">
+                  <button type="button" class="mini-button" [disabled]="procesandoId === usuario.id" (click)="abrirEdicion(usuario)">Editar</button>
+                  <button type="button" class="mini-button" [class.danger]="usuario.activo" [disabled]="procesandoId === usuario.id" (click)="alternarUsuario(usuario)">{{ usuario.activo ? 'Desactivar' : 'Activar' }}</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="content-card admin-section" *ngIf="seccion === 'citas'">
-        <div class="section-heading admin-heading"><div><h2>Agenda global</h2><p>Últimas 200 citas registradas en el centro.</p></div><div class="admin-filters"><input class="form-control" [(ngModel)]="busqueda" placeholder="Buscar paciente o profesional…"><select class="form-control" [(ngModel)]="filtroEstado"><option value="todas">Todos los estados</option><option value="pendiente">Pendientes</option><option value="confirmada">Confirmadas</option><option value="realizada">Realizadas</option><option value="cancelada">Canceladas</option><option value="no_asiste">No asistió</option></select></div></div>
-        <div class="responsive-table"><table class="table"><thead><tr><th>Fecha</th><th>Paciente</th><th>Profesional</th><th>Estado</th><th>Acciones</th></tr></thead><tbody><tr *ngFor="let cita of citasFiltradas"><td><strong>{{ formatearFecha(cita.fechaInicio) }}</strong><small>{{ cita.motivo }}</small></td><td><strong>{{ cita.paciente }}</strong><small>{{ cita.rutPaciente }}</small></td><td><strong>{{ cita.doctor }}</strong><small>{{ cita.especialidad }}</small></td><td><span [class]="'badge badge-' + cita.estado">{{ cita.estado }}</span></td><td class="action-buttons"><button type="button" class="mini-button success" *ngIf="cita.estado === 'pendiente'" [disabled]="procesandoId === cita.id" (click)="cambiarEstadoCita(cita, 'confirmada')">Confirmar</button><button type="button" class="mini-button danger" *ngIf="['pendiente','confirmada'].includes(cita.estado)" [disabled]="procesandoId === cita.id" (click)="cambiarEstadoCita(cita, 'cancelada')">Cancelar</button></td></tr></tbody></table></div>
+        <div class="section-heading admin-heading">
+          <div>
+            <h2>Agenda global</h2>
+            <p>Últimas 200 citas registradas en el centro.</p>
+          </div>
+          <div class="admin-filters">
+            <label class="sr-only" for="buscar-citas">Buscar citas</label>
+            <input id="buscar-citas" class="form-control" [(ngModel)]="busqueda" placeholder="Buscar paciente o profesional…">
+            <label class="sr-only" for="filtro-estado">Filtrar por estado</label>
+            <select id="filtro-estado" class="form-control" [(ngModel)]="filtroEstado">
+              <option value="todas">Todos los estados</option>
+              <option value="pendiente">Pendientes</option>
+              <option value="confirmada">Confirmadas</option>
+              <option value="realizada">Realizadas</option>
+              <option value="cancelada">Canceladas</option>
+              <option value="no_asiste">No asistió</option>
+            </select>
+          </div>
+        </div>
+        <div class="responsive-table">
+          <table class="table">
+            <thead><tr><th>Fecha</th><th>Paciente</th><th>Profesional</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody>
+              <tr *ngFor="let cita of citasFiltradas">
+                <td><strong>{{ formatearFecha(cita.fechaInicio) }}</strong><small>{{ cita.motivo }}</small></td>
+                <td><strong>{{ cita.paciente }}</strong><small>{{ cita.rutPaciente }}</small></td>
+                <td><strong>{{ cita.doctor }}</strong><small>{{ cita.especialidad }}</small></td>
+                <td><span [class]="'badge badge-' + cita.estado">{{ cita.estado }}</span></td>
+                <td class="action-buttons">
+                  <button type="button" class="mini-button success" *ngIf="cita.estado === 'pendiente'" [disabled]="procesandoId === cita.id" (click)="cambiarEstadoCita(cita, 'confirmada')">Confirmar</button>
+                  <button type="button" class="mini-button danger" *ngIf="['pendiente','confirmada'].includes(cita.estado)" [disabled]="procesandoId === cita.id" (click)="cambiarEstadoCita(cita, 'cancelada')">Cancelar</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </section>
     </ng-container>
   </main>
+</div>
+
+<div class="modal-backdrop" *ngIf="mostrarModalUsuario" (click)="cerrarEdicion()">
+  <section class="modal-card admin-user-modal" role="dialog" aria-modal="true" aria-labelledby="titulo-usuario-admin" (click)="$event.stopPropagation()">
+    <div class="modal-head">
+      <div>
+        <span class="eyebrow">Administración de usuario</span>
+        <h2 id="titulo-usuario-admin">{{ tituloModalUsuario }}</h2>
+        <p *ngIf="modoFormulario === 'crear'">Alta controlada de cuentas internas y pacientes del centro.</p>
+        <p *ngIf="modoFormulario === 'editar' && usuarioEditando">Rol actual: <strong>{{ usuarioEditando.rol }}</strong></p>
+      </div>
+      <button class="icon-button" type="button" aria-label="Cerrar formulario" (click)="cerrarEdicion()">×</button>
+    </div>
+
+    <div class="loading-card" *ngIf="cargandoEdicion">Cargando datos del usuario…</div>
+
+    <form *ngIf="!cargandoEdicion && (modoFormulario === 'crear' || usuarioEditando)" class="admin-edit-form" (ngSubmit)="guardarUsuario()" novalidate>
+      <div class="notice error-notice" *ngIf="errorEdicion" aria-live="polite">{{ errorEdicion }}</div>
+
+      <section class="edit-section" *ngIf="modoFormulario === 'crear'">
+        <h3>Tipo de cuenta</h3>
+        <p class="section-help">Selecciona el rol antes de completar los datos. Para profesionales se creará también su agenda base.</p>
+        <div class="role-choice-grid">
+          <label class="role-choice" *ngFor="let rol of rolesCreables" [class.selected]="formUsuario.rol === rol.valor">
+            <input type="radio" name="rol" [(ngModel)]="formUsuario.rol" [value]="rol.valor">
+            <strong>{{ rol.etiqueta }}</strong>
+            <span>{{ rol.descripcion }}</span>
+          </label>
+        </div>
+      </section>
+
+      <section class="edit-section">
+        <h3>Datos de identificación</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="edit-rut">RUT</label>
+            <input id="edit-rut" class="form-control" [(ngModel)]="formUsuario.rut" name="rut" (blur)="formatearRutEdicion()" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-nombre">Nombre completo</label>
+            <input id="edit-nombre" class="form-control" [(ngModel)]="formUsuario.nombre" name="nombre" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-correo">Correo</label>
+            <input id="edit-correo" class="form-control" type="email" [(ngModel)]="formUsuario.correo" name="correo" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-telefono">Teléfono</label>
+            <input id="edit-telefono" class="form-control" [(ngModel)]="formUsuario.telefono" name="telefono" placeholder="+56912345678">
+          </div>
+        </div>
+      </section>
+
+      <section class="edit-section" *ngIf="modoFormulario === 'crear'">
+        <h3>Contraseña inicial</h3>
+        <p class="section-help">Define una contraseña temporal. Debe entregarse al usuario por un canal seguro y no debe publicarse en la presentación.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="create-password">Contraseña inicial</label>
+            <input id="create-password" class="form-control" type="password" [(ngModel)]="formUsuario.password" name="password" minlength="8" required>
+          </div>
+          <div class="form-group">
+            <label for="create-password-confirm">Confirmar contraseña</label>
+            <input id="create-password-confirm" class="form-control" type="password" [(ngModel)]="formUsuario.passwordConfirmacion" name="passwordConfirmacion" minlength="8" required>
+          </div>
+        </div>
+      </section>
+
+      <p class="admin-edit-note" *ngIf="modoFormulario === 'editar'">Por seguridad, las contraseñas no se modifican desde este panel. Cada usuario puede recuperarla desde “Olvidé mi contraseña”.</p>
+
+      <section class="edit-section" *ngIf="rolFormulario === 'paciente'">
+        <h3>Información del paciente</h3>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="edit-nacimiento">Fecha de nacimiento</label>
+            <input id="edit-nacimiento" class="form-control" type="date" [(ngModel)]="formUsuario.fechaNacimiento" name="fechaNacimiento">
+          </div>
+          <div class="form-group">
+            <label for="edit-prevision">Previsión</label>
+            <input id="edit-prevision" class="form-control" [(ngModel)]="formUsuario.prevision" name="prevision" placeholder="Fonasa, Isapre, particular…">
+          </div>
+          <div class="form-group full-field">
+            <label for="edit-direccion">Dirección</label>
+            <input id="edit-direccion" class="form-control" [(ngModel)]="formUsuario.direccion" name="direccion">
+          </div>
+          <div class="form-group full-field">
+            <label for="edit-alergias">Alergias</label>
+            <textarea id="edit-alergias" class="form-control" rows="3" [(ngModel)]="formUsuario.alergias" name="alergias"></textarea>
+          </div>
+          <div class="form-group full-field">
+            <label for="edit-antecedentes">Antecedentes relevantes</label>
+            <textarea id="edit-antecedentes" class="form-control" rows="3" [(ngModel)]="formUsuario.antecedentes" name="antecedentes"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <section class="edit-section" *ngIf="rolFormulario === 'doctor'">
+        <h3>Información profesional</h3>
+        <p class="section-help" *ngIf="modoFormulario === 'crear'">Al crear un profesional se asignará disponibilidad inicial de lunes a viernes entre 09:00-13:00 y 14:00-18:00.</p>
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="edit-especialidad">Especialidad</label>
+            <input id="edit-especialidad" class="form-control" [(ngModel)]="formUsuario.especialidad" name="especialidad" placeholder="Nutrición, Psicología, Medicina General…" required>
+          </div>
+          <div class="form-group">
+            <label for="edit-registro">Número de registro</label>
+            <input id="edit-registro" class="form-control" [(ngModel)]="formUsuario.numeroRegistro" name="numeroRegistro" placeholder="Ej: RNPI-MG-005" required>
+          </div>
+        </div>
+      </section>
+
+      <section class="edit-section compact-section" *ngIf="rolFormulario === 'admin'">
+        <h3>Permisos administrativos</h3>
+        <p class="section-help">Esta cuenta tendrá acceso al panel administrativo. Se recomienda asignarla solo a personal autorizado del centro.</p>
+      </section>
+
+      <div class="modal-actions">
+        <button class="hs-btn-outline" type="button" (click)="cerrarEdicion()" [disabled]="guardandoEdicion">Cancelar</button>
+        <button class="hs-btn" type="submit" [disabled]="guardandoEdicion">{{ guardandoEdicion ? 'Guardando…' : (modoFormulario === 'crear' ? 'Crear usuario' : 'Guardar cambios') }}</button>
+      </div>
+    </form>
+  </section>
 </div>
