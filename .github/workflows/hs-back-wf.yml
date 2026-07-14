@@ -1,67 +1,59 @@
-name: "Health and Schedule"
+name: "Health & Schedule - Backend CI"
+
 on:
   pull_request:
     branches: [main]
     paths:
       - "hs-back-2/**"
+      - "hs-back-2.Tests/**"
       - ".github/workflows/hs-back-wf.yml"
   push:
     branches: [main]
     paths:
       - "hs-back-2/**"
+      - "hs-back-2.Tests/**"
       - ".github/workflows/hs-back-wf.yml"
+
 permissions:
   contents: read
+
 concurrency:
   group: dotnet-ci-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   build-and-test:
-    name: "Construir .NET"
+    name: ".NET build + tests"
     runs-on: ubuntu-latest
     env:
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
-      PROJECT_DIR: hs-back-2
     steps:
       - name: "Checkout del código fuente"
         uses: actions/checkout@v4
 
-      - name: "Configurar .NET SDK 8.0"
+      - name: "Configurar .NET SDK 10"
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "10.0.x"
 
-      - name: "Restaurar dependencias NuGet"
-        working-directory: hs-back-2
-        run: |
-          echo "Restaurando paquetes NuGet para el proyecto API..."
-          dotnet restore 
+      - name: "Restaurar API"
+        run: dotnet restore hs-back-2/proyecto-ids-api.csproj
 
-      - name: "Build — Compilar proyecto en modo Release"
-        working-directory: hs-back-2
-        run: |
-          echo "Compilando Do.Api..."
-          dotnet build 
+      - name: "Restaurar pruebas"
+        run: dotnet restore hs-back-2.Tests/proyecto-ids-api.Tests.csproj
 
-      - name: "Test — Ejecutar pruebas unitarias"
-        working-directory: hs-back-2
-        run: |
-          echo "Ejecutando pruebas unitarias..."
-          dotnet test
+      - name: "Compilar API"
+        run: dotnet build hs-back-2/proyecto-ids-api.csproj --configuration Release --no-restore
 
-      - name: "Subir resultados"
+      - name: "Ejecutar pruebas backend"
+        run: dotnet test hs-back-2.Tests/proyecto-ids-api.Tests.csproj --configuration Release --no-restore --logger "trx;LogFileName=backend-tests.trx" --collect "XPlat Code Coverage"
+
+      - name: "Subir resultados de pruebas backend"
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: dotnet-test-results
+          name: backend-test-results
           path: |
-            ${{ env.PROJECT_DIR }}/**/TestResults/
+            hs-back-2.Tests/TestResults/
           retention-days: 14
-    
-      - name: "Seguridad — Verificar vulnerabilidades en dependencias"
-        working-directory: ${{ env.PROJECT_DIR }}
-        continue-on-error: true
-        run: |
-          echo "Verificando vulnerabilidades en paquetes NuGet..."
-          dotnet list hs-back-2/proyecto-ids-api.csproj package --vulnerable --include-transitive 2>&1 || true

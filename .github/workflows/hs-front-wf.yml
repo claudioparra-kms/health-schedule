@@ -1,4 +1,5 @@
-name: "Health and Schedule"
+name: "Health & Schedule - Frontend CI"
+
 on:
   pull_request:
     branches: [main]
@@ -10,14 +11,17 @@ on:
     paths:
       - "hs-front-2/**"
       - ".github/workflows/hs-front-wf.yml"
+
 permissions:
   contents: read
+
 concurrency:
   group: angular-ci-${{ github.ref }}
   cancel-in-progress: true
+
 jobs:
   build-and-test:
-    name: "Construir Angular"
+    name: "Angular build + tests"
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -33,27 +37,14 @@ jobs:
           cache: "npm"
           cache-dependency-path: hs-front-2/package-lock.json
 
-      - name: "Instalar dependencias"
+      - name: "Instalar dependencias reproducibles"
         working-directory: hs-front-2
-        run: npm install
+        run: npm ci
 
-      - name: "Lint — Verificar calidad del código"
+      - name: "Ejecutar pruebas automatizadas"
         working-directory: hs-front-2
-        continue-on-error: true
-        run: npx ng lint 2>/dev/null || echo "Linting no configurado — considera agregar ESLint al proyecto"
+        run: npm run test:ci
 
-      - name: "Build — Compilar proyecto Angular"
+      - name: "Compilar Angular en producción"
         working-directory: hs-front-2
         run: npm run build -- --configuration production
-
-      - name: "Test — Ejecutar pruebas unitarias"
-        working-directory: hs-front-2
-        run: npm run test
-
-      - name: "Subir reporte de cobertura"
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: hs-front-coverage${{ matrix.node-version }}
-          path: hs-front-2/coverage/
-          retention-days: 14

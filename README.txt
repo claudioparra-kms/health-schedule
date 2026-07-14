@@ -1,15 +1,80 @@
-Para los profesionales y administrativos de las áreas de nutrición y salud mental es importante organizar adecuadamente la información y el progreso de sus pacientes, de la misma forma que estos últimos tienen la necesidad de agendar sus atenciones de forma sencilla y rápida. Nuestro Health-Schedule es una página web con un sistema de agenda y fichas clínicas que compila todos los datos importantes de los clientes de la salud, de manera que estos puedan gestionar fácilmente sus citas y ver los resultados de estas. A diferencia de páginas web que solo permiten agendar horas de forma no eficiente, y que no incluyen información sobre la evolución de los pacientes, nuestro producto combina estas dos funciones para facilitar la labor de los profesionales y mejorar la transparencia con sus pacientes.
+Health & Schedule
+=================
 
-REQUISITOS
-- .NET 10
-- MySQL
-- Node.js
-- Angular CLI21
+Proyecto universitario para la creación de una plataforma web de agenda médica y gestión de fichas clínicas para un centro de atención en nutrición y salud mental.
 
-INSTRUCCIONES
-1) Clonar repositorio
-2) Abrir carpeta "hs-back-2"
-3) Modificar archivo appsettings.json dependiendo del usuario y contraseña MySQL
-4) Crear base de datos al abrir y ejecutar el script "hs_db"
-5) Ejecutar los comandos "cd hs-back-2" y "dotnet run"
-6) Ejecutar los comandos "cd hs-front-2", "npm install" y "ng serve"
+Stack principal
+---------------
+- Frontend: Angular basado en componentes.
+- Backend: ASP.NET Core Web API REST.
+- Base de datos: MySQL.
+- CI: GitHub Actions para build y pruebas de frontend/backend.
+
+MVP implementado
+----------------
+Paciente:
+- Registro con validación de RUT chileno.
+- Inicio de sesión seguro.
+- Reserva de horas disponibles.
+- Visualización de próximas citas.
+- Ficha clínica y datos personales.
+
+Profesional:
+- Agenda propia.
+- Listado de pacientes asociados a citas.
+- Revisión de fichas clínicas.
+- Registro de atenciones.
+
+Administrador:
+- Resumen operativo del centro.
+- Creación de usuarios pacientes, profesionales y administradores.
+- Edición de datos de usuarios registrados.
+- Activación/desactivación de cuentas.
+- Gestión de citas.
+
+Instalación local
+-----------------
+1. Ejecutar `hs-db/hs_db.sql` en MySQL Workbench.
+2. Confirmar conexión en `hs-back-2/appsettings.json` o usando secretos locales de .NET.
+3. Iniciar backend:
+
+   cd hs-back-2
+   dotnet run --launch-profile http
+
+4. Iniciar frontend:
+
+   cd hs-front-2
+   npm ci
+   npm start
+
+5. Abrir:
+
+   http://localhost:4200
+
+Pruebas frontend
+----------------
+cd hs-front-2
+npm ci
+npm run test:ci
+npm run build -- --configuration production
+
+Pruebas backend
+---------------
+dotnet test hs-back-2.Tests/proyecto-ids-api.Tests.csproj --configuration Release
+
+Evidencia Entrega 3
+-------------------
+La evidencia del cumplimiento de criterios se encuentra en:
+
+- docs/evaluacion/ENTREGA_3_CRITERIOS_Y_EVIDENCIA.md
+- docs/evaluacion/GESTION_AGIL_ENTREGA_3.md
+- docs/evaluacion/BURNDOWN_ENTREGA_3.md
+- docs/evaluacion/CRITERIOS_ACEPTACION.md
+
+Buenas prácticas
+----------------
+- No subir `node_modules`, `dist`, `.angular`, `bin`, `obj` ni archivos temporales.
+- Todo cambio importante debe entrar mediante Pull Request.
+- Cada Pull Request debe tener revisión de otro integrante y GitHub Actions en verde.
+- Las contraseñas se almacenan con hash PBKDF2.
+- Los endpoints protegidos validan sesión y rol.

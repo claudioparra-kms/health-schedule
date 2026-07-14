@@ -1,23 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "JqryER1fnQo=",
+  "dgSpecHash": "3ZNgf7GV1YM=",
   "success": true,
-  "projectFilePath": "C:\\Users\\claud\\Documents\\Proyectos\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
+  "projectFilePath": "C:\\Users\\Guta\\Music\\health-schedule\\health-schedule\\health-schedule\\hs-back-2\\proyecto-ids-api.csproj",
   "expectedPackageFiles": [
-    "C:\\Users\\claud\\.nuget\\packages\\microsoft.codecoverage\\17.12.0\\microsoft.codecoverage.17.12.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\microsoft.net.test.sdk\\17.12.0\\microsoft.net.test.sdk.17.12.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\microsoft.testplatform.objectmodel\\17.12.0\\microsoft.testplatform.objectmodel.17.12.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\microsoft.testplatform.testhost\\17.12.0\\microsoft.testplatform.testhost.17.12.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit\\2.9.2\\xunit.2.9.2.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit.abstractions\\2.0.3\\xunit.abstractions.2.0.3.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit.analyzers\\1.16.0\\xunit.analyzers.1.16.0.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit.assert\\2.9.2\\xunit.assert.2.9.2.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit.core\\2.9.2\\xunit.core.2.9.2.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit.extensibility.core\\2.9.2\\xunit.extensibility.core.2.9.2.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit.extensibility.execution\\2.9.2\\xunit.extensibility.execution.2.9.2.nupkg.sha512",
-    "C:\\Users\\claud\\.nuget\\packages\\xunit.runner.visualstudio\\2.8.2\\xunit.runner.visualstudio.2.8.2.nupkg.sha512"
+    "C:\\Users\\Guta\\.nuget\\packages\\mysqlconnector\\2.6.0\\mysqlconnector.2.6.0.nupkg.sha512"
   ],
   "logs": []
 }

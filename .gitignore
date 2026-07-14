@@ -1,2 +1,33 @@
-*.vscode/
-*hs-front-2/node_modules
+# Editores
+.vscode/
+.idea/
+*.user
+*.suo
+
+# Frontend Angular
+node_modules/
+hs-front-2/node_modules/
+hs-front-2/dist/
+hs-front-2/.angular/
+hs-front-2/coverage/
+
+# Backend .NET
+bin/
+obj/
+hs-back-2/bin/
+hs-back-2/obj/
+TestResults/
+coverage/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
+# Configuración local sensible
+appsettings.Local.json
+*.local.json
+.env
+
+# Archivos temporales de Visual Studio / .NET
+*.lscache
+*.cache
