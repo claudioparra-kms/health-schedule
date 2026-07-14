@@ -42,7 +42,7 @@ jobs:
         working-directory: hs-back-2
         run: |
           echo "Compilando Do.Api..."
-          dotnet build --configuration Release --no-restore
+          dotnet build --configuration Release
 
       - name: "Test — Ejecutar pruebas unitarias"
         working-directory: hs-back-2
