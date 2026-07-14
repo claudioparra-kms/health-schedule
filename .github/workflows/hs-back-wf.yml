@@ -44,6 +44,12 @@ jobs:
           echo "Compilando Do.Api..."
           dotnet build 
 
+      - name: "Test — Ejecutar pruebas unitarias"
+        working-directory: hs-back-2
+        run: |
+          echo "Ejecutando pruebas unitarias..."
+          dotnet test
+
       - name: "Subir resultados"
         if: always()
         uses: actions/upload-artifact@v4

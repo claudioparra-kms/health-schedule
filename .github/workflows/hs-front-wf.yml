@@ -46,6 +46,10 @@ jobs:
         working-directory: hs-front-2
         run: npm run build -- --configuration production
 
+      - name: "Test — Ejecutar pruebas unitarias"
+        working-directory: hs-front-2
+        run: npm run test
+
       - name: "Subir reporte de cobertura"
         if: always()
         uses: actions/upload-artifact@v4
