@@ -1,47 +1,67 @@
-name: "Health & Schedule - Backend CI"
-
+name: "Health and Schedule"
 on:
   pull_request:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "hs-back-2/**"
       - ".github/workflows/hs-back-wf.yml"
-
   push:
-    branches:
-      - main
+    branches: [main]
     paths:
       - "hs-back-2/**"
       - ".github/workflows/hs-back-wf.yml"
-
 permissions:
   contents: read
-
 concurrency:
   group: dotnet-ci-${{ github.ref }}
   cancel-in-progress: true
-
 jobs:
-  build:
-    name: ".NET build"
+  build-and-test:
+    name: "Construir .NET"
     runs-on: ubuntu-latest
-
     env:
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
-
+      PROJECT_DIR: hs-back-2
     steps:
-      - name: "Descargar código fuente"
+      - name: "Checkout del código fuente"
         uses: actions/checkout@v4
 
-      - name: "Configurar .NET SDK 10"
+      - name: "Configurar .NET SDK 10.0"
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: "10.0.x"
 
-      - name: "Restaurar dependencias"
-        run: dotnet restore hs-back-2/proyecto-ids-api.csproj
+      - name: "Restaurar dependencias NuGet"
+        working-directory: hs-back-2
+        run: |
+          echo "Restaurando paquetes NuGet para el proyecto API..."
+          dotnet restore 
 
-      - name: "Compilar backend"
-        run: dotnet build hs-back-2/proyecto-ids-api.csproj --configuration Release --no-restore
+      - name: "Build — Compilar proyecto en modo Release"
+        working-directory: hs-back-2
+        run: |
+          echo "Compilando Do.Api..."
+          dotnet build --configuration Release
+
+      - name: "Test — Ejecutar pruebas unitarias"
+        working-directory: hs-back-2
+        run: |
+          echo "Ejecutando pruebas unitarias..."
+          dotnet test
+
+      - name: "Subir resultados"
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dotnet-test-results
+          path: |
+            ${{ env.PROJECT_DIR }}/**/TestResults/
+          retention-days: 14
+    
+      - name: "Seguridad — Verificar vulnerabilidades en dependencias"
+        working-directory: ${{ env.PROJECT_DIR }}
+        continue-on-error: true
+        run: |
+          echo "Verificando vulnerabilidades en paquetes NuGet..."
+          dotnet list hs-back-2/proyecto-ids-api.csproj package --vulnerable --include-transitive 2>&1 || true
