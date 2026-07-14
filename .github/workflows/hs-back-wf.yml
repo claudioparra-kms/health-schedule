@@ -27,10 +27,10 @@ jobs:
       - name: "Checkout del código fuente"
         uses: actions/checkout@v4
 
-      - name: "Configurar .NET SDK 8.0"
+      - name: "Configurar .NET SDK 10.0"
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: "8.0.x"
+          dotnet-version: "10.0.x"
 
       - name: "Restaurar dependencias NuGet"
         working-directory: hs-back-2
@@ -42,7 +42,7 @@ jobs:
         working-directory: hs-back-2
         run: |
           echo "Compilando Do.Api..."
-          dotnet build 
+          dotnet build --configuration Release --no-restore
 
       - name: "Test — Ejecutar pruebas unitarias"
         working-directory: hs-back-2
